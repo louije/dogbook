@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{{ title }} - Trombinoscope Canin</title>
+  <meta name="description" content="Le trombinoscope de nos amis à quatre pattes">
+  <link rel="stylesheet" href="/css/main.css">
+</head>
+<body>
+  <header class="header">
+    <div class="header__container">
+      <h1 class="header__title">
+        <a href="/" class="header__link">Trombinoscope Canin</a>
+      </h1>
+      <nav class="nav">
+        <ul class="nav__list">
+          <li class="nav__item"><a href="/" class="nav__link">Tous les chiens</a></li>
+          <li class="nav__item"><a href="/maitres/" class="nav__link">Maîtres</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main class="main">
+    {{ content | safe }}
+  </main>
+
+  <footer class="footer">
+    <div class="footer__container">
+      <p class="footer__text">Trombinoscope Canin &copy; {{ year }}</p>
+    </div>
+  </footer>
+
+  <script src="/js/main.js"></script>
+</body>
+</html>

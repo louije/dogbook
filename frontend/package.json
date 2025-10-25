@@ -1,0 +1,20 @@
+{
+  "name": "dogbook-frontend",
+  "version": "1.0.0",
+  "description": "Static frontend for dog directory",
+  "scripts": {
+    "dev": "eleventy --serve",
+    "build": "eleventy",
+    "clean": "rm -rf _site"
+  },
+  "keywords": ["11ty", "jamstack", "dogs"],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "@11ty/eleventy": "^2.0.1",
+    "node-fetch": "^2.7.0"
+  },
+  "devDependencies": {
+    "@11ty/eleventy-img": "^3.1.8"
+  }
+}
