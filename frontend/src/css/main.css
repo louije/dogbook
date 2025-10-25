@@ -1,0 +1,572 @@
+/* ==========================================================================
+   Variables et Reset
+   ========================================================================== */
+
+:root {
+  --color-primary: #2c5f2d;
+  --color-primary-light: #97bc62;
+  --color-secondary: #d4a373;
+  --color-text: #333333;
+  --color-text-light: #666666;
+  --color-background: #ffffff;
+  --color-background-light: #f5f5f5;
+  --color-border: #dddddd;
+
+  --spacing-xs: 0.5rem;
+  --spacing-sm: 1rem;
+  --spacing-md: 1.5rem;
+  --spacing-lg: 2rem;
+  --spacing-xl: 3rem;
+
+  --font-family-base: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  --font-size-base: 1rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem;
+
+  --border-radius: 0.5rem;
+  --max-width: 1200px;
+  --transition: all 0.3s ease;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: var(--font-family-base);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
+  color: var(--color-text);
+  background-color: var(--color-background);
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+}
+
+a {
+  color: var(--color-primary);
+  text-decoration: none;
+  transition: var(--transition);
+}
+
+a:hover {
+  color: var(--color-primary-light);
+}
+
+/* ==========================================================================
+   Header
+   ========================================================================== */
+
+.header {
+  background-color: var(--color-primary);
+  color: white;
+  padding: var(--spacing-md) 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header__container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.header__title {
+  font-size: var(--font-size-2xl);
+  font-weight: 700;
+}
+
+.header__link {
+  color: white;
+  text-decoration: none;
+}
+
+.header__link:hover {
+  color: var(--color-primary-light);
+}
+
+/* ==========================================================================
+   Navigation
+   ========================================================================== */
+
+.nav__list {
+  list-style: none;
+  display: flex;
+  gap: var(--spacing-md);
+}
+
+.nav__link {
+  color: white;
+  font-weight: 500;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+}
+
+.nav__link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ==========================================================================
+   Main
+   ========================================================================== */
+
+.main {
+  min-height: calc(100vh - 200px);
+}
+
+/* ==========================================================================
+   Hero
+   ========================================================================== */
+
+.hero {
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-light) 100%);
+  color: white;
+  padding: var(--spacing-xl) 0;
+  text-align: center;
+}
+
+.hero__container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.hero__title {
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-sm);
+}
+
+.hero__description {
+  font-size: var(--font-size-lg);
+  opacity: 0.9;
+}
+
+/* ==========================================================================
+   Dogs Section
+   ========================================================================== */
+
+.dogs {
+  padding: var(--spacing-xl) 0;
+}
+
+.dogs__container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.dogs__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: var(--spacing-lg);
+}
+
+/* ==========================================================================
+   Dog Card
+   ========================================================================== */
+
+.dog-card {
+  background-color: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  transition: var(--transition);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.dog-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dog-card__link {
+  display: block;
+  color: inherit;
+}
+
+.dog-card__image-wrapper {
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background-color: var(--color-background-light);
+}
+
+.dog-card__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: var(--transition);
+}
+
+.dog-card:hover .dog-card__image {
+  transform: scale(1.05);
+}
+
+.dog-card__content {
+  padding: var(--spacing-md);
+}
+
+.dog-card__name {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-xs);
+  color: var(--color-primary);
+}
+
+.dog-card__meta {
+  color: var(--color-text-light);
+  font-size: 0.9rem;
+  margin-bottom: var(--spacing-xs);
+}
+
+.dog-card__separator {
+  margin: 0 var(--spacing-xs);
+}
+
+.dog-card__owner {
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+}
+
+/* ==========================================================================
+   Dog Detail
+   ========================================================================== */
+
+.dog-detail {
+  padding: var(--spacing-xl) 0;
+}
+
+.dog-detail__container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.dog-detail__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.dog-detail__name {
+  font-size: var(--font-size-2xl);
+  color: var(--color-primary);
+}
+
+.dog-detail__back {
+  color: var(--color-text-light);
+  font-size: 0.9rem;
+}
+
+.dog-detail__content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: var(--spacing-xl);
+}
+
+@media (max-width: 768px) {
+  .dog-detail__content {
+    grid-template-columns: 1fr;
+  }
+}
+
+.dog-detail__image-wrapper {
+  border-radius: var(--border-radius);
+  overflow: hidden;
+  margin-bottom: var(--spacing-lg);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.dog-detail__image {
+  width: 100%;
+  height: auto;
+}
+
+/* ==========================================================================
+   Dog Gallery
+   ========================================================================== */
+
+.dog-gallery {
+  margin-top: var(--spacing-lg);
+}
+
+.dog-gallery__title {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-md);
+  color: var(--color-primary);
+}
+
+.dog-gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.dog-gallery__item {
+  aspect-ratio: 1;
+  overflow: hidden;
+  border-radius: var(--border-radius);
+  background-color: var(--color-background-light);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.dog-gallery__item:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.dog-gallery__image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.dog-gallery__item--video {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-primary-light);
+}
+
+.dog-gallery__video-link {
+  color: white;
+  font-weight: 500;
+  text-align: center;
+  padding: var(--spacing-md);
+}
+
+/* ==========================================================================
+   Dog Info
+   ========================================================================== */
+
+.dog-info {
+  background-color: var(--color-background-light);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.dog-info__title {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-md);
+  color: var(--color-primary);
+}
+
+.dog-info__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.dog-info__item {
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  gap: var(--spacing-sm);
+}
+
+.dog-info__term {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.dog-info__description {
+  color: var(--color-text-light);
+}
+
+.dog-info__link {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Dog Contact
+   ========================================================================== */
+
+.dog-contact {
+  background-color: var(--color-background-light);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+}
+
+.dog-contact__title {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-md);
+  color: var(--color-primary);
+}
+
+.dog-contact__item {
+  margin-bottom: var(--spacing-sm);
+  line-height: 1.8;
+}
+
+.dog-contact__link {
+  color: var(--color-primary);
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Owners Section
+   ========================================================================== */
+
+.owners {
+  padding: var(--spacing-xl) 0;
+}
+
+.owners__container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.owners__title {
+  font-size: var(--font-size-2xl);
+  margin-bottom: var(--spacing-lg);
+  color: var(--color-primary);
+}
+
+.owners__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: var(--spacing-md);
+}
+
+/* ==========================================================================
+   Owner Card
+   ========================================================================== */
+
+.owner-card {
+  background-color: var(--color-background-light);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  transition: var(--transition);
+}
+
+.owner-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.owner-card__link {
+  display: block;
+  color: inherit;
+}
+
+.owner-card__name {
+  font-size: var(--font-size-xl);
+  color: var(--color-primary);
+  margin-bottom: var(--spacing-xs);
+}
+
+.owner-card__dogs {
+  color: var(--color-text-light);
+  font-size: 0.9rem;
+}
+
+/* ==========================================================================
+   Owner Detail
+   ========================================================================== */
+
+.owner-detail {
+  padding: var(--spacing-xl) 0;
+}
+
+.owner-detail__container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+}
+
+.owner-detail__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  flex-wrap: wrap;
+  gap: var(--spacing-md);
+}
+
+.owner-detail__name {
+  font-size: var(--font-size-2xl);
+  color: var(--color-primary);
+}
+
+.owner-detail__back {
+  color: var(--color-text-light);
+  font-size: 0.9rem;
+}
+
+.owner-detail__contact {
+  background-color: var(--color-background-light);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-lg);
+  margin-bottom: var(--spacing-lg);
+}
+
+.owner-detail__dogs {
+  margin-top: var(--spacing-lg);
+}
+
+.owner-detail__dogs-title {
+  font-size: var(--font-size-xl);
+  margin-bottom: var(--spacing-md);
+  color: var(--color-primary);
+}
+
+.owner-detail__dogs-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.owner-detail__dogs-item {
+  background-color: var(--color-background-light);
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+}
+
+.owner-detail__dogs-link {
+  color: var(--color-primary);
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   Footer
+   ========================================================================== */
+
+.footer {
+  background-color: var(--color-background-light);
+  border-top: 1px solid var(--color-border);
+  padding: var(--spacing-lg) 0;
+  margin-top: var(--spacing-xl);
+}
+
+.footer__container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--spacing-md);
+  text-align: center;
+}
+
+.footer__text {
+  color: var(--color-text-light);
+  font-size: 0.9rem;
+}

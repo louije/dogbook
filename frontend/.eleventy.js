@@ -1,0 +1,135 @@
+const fetch = require('node-fetch');
+
+module.exports = function(eleventyConfig) {
+  // Copy static assets
+  eleventyConfig.addPassthroughCopy('src/css');
+  eleventyConfig.addPassthroughCopy('src/js');
+  eleventyConfig.addPassthroughCopy('src/images');
+
+  // Watch for changes
+  eleventyConfig.addWatchTarget('src/css/');
+  eleventyConfig.addWatchTarget('src/js/');
+
+  // Add filter for age calculation
+  eleventyConfig.addFilter('calculateAge', function(birthYear) {
+    const currentYear = new Date().getFullYear();
+    return currentYear - birthYear;
+  });
+
+  // Add filter to get featured photo
+  eleventyConfig.addFilter('getFeaturedPhoto', function(dog) {
+    if (dog.photoFeatured?.url) {
+      return dog.photoFeatured.url;
+    }
+    // If no featured photo, use first photo from media
+    if (dog.photos && dog.photos.length > 0) {
+      const featured = dog.photos.find(p => p.isFeatured);
+      if (featured?.file?.url) return featured.file.url;
+      if (dog.photos[0]?.file?.url) return dog.photos[0].file.url;
+    }
+    return '/images/placeholder-dog.jpg';
+  });
+
+  // Fetch data from Keystone API
+  eleventyConfig.addGlobalData('dogs', async () => {
+    const API_URL = process.env.API_URL || 'http://localhost:3000';
+
+    try {
+      const response = await fetch(`${API_URL}/api/graphql`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: `
+            query {
+              dogs {
+                id
+                nom
+                sexe
+                age
+                race
+                robe
+                description {
+                  document
+                }
+                photoFeatured {
+                  url
+                  width
+                  height
+                }
+                maitre {
+                  nom
+                  email
+                  telephone
+                }
+                photos {
+                  id
+                  nom
+                  type
+                  videoUrl
+                  isFeatured
+                  file {
+                    url
+                    width
+                    height
+                  }
+                }
+              }
+            }
+          `
+        })
+      });
+
+      const data = await response.json();
+      return data.data?.dogs || [];
+    } catch (error) {
+      console.error('Error fetching dogs:', error);
+      return [];
+    }
+  });
+
+  // Fetch owners
+  eleventyConfig.addGlobalData('owners', async () => {
+    const API_URL = process.env.API_URL || 'http://localhost:3000';
+
+    try {
+      const response = await fetch(`${API_URL}/api/graphql`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: `
+            query {
+              owners {
+                id
+                nom
+                email
+                telephone
+                dogs {
+                  id
+                  nom
+                }
+              }
+            }
+          `
+        })
+      });
+
+      const data = await response.json();
+      return data.data?.owners || [];
+    } catch (error) {
+      console.error('Error fetching owners:', error);
+      return [];
+    }
+  });
+
+  return {
+    dir: {
+      input: 'src',
+      output: '_site',
+      includes: '_includes',
+      layouts: '_layouts'
+    },
+    templateFormats: ['md', 'njk', 'html'],
+    markdownTemplateEngine: 'njk',
+    htmlTemplateEngine: 'njk'
+  };
+};

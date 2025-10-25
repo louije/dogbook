@@ -1,0 +1,111 @@
+---
+pagination:
+  data: dogs
+  size: 1
+  alias: dog
+permalink: "/chiens/{{ dog.id }}/"
+layout: base.njk
+eleventyComputed:
+  title: "{{ dog.nom }}"
+  year: 2024
+---
+
+<article class="dog-detail">
+  <div class="dog-detail__container">
+    <div class="dog-detail__header">
+      <h2 class="dog-detail__name">{{ dog.nom }}</h2>
+      <a href="/" class="dog-detail__back">← Retour à la liste</a>
+    </div>
+
+    <div class="dog-detail__content">
+      <div class="dog-detail__main">
+        <div class="dog-detail__image-wrapper">
+          <img
+            src="{{ dog | getFeaturedPhoto }}"
+            alt="{{ dog.nom }}"
+            class="dog-detail__image"
+          >
+        </div>
+
+        {% if dog.photos.length > 0 %}
+        <div class="dog-gallery">
+          <h3 class="dog-gallery__title">Galerie photos</h3>
+          <div class="dog-gallery__grid">
+            {% for photo in dog.photos %}
+              {% if photo.type === 'photo' and photo.file %}
+              <div class="dog-gallery__item">
+                <img
+                  src="{{ photo.file.url }}"
+                  alt="{{ photo.nom or dog.nom }}"
+                  class="dog-gallery__image"
+                  loading="lazy"
+                >
+              </div>
+              {% elif photo.type === 'video' and photo.videoUrl %}
+              <div class="dog-gallery__item dog-gallery__item--video">
+                <a href="{{ photo.videoUrl }}" target="_blank" class="dog-gallery__video-link">
+                  📹 Voir la vidéo
+                </a>
+              </div>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
+        {% endif %}
+      </div>
+
+      <aside class="dog-detail__sidebar">
+        <div class="dog-info">
+          <h3 class="dog-info__title">Informations</h3>
+          <dl class="dog-info__list">
+            <div class="dog-info__item">
+              <dt class="dog-info__term">Race</dt>
+              <dd class="dog-info__description">{{ dog.race }}</dd>
+            </div>
+            <div class="dog-info__item">
+              <dt class="dog-info__term">Sexe</dt>
+              <dd class="dog-info__description">{{ 'Mâle' if dog.sexe === 'male' else 'Femelle' }}</dd>
+            </div>
+            <div class="dog-info__item">
+              <dt class="dog-info__term">Âge</dt>
+              <dd class="dog-info__description">{{ dog.age }} ans</dd>
+            </div>
+            <div class="dog-info__item">
+              <dt class="dog-info__term">Robe</dt>
+              <dd class="dog-info__description">{{ dog.robe }}</dd>
+            </div>
+            {% if dog.maitre %}
+            <div class="dog-info__item">
+              <dt class="dog-info__term">Maître</dt>
+              <dd class="dog-info__description">
+                <a href="/maitres/{{ dog.maitre.id }}/" class="dog-info__link">
+                  {{ dog.maitre.nom }}
+                </a>
+              </dd>
+            </div>
+            {% endif %}
+          </dl>
+        </div>
+
+        {% if dog.maitre and (dog.maitre.email or dog.maitre.telephone) %}
+        <div class="dog-contact">
+          <h3 class="dog-contact__title">Contact</h3>
+          {% if dog.maitre.telephone %}
+          <p class="dog-contact__item">
+            <strong>Téléphone:</strong> {{ dog.maitre.telephone }}
+          </p>
+          {% endif %}
+          {% if dog.maitre.email %}
+          <p class="dog-contact__item">
+            <strong>Email:</strong>
+            <a href="mailto:{{ dog.maitre.email }}" class="dog-contact__link">
+              {{ dog.maitre.email }}
+            </a>
+          </p>
+          {% endif %}
+        </div>
+        {% endif %}
+      </aside>
+    </div>
+  </div>
+</article>

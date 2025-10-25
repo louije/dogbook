@@ -1,0 +1,44 @@
+---
+layout: base.njk
+title: Accueil
+year: 2024
+---
+
+<section class="hero">
+  <div class="hero__container">
+    <h2 class="hero__title">Nos Compagnons à Quatre Pattes</h2>
+    <p class="hero__description">Découvrez tous nos adorables chiens</p>
+  </div>
+</section>
+
+<section class="dogs">
+  <div class="dogs__container">
+    <div class="dogs__grid">
+      {% for dog in dogs %}
+      <article class="dog-card">
+        <a href="/chiens/{{ dog.id }}/" class="dog-card__link">
+          <div class="dog-card__image-wrapper">
+            <img
+              src="{{ dog | getFeaturedPhoto }}"
+              alt="{{ dog.nom }}"
+              class="dog-card__image"
+              loading="lazy"
+            >
+          </div>
+          <div class="dog-card__content">
+            <h3 class="dog-card__name">{{ dog.nom }}</h3>
+            <div class="dog-card__meta">
+              <span class="dog-card__breed">{{ dog.race }}</span>
+              <span class="dog-card__separator">•</span>
+              <span class="dog-card__age">{{ dog.age }} ans</span>
+            </div>
+            {% if dog.maitre %}
+            <p class="dog-card__owner">Maître: {{ dog.maitre.nom }}</p>
+            {% endif %}
+          </div>
+        </a>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
