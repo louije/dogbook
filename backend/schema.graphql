@@ -205,7 +205,6 @@ type Owner {
 
 input OwnerWhereUniqueInput {
   id: ID
-  email: String
 }
 
 input OwnerWhereInput {

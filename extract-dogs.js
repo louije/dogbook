@@ -32,7 +32,11 @@ while ((match = imageRegex.exec(htmlContent)) !== null) {
   images.push({ format, data });
 }
 
-console.log(`Found ${images.length} images in HTML\n`);
+console.log(`Found ${images.length} images in HTML`);
+console.log(`Skipping first image (likely logo/header)\n`);
+
+// Skip first image (likely logo), match rest to dogs
+const dogImages = images.slice(1);
 
 // Match dogs with images by position
 const imagesDir = path.join(__dirname, 'backend', 'public', 'images');
@@ -40,8 +44,8 @@ if (!fs.existsSync(imagesDir)) {
   fs.mkdirSync(imagesDir, { recursive: true });
 }
 
-const dogsWithImages = dogs.slice(0, Math.min(dogs.length, images.length)).map((dog, index) => {
-  const image = images[index];
+const dogsWithImages = dogs.slice(0, Math.min(dogs.length, dogImages.length)).map((dog, index) => {
+  const image = dogImages[index];
   if (!image) return dog;
 
   const filename = `${dog.name.toLowerCase().replace(/[^a-z0-9]/g, '-')}.${image.format}`;
