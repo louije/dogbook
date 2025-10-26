@@ -1,5 +1,3 @@
-import fetch from 'node-fetch';
-
 /**
  * Trigger frontend build webhook
  * Call this after any data change that should update the frontend

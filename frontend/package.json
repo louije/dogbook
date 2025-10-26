@@ -11,8 +11,7 @@
   "author": "",
   "license": "MIT",
   "dependencies": {
-    "@11ty/eleventy": "^2.0.1",
-    "node-fetch": "^2.7.0"
+    "@11ty/eleventy": "^2.0.1"
   },
   "devDependencies": {
     "@11ty/eleventy-img": "^3.1.8"

@@ -1,5 +1,3 @@
-const fetch = require('node-fetch');
-
 module.exports = function(eleventyConfig) {
   // Copy static assets
   eleventyConfig.addPassthroughCopy('src/css');

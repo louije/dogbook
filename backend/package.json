@@ -17,8 +17,7 @@
     "@keystone-6/auth": "^7.0.2",
     "@keystone-6/fields-document": "^8.0.1",
     "cookie-parser": "^1.4.6",
-    "dotenv": "^16.3.1",
-    "node-fetch": "^2.7.0"
+    "dotenv": "^16.3.1"
   },
   "devDependencies": {
     "@types/cookie-parser": "^1.4.6",
