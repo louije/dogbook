@@ -35,7 +35,7 @@ eleventyComputed:
               {% if photo.type === 'photo' and photo.file %}
               <div class="dog-gallery__item">
                 <img
-                  src="{{ photo.file.url }}"
+                  src="{{ photo.file.url | imageUrl }}"
                   alt="{{ photo.name or dog.name }}"
                   class="dog-gallery__image"
                   loading="lazy"
