@@ -12,7 +12,7 @@ const session = statelessSessions(sessionConfig);
 export default config({
   db: {
     provider: 'sqlite',
-    url: process.env.DATABASE_URL || 'file:./keystone.db',
+    url: process.env.DATABASE_URL || 'file:../data/keystone.db',
   },
   lists,
   storage: {
@@ -23,7 +23,7 @@ export default config({
       serverRoute: {
         path: '/images',
       },
-      storagePath: 'public/images',
+      storagePath: '../data/images',
     },
   },
   server: {

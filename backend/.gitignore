@@ -1,9 +1,2 @@
-node_modules/
-dist/
-.env
-*.db
-*.db-shm
-*.db-wal
-public/images/*
-!public/images/.gitkeep
-.keystone
+# Keystone build cache
+.keystone/
