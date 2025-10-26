@@ -7,15 +7,48 @@ year: 2025
 <section class="hero">
   <div class="hero__container">
     <h2 class="hero__title">Trombinoscope Maisons-Doggo</h2>
-    <p class="hero__description">Ils sont tous beaux.</p>
+    <div class="hero__controls">
+      <div class="control-group">
+        <label for="sort" class="control-label">Trier par :</label>
+        <select id="sort" class="control-select">
+          <option value="name">Nom</option>
+          <option value="breed">Race</option>
+          <option value="coat">Pelage</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="filter-sex" class="control-label">Sexe :</label>
+        <select id="filter-sex" class="control-select">
+          <option value="">Tous</option>
+          <option value="male">Mâle</option>
+          <option value="female">Femelle</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="filter-breed" class="control-label">Race :</label>
+        <select id="filter-breed" class="control-select">
+          <option value="">Toutes</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label for="filter-coat" class="control-label">Pelage :</label>
+        <select id="filter-coat" class="control-select">
+          <option value="">Tous</option>
+        </select>
+      </div>
+    </div>
   </div>
 </section>
 
 <section class="dogs">
   <div class="dogs__container">
-    <div class="dogs__grid">
+    <div class="dogs__grid" id="dogs-grid">
       {% for dog in dogs %}
-      <article class="dog-card">
+      <article class="dog-card"
+               data-name="{{ dog.name | lower }}"
+               data-sex="{{ dog.sex }}"
+               data-breed="{{ dog.breed | lower }}"
+               data-coat="{{ dog.coat | lower }}">
         <a href="/chiens/{{ dog.id }}/" class="dog-card__link">
           <div class="dog-card__image-wrapper">
             <img

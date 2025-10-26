@@ -156,6 +156,50 @@ a:hover {
   opacity: 0.9;
 }
 
+.hero__controls {
+  display: flex;
+  gap: var(--spacing-md);
+  flex-wrap: wrap;
+  margin-top: var(--spacing-md);
+}
+
+.control-group {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.control-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.control-select {
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--border-radius);
+  background-color: rgba(255, 255, 255, 0.2);
+  color: white;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.control-select:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.control-select:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.5);
+  background-color: rgba(255, 255, 255, 0.3);
+}
+
+.control-select option {
+  background-color: var(--color-primary);
+  color: white;
+}
+
 /* ==========================================================================
    Dogs Section
    ========================================================================== */
