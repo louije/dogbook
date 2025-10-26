@@ -27,21 +27,8 @@ year: 2024
           </div>
           <div class="dog-card__content">
             <h3 class="dog-card__name">{{ dog.name }}</h3>
-            {% if dog.breed or dog.age %}
-            <div class="dog-card__meta">
-              {% if dog.breed %}
-              <span class="dog-card__breed">{{ dog.breed }}</span>
-              {% endif %}
-              {% if dog.breed and dog.age %}
-              <span class="dog-card__separator">•</span>
-              {% endif %}
-              {% if dog.age %}
-              <span class="dog-card__age">{{ dog.age }} ans</span>
-              {% endif %}
-            </div>
-            {% endif %}
             {% if dog.owner %}
-            <p class="dog-card__owner">Maître : {{ dog.owner.name }}</p>
+            <p class="dog-card__owner">{% if dog.owner.name.includes('&') %}👥{% else %}👤{% endif %} {{ dog.owner.name }}</p>
             {% endif %}
           </div>
         </a>

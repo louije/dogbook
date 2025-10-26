@@ -25,7 +25,6 @@
   --font-size-2xl: 2rem;
 
   --border-radius: 0.5rem;
-  --max-width: 1200px;
   --transition: all 0.3s ease;
 }
 
@@ -75,7 +74,6 @@ a:hover {
 }
 
 .header__container {
-  max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 var(--spacing-md);
   display: flex;
@@ -141,7 +139,6 @@ a:hover {
 }
 
 .hero__container {
-  max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 var(--spacing-md);
 }
@@ -165,14 +162,13 @@ a:hover {
 }
 
 .dogs__container {
-  max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 var(--spacing-md);
 }
 
 .dogs__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: var(--spacing-lg);
 }
 
@@ -209,6 +205,7 @@ a:hover {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  object-position: center 40%;
   transition: var(--transition);
 }
 
@@ -217,12 +214,12 @@ a:hover {
 }
 
 .dog-card__content {
-  padding: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
 }
 
 .dog-card__name {
   font-size: var(--font-size-xl);
-  margin-bottom: var(--spacing-xs);
+  margin-bottom: 0.25rem;
   color: var(--color-primary);
 }
 
@@ -250,7 +247,6 @@ a:hover {
 }
 
 .dog-detail__container {
-  max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 var(--spacing-md);
 }
@@ -430,7 +426,6 @@ a:hover {
 }
 
 .owners__container {
-  max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 var(--spacing-md);
 }
@@ -489,7 +484,6 @@ a:hover {
 }
 
 .owner-detail__container {
-  max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 var(--spacing-md);
 }
@@ -560,7 +554,6 @@ a:hover {
 }
 
 .footer__container {
-  max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 var(--spacing-md);
   text-align: center;
