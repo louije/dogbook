@@ -1,13 +1,13 @@
 import { config } from '@keystone-6/core';
+import { statelessSessions } from '@keystone-6/core/session';
 import { lists } from './schema';
 
-// Access control for anonymous editing
-const isAccessAllowed = ({ session, req }: any) => {
-  // Allow access if there's a session OR if the secret path is in the URL
-  const secretPath = process.env.EDITOR_SECRET_PATH || 'secret-edit';
-  const hasSecretPath = req?.url?.includes(secretPath);
-  return !!session || hasSecretPath;
+const sessionConfig = {
+  maxAge: 60 * 60 * 24 * 30, // 30 days
+  secret: process.env.SESSION_SECRET || 'change-me-in-production-min-32-chars',
 };
+
+const session = statelessSessions(sessionConfig);
 
 export default config({
   db: {
@@ -34,11 +34,9 @@ export default config({
   },
   ui: {
     isAccessAllowed: async (context) => {
-      // For UI access, check for secret path in context
-      return true; // We'll handle this with middleware
+      // Allow all access for now (anonymous editing)
+      return true;
     },
   },
-  session: {
-    secret: process.env.SESSION_SECRET || 'change-me-in-production',
-  },
+  session,
 });
