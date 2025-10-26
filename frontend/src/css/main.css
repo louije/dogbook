@@ -148,7 +148,6 @@ a:hover {
 
 .hero__title {
   font-size: var(--font-size-2xl);
-  margin-bottom: var(--spacing-sm);
 }
 
 .hero__description {
