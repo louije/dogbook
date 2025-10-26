@@ -34,7 +34,7 @@ model Dog {
 model Owner {
   id    String @id @default(cuid())
   name  String @default("")
-  email String @unique @default("")
+  email String @default("")
   phone String @default("")
   dogs  Dog[]  @relation("Dog_owner")
 }
