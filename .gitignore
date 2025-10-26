@@ -9,6 +9,9 @@ node_modules/
 # Data (database and images)
 data/
 
+# Scaffolding scripts and temporary files
+_scaffolding/
+
 # Build output
 dist/
 
