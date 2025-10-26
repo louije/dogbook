@@ -95,6 +95,9 @@ export const lists = {
   Media: list({
     access: allowAll,
     hooks: buildTriggerHooks,
+    graphql: {
+      plural: 'MediaItems',
+    },
     fields: {
       name: text({
         label: 'Nom',
