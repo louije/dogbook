@@ -1,1 +1,176 @@
-[]
+[
+  {
+    "dogId": "cmh7z9ppk000s7c6v71yhihlo",
+    "dogName": "Lollipop",
+    "imageFile": "lollipop.jpg",
+    "imagePath": "backend/public/images/lollipop.jpg"
+  },
+  {
+    "dogId": "cmh7z9ppn000t7c6vrkrcdhk9",
+    "dogName": "Rocket",
+    "imageFile": "rocket.jpg",
+    "imagePath": "backend/public/images/rocket.jpg"
+  },
+  {
+    "dogId": "cmh7z9ppq000u7c6vz5ssa1k9",
+    "dogName": "Albini",
+    "imageFile": "albini.jpg",
+    "imagePath": "backend/public/images/albini.jpg"
+  },
+  {
+    "dogId": "cmh7z9pps000v7c6v3q1ytpkz",
+    "dogName": "Tao",
+    "imageFile": "tao.jpg",
+    "imagePath": "backend/public/images/tao.jpg"
+  },
+  {
+    "dogId": "cmh7z9ppu000w7c6vs5xvgubi",
+    "dogName": "Miel",
+    "imageFile": "miel.jpg",
+    "imagePath": "backend/public/images/miel.jpg"
+  },
+  {
+    "dogId": "cmh7z9ppw000x7c6vnq20b0kx",
+    "dogName": "Ulky",
+    "imageFile": "ulky.jpg",
+    "imagePath": "backend/public/images/ulky.jpg"
+  },
+  {
+    "dogId": "cmh7z9ppy000y7c6vm1cce28d",
+    "dogName": "Aswad",
+    "imageFile": "aswad.jpg",
+    "imagePath": "backend/public/images/aswad.jpg"
+  },
+  {
+    "dogId": "cmh7z9pq0000z7c6v5lrlzwe9",
+    "dogName": "Harvey",
+    "imageFile": "harvey.jpg",
+    "imagePath": "backend/public/images/harvey.jpg"
+  },
+  {
+    "dogId": "cmh7z9pq200107c6vh7e3jlsp",
+    "dogName": "Aegon",
+    "imageFile": "aegon.jpg",
+    "imagePath": "backend/public/images/aegon.jpg"
+  },
+  {
+    "dogId": "cmh7z9pq400117c6v9r19emh8",
+    "dogName": "Yakov",
+    "imageFile": "yakov.jpg",
+    "imagePath": "backend/public/images/yakov.jpg"
+  },
+  {
+    "dogId": "cmh7z9pq600127c6vfo8gv2gd",
+    "dogName": "Nietzsche",
+    "imageFile": "nietzsche.jpg",
+    "imagePath": "backend/public/images/nietzsche.jpg"
+  },
+  {
+    "dogId": "cmh7z9pq900147c6vicjb92by",
+    "dogName": "Osman",
+    "imageFile": "osman.jpg",
+    "imagePath": "backend/public/images/osman.jpg"
+  },
+  {
+    "dogId": "cmh7z9pqb00157c6vsl8va01d",
+    "dogName": "Yoda",
+    "imageFile": "yoda.jpg",
+    "imagePath": "backend/public/images/yoda.jpg"
+  },
+  {
+    "dogId": "cmh7z9pqc00167c6vnej4xlji",
+    "dogName": "Wiffy",
+    "imageFile": "wiffy.jpg",
+    "imagePath": "backend/public/images/wiffy.jpg"
+  },
+  {
+    "dogId": "cmh7z9pqe00177c6vu2zq56nv",
+    "dogName": "Volky",
+    "imageFile": "volky.jpg",
+    "imagePath": "backend/public/images/volky.jpg"
+  },
+  {
+    "dogId": "cmh7z9pqg00187c6v3u4raevm",
+    "dogName": "Pistache",
+    "imageFile": "pistache.jpeg",
+    "imagePath": "backend/public/images/pistache.jpeg"
+  },
+  {
+    "dogId": "cmh7z9pqh00197c6vivf1z4v6",
+    "dogName": "Bonnie",
+    "imageFile": "bonnie.jpg",
+    "imagePath": "backend/public/images/bonnie.jpg"
+  },
+  {
+    "dogId": "cmh7z9pqj001a7c6vk95kghxq",
+    "dogName": "Achille",
+    "imageFile": "achille.jpg",
+    "imagePath": "backend/public/images/achille.jpg"
+  },
+  {
+    "dogId": "cmh7z9pql001b7c6vuf43njai",
+    "dogName": "Kenny",
+    "imageFile": "kenny.jpg",
+    "imagePath": "backend/public/images/kenny.jpg"
+  },
+  {
+    "dogId": "cmh7z9pqm001c7c6vuhouifiy",
+    "dogName": "Suzy",
+    "imageFile": "suzy.jpg",
+    "imagePath": "backend/public/images/suzy.jpg"
+  },
+  {
+    "dogId": "cmh7z9pqo001d7c6vn298dwvl",
+    "dogName": "Philippine",
+    "imageFile": "philippine.jpg",
+    "imagePath": "backend/public/images/philippine.jpg"
+  },
+  {
+    "dogId": "cmh7z9pqq001e7c6ve824hzv9",
+    "dogName": "Hermès",
+    "imageFile": "hermes.jpg",
+    "imagePath": "backend/public/images/hermes.jpg"
+  },
+  {
+    "dogId": "cmh7z9pqr001f7c6v25nswj2i",
+    "dogName": "Malo",
+    "imageFile": "malo.jpg",
+    "imagePath": "backend/public/images/malo.jpg"
+  },
+  {
+    "dogId": "cmh7z9pqt001g7c6vt5p67n49",
+    "dogName": "Vim",
+    "imageFile": "vim.jpg",
+    "imagePath": "backend/public/images/vim.jpg"
+  },
+  {
+    "dogId": "cmh7z9pqv001h7c6v8sa27j4l",
+    "dogName": "Cookie",
+    "imageFile": "cookie.jpg",
+    "imagePath": "backend/public/images/cookie.jpg"
+  },
+  {
+    "dogId": "cmh7z9pqx001i7c6vk3igkima",
+    "dogName": "Mooky",
+    "imageFile": "mooky.jpg",
+    "imagePath": "backend/public/images/mooky.jpg"
+  },
+  {
+    "dogId": "cmh7z9pqy001j7c6v1tbbhf3w",
+    "dogName": "Charlie",
+    "imageFile": "charlie.jpg",
+    "imagePath": "backend/public/images/charlie.jpg"
+  },
+  {
+    "dogId": "cmh7z9pr0001k7c6vzusg5eax",
+    "dogName": "Tundra",
+    "imageFile": "tundra.jpg",
+    "imagePath": "backend/public/images/tundra.jpg"
+  },
+  {
+    "dogId": "cmh7z9pr2001l7c6vc43ljge8",
+    "dogName": "Nema",
+    "imageFile": "nema.jpg",
+    "imagePath": "backend/public/images/nema.jpg"
+  }
+]
