@@ -6,8 +6,8 @@ year: 2024
 
 <section class="hero">
   <div class="hero__container">
-    <h2 class="hero__title">Nos Compagnons à Quatre Pattes</h2>
-    <p class="hero__description">Découvrez tous nos adorables chiens</p>
+    <h2 class="hero__title">Trombinoscope Maisons-Doggo</h2>
+    <p class="hero__description">Ils sont tous beaux.</p>
   </div>
 </section>
 
@@ -20,20 +20,28 @@ year: 2024
           <div class="dog-card__image-wrapper">
             <img
               src="{{ dog | getFeaturedPhoto }}"
-              alt="{{ dog.nom }}"
+              alt="{{ dog.name }}"
               class="dog-card__image"
               loading="lazy"
             >
           </div>
           <div class="dog-card__content">
-            <h3 class="dog-card__name">{{ dog.nom }}</h3>
+            <h3 class="dog-card__name">{{ dog.name }}</h3>
+            {% if dog.breed or dog.age %}
             <div class="dog-card__meta">
-              <span class="dog-card__breed">{{ dog.race }}</span>
+              {% if dog.breed %}
+              <span class="dog-card__breed">{{ dog.breed }}</span>
+              {% endif %}
+              {% if dog.breed and dog.age %}
               <span class="dog-card__separator">•</span>
+              {% endif %}
+              {% if dog.age %}
               <span class="dog-card__age">{{ dog.age }} ans</span>
+              {% endif %}
             </div>
-            {% if dog.maitre %}
-            <p class="dog-card__owner">Maître: {{ dog.maitre.nom }}</p>
+            {% endif %}
+            {% if dog.owner %}
+            <p class="dog-card__owner">Maître : {{ dog.owner.name }}</p>
             {% endif %}
           </div>
         </a>

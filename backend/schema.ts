@@ -16,36 +16,54 @@ export const lists = {
     access: allowAll,
     hooks: buildTriggerHooks,
     fields: {
-      nom: text({ validation: { isRequired: true } }),
-      sexe: select({
+      name: text({
+        validation: { isRequired: true },
+        label: 'Nom',
+      }),
+      sex: select({
         type: 'enum',
         options: [
           { label: 'Mâle', value: 'male' },
           { label: 'Femelle', value: 'female' },
         ],
-        validation: { isRequired: true },
+        validation: { isRequired: false },
+        label: 'Sexe',
       }),
-      age: integer({ validation: { isRequired: true } }),
-      race: text({ validation: { isRequired: true } }),
-      robe: text({
-        validation: { isRequired: true },
-        db: { isNullable: false },
+      age: integer({
+        validation: { isRequired: false },
+        label: 'Âge',
       }),
-      maitre: relationship({
+      breed: text({
+        validation: { isRequired: false },
+        label: 'Race',
+      }),
+      coat: text({
+        validation: { isRequired: false },
+        label: 'Robe',
+      }),
+      owner: relationship({
         ref: 'Owner.dogs',
         many: false,
+        label: 'Maître',
+        validation: { isRequired: true },
       }),
       // Note: KeystoneJS 6 uses cloud storage for images by default
       // For local storage, we'll need to configure this
-      photoFeatured: image({ storage: 'local_images' }),
+      photoFeatured: image({
+        storage: 'local_images',
+        label: 'Photo principale',
+        validation: { isRequired: true },
+      }),
       photos: relationship({
         ref: 'Media.dog',
         many: true,
+        label: 'Photos',
       }),
       description: document({
         formatting: true,
         links: true,
         dividers: true,
+        label: 'Description',
       }),
     },
   }),
@@ -54,15 +72,22 @@ export const lists = {
     access: allowAll,
     hooks: buildTriggerHooks,
     fields: {
-      nom: text({ validation: { isRequired: true } }),
+      name: text({
+        validation: { isRequired: true },
+        label: 'Nom',
+      }),
       email: text({
         validation: { isRequired: false },
         isIndexed: 'unique',
+        label: 'Email',
       }),
-      telephone: text(),
+      phone: text({
+        label: 'Téléphone',
+      }),
       dogs: relationship({
-        ref: 'Dog.maitre',
+        ref: 'Dog.owner',
         many: true,
+        label: 'Chiens',
       }),
     },
   }),
@@ -71,8 +96,13 @@ export const lists = {
     access: allowAll,
     hooks: buildTriggerHooks,
     fields: {
-      nom: text(),
-      file: image({ storage: 'local_images' }),
+      name: text({
+        label: 'Nom',
+      }),
+      file: image({
+        storage: 'local_images',
+        label: 'Fichier',
+      }),
       type: select({
         type: 'enum',
         options: [
@@ -80,21 +110,25 @@ export const lists = {
           { label: 'Vidéo', value: 'video' },
         ],
         defaultValue: 'photo',
+        label: 'Type',
       }),
       videoUrl: text({
         ui: {
           description: 'URL de la vidéo (YouTube, Vimeo, etc.)',
         },
+        label: 'URL de la vidéo',
       }),
       dog: relationship({
         ref: 'Dog.photos',
         many: false,
+        label: 'Chien',
       }),
       isFeatured: checkbox({
         defaultValue: false,
         ui: {
           description: 'Utiliser comme photo principale',
         },
+        label: 'Photo principale',
       }),
     },
   }),

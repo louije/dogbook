@@ -43,11 +43,11 @@ module.exports = function(eleventyConfig) {
             query {
               dogs {
                 id
-                nom
-                sexe
+                name
+                sex
                 age
-                race
-                robe
+                breed
+                coat
                 description {
                   document
                 }
@@ -56,14 +56,14 @@ module.exports = function(eleventyConfig) {
                   width
                   height
                 }
-                maitre {
-                  nom
+                owner {
+                  name
                   email
-                  telephone
+                  phone
                 }
                 photos {
                   id
-                  nom
+                  name
                   type
                   videoUrl
                   isFeatured
@@ -100,12 +100,12 @@ module.exports = function(eleventyConfig) {
             query {
               owners {
                 id
-                nom
+                name
                 email
-                telephone
+                phone
                 dogs {
                   id
-                  nom
+                  name
                 }
               }
             }
