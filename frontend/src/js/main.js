@@ -185,6 +185,9 @@
       filterCoat.addEventListener('change', applyChanges);
     }
 
+    // Apply initial sort by name
+    applyChanges();
+
     function applyChanges() {
       let visibleCards = filterCards(cards);
       visibleCards = sortCards(visibleCards);
