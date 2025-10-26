@@ -78,7 +78,6 @@ export const lists = {
       }),
       email: text({
         validation: { isRequired: false },
-        isIndexed: 'unique',
         label: 'Email',
       }),
       phone: text({

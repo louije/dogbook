@@ -1,0 +1,242 @@
+[
+  {
+    "name": "Lollipop",
+    "sex": "female",
+    "owner": "Sylvie",
+    "breed": "Berger Australien",
+    "imagePath": "/images/lollipop.png",
+    "imageFile": "lollipop.png"
+  },
+  {
+    "name": "Rocket",
+    "sex": "male",
+    "owner": "Lucile",
+    "breed": "Berger des Shetland",
+    "imagePath": "/images/rocket.jpeg",
+    "imageFile": "rocket.jpeg"
+  },
+  {
+    "name": "Albini",
+    "sex": "male",
+    "owner": "Louis-Jean & Carole",
+    "breed": "Berger Australien",
+    "imagePath": "/images/albini.jpeg",
+    "imageFile": "albini.jpeg"
+  },
+  {
+    "name": "Tao",
+    "sex": "male",
+    "owner": "Mavina & Olivier",
+    "breed": "Berger des Shetland",
+    "imagePath": "/images/tao.jpeg",
+    "imageFile": "tao.jpeg"
+  },
+  {
+    "name": "Miel",
+    "sex": "female",
+    "owner": "Estibalie",
+    "breed": "Croisé Pit Bull/Berger",
+    "imagePath": "/images/miel.jpeg",
+    "imageFile": "miel.jpeg"
+  },
+  {
+    "name": "Ulky",
+    "sex": "female",
+    "owner": "Séverine",
+    "breed": "Croisé Chihuahua",
+    "imagePath": "/images/ulky.jpeg",
+    "imageFile": "ulky.jpeg"
+  },
+  {
+    "name": "Aswad",
+    "sex": "male",
+    "owner": "Loubna",
+    "breed": "Golden Retriever/Labradoodle",
+    "imagePath": "/images/aswad.jpeg",
+    "imageFile": "aswad.jpeg"
+  },
+  {
+    "name": "Harvey",
+    "sex": "male",
+    "owner": "Barbara",
+    "breed": "Croisé Cocker Spaniel",
+    "imagePath": "/images/harvey.jpeg",
+    "imageFile": "harvey.jpeg"
+  },
+  {
+    "name": "Aegon",
+    "sex": "male",
+    "owner": "Raphaël",
+    "breed": "Labrador Noir",
+    "imagePath": "/images/aegon.jpeg",
+    "imageFile": "aegon.jpeg"
+  },
+  {
+    "name": "Yakov",
+    "sex": "male",
+    "owner": "Carolina",
+    "breed": "Croisé Staffordshire Terrier",
+    "imagePath": "/images/yakov.jpeg",
+    "imageFile": "yakov.jpeg"
+  },
+  {
+    "name": "Nietzsche",
+    "sex": "female",
+    "owner": "Isabelle",
+    "breed": "Berger des Shetland",
+    "imagePath": "/images/nietzsche.jpeg",
+    "imageFile": "nietzsche.jpeg"
+  },
+  {
+    "name": "Automine",
+    "sex": "male",
+    "owner": "Mizuki",
+    "breed": "Berger des Shetland",
+    "imagePath": "/images/automine.jpeg",
+    "imageFile": "automine.jpeg"
+  },
+  {
+    "name": "Osman",
+    "sex": "male",
+    "owner": "Mickaël",
+    "breed": "Berger des Shetland",
+    "imagePath": "/images/osman.jpeg",
+    "imageFile": "osman.jpeg"
+  },
+  {
+    "name": "Toda",
+    "sex": "male",
+    "owner": "Florence",
+    "breed": "Shiba Inu",
+    "imagePath": "/images/toda.jpeg",
+    "imageFile": "toda.jpeg"
+  },
+  {
+    "name": "Witty",
+    "sex": "male",
+    "owner": "Jeremy",
+    "breed": "Spitz Finlandais",
+    "imagePath": "/images/witty.jpeg",
+    "imageFile": "witty.jpeg"
+  },
+  {
+    "name": "Volky",
+    "sex": "male",
+    "owner": "Maxime & Marie",
+    "breed": "Shiba Inu",
+    "imagePath": "/images/volky.jpeg",
+    "imageFile": "volky.jpeg"
+  },
+  {
+    "name": "Pistache",
+    "sex": "female",
+    "owner": "Alexis",
+    "breed": "Berger Australien",
+    "imagePath": "/images/pistache.jpeg",
+    "imageFile": "pistache.jpeg"
+  },
+  {
+    "name": "Bonnie",
+    "sex": "female",
+    "owner": "Harald",
+    "breed": "Bobtail",
+    "imagePath": "/images/bonnie.jpeg",
+    "imageFile": "bonnie.jpeg"
+  },
+  {
+    "name": "Achille",
+    "sex": "male",
+    "owner": "Océane",
+    "breed": "Berger Australien",
+    "imagePath": "/images/achille.jpeg",
+    "imageFile": "achille.jpeg"
+  },
+  {
+    "name": "Kenny",
+    "sex": "male",
+    "owner": "Anna & Pierre",
+    "breed": "Border Collie",
+    "imagePath": "/images/kenny.jpeg",
+    "imageFile": "kenny.jpeg"
+  },
+  {
+    "name": "Suzy",
+    "sex": "female",
+    "owner": "Brigitte",
+    "breed": "Yorkshire Terrier",
+    "imagePath": "/images/suzy.jpeg",
+    "imageFile": "suzy.jpeg"
+  },
+  {
+    "name": "Philippine",
+    "sex": "female",
+    "owner": "Brigitte",
+    "breed": "Yorkshire Terrier",
+    "imagePath": "/images/philippine.jpeg",
+    "imageFile": "philippine.jpeg"
+  },
+  {
+    "name": "Hermès",
+    "sex": "male",
+    "owner": "Brigitte",
+    "breed": "Yorkshire Terrier",
+    "imagePath": "/images/herm-s.jpeg",
+    "imageFile": "herm-s.jpeg"
+  },
+  {
+    "name": "Malo",
+    "sex": "male",
+    "owner": "Fabienne",
+    "breed": "Yorkshire Terrier",
+    "imagePath": "/images/malo.jpeg",
+    "imageFile": "malo.jpeg"
+  },
+  {
+    "name": "Vim",
+    "sex": "male",
+    "owner": "Amélie",
+    "breed": "Jack Russell Terrier",
+    "imagePath": "/images/vim.jpeg",
+    "imageFile": "vim.jpeg"
+  },
+  {
+    "name": "Cookie",
+    "sex": "female",
+    "owner": "Sophia & Lia",
+    "breed": "Bichon Maltais/Bichon Havanais",
+    "imagePath": "/images/cookie.jpeg",
+    "imageFile": "cookie.jpeg"
+  },
+  {
+    "name": "Mooky",
+    "sex": "male",
+    "owner": "Noémie",
+    "breed": "Croisé Jack Russell Terrier",
+    "imagePath": "/images/mooky.jpeg",
+    "imageFile": "mooky.jpeg"
+  },
+  {
+    "name": "Charlie",
+    "sex": "male",
+    "owner": "Laurence",
+    "breed": "Jack Russell Terrier",
+    "imagePath": "/images/charlie.jpeg",
+    "imageFile": "charlie.jpeg"
+  },
+  {
+    "name": "Tundra",
+    "sex": "female",
+    "owner": "Julie",
+    "breed": "Samoyède",
+    "imagePath": "/images/tundra.jpeg",
+    "imageFile": "tundra.jpeg"
+  },
+  {
+    "name": "Nema",
+    "sex": "female",
+    "owner": "Irvin",
+    "breed": "Labrador Noir",
+    "imagePath": "/images/nema.jpeg",
+    "imageFile": "nema.jpeg"
+  }
+]
