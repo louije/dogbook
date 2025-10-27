@@ -46,8 +46,7 @@ export const lists = {
           map: 'birthday',
         },
         ui: {
-          dateFormat: 'yyyy-MM-dd',
-          displayMode: 'date',
+          displayMode: 'dateonly',
         },
       }),
       breed: text({
