@@ -13,22 +13,23 @@
     setupImageGallery();
     setupLazyLoading();
     setupSortingAndFiltering();
-    setupFilterToggle();
-    setupSearchToggle();
+    setupSearchFilterToggle();
   }
 
   /**
-   * Setup search toggle for mobile
+   * Setup combined search and filter toggle for mobile
    */
-  function setupSearchToggle() {
-    const searchToggle = document.getElementById('search-toggle');
+  function setupSearchFilterToggle() {
+    const toggleButton = document.getElementById('search-filter-toggle');
     const searchContainer = document.getElementById('search-container');
+    const filterControls = document.getElementById('filter-controls');
 
-    if (!searchToggle || !searchContainer) return;
+    if (!toggleButton || !searchContainer || !filterControls) return;
 
-    searchToggle.addEventListener('click', function() {
-      searchToggle.classList.toggle('active');
+    toggleButton.addEventListener('click', function() {
+      toggleButton.classList.toggle('active');
       searchContainer.classList.toggle('active');
+      filterControls.classList.toggle('active');
 
       // Focus input when opened on mobile
       if (searchContainer.classList.contains('active')) {
@@ -39,21 +40,6 @@
           }, 100);
         }
       }
-    });
-  }
-
-  /**
-   * Setup filter toggle for mobile
-   */
-  function setupFilterToggle() {
-    const toggleButton = document.getElementById('filter-toggle');
-    const filterControls = document.getElementById('filter-controls');
-
-    if (!toggleButton || !filterControls) return;
-
-    toggleButton.addEventListener('click', function() {
-      toggleButton.classList.toggle('active');
-      filterControls.classList.toggle('active');
     });
   }
 

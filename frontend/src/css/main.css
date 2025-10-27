@@ -145,7 +145,7 @@ a:hover {
   padding: 0 var(--spacing-md);
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   gap: var(--spacing-md);
 }
 
@@ -153,9 +153,8 @@ a:hover {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
-  justify-content: space-between;
   gap: var(--spacing-md);
-  flex: 1 1 100%;
+  flex: 1 1 auto;
 }
 
 .hero__title {
@@ -173,7 +172,7 @@ a:hover {
   align-items: center;
 }
 
-.hero__search-toggle {
+.hero__search-filter-toggle {
   display: none;
   background: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -184,43 +183,24 @@ a:hover {
   transition: var(--transition);
 }
 
-.hero__search-toggle svg {
+.hero__search-filter-toggle svg {
   display: block;
 }
 
-.hero__search-toggle:hover {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.hero__filter-toggle {
-  display: none;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: var(--border-radius);
-  color: white;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.hero__filter-toggle svg {
-  display: block;
-}
-
-.hero__filter-toggle:hover {
+.hero__search-filter-toggle:hover {
   background: rgba(255, 255, 255, 0.3);
 }
 
 .hero__search-container {
-  flex: 1 1 100%;
-  order: 2;
+  flex: 0 0 auto;
+  max-width: 300px;
 }
 
 .hero__search-input {
   width: 100%;
   padding: var(--spacing-xs) var(--spacing-md);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: var(--border-radius);
+  border-radius: 50px;
   background-color: rgba(255, 255, 255, 0.15);
   color: white;
   font-size: 0.95rem;
@@ -262,22 +242,23 @@ a:hover {
     justify-content: space-between;
   }
 
-  .hero__search-toggle {
-    display: flex;
-  }
-
-  .hero__filter-toggle {
+  .hero__search-filter-toggle {
     display: flex;
   }
 
   .hero__search-container {
     display: none;
     width: 100%;
+    max-width: none;
     margin-top: var(--spacing-md);
   }
 
   .hero__search-container.active {
     display: block;
+  }
+
+  .hero__search-input {
+    border-radius: var(--border-radius);
   }
 
   .hero__controls {
