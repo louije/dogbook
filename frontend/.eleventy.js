@@ -38,6 +38,12 @@ module.exports = function(eleventyConfig) {
     return '/images/placeholder-dog.jpg';
   });
 
+  // Add filter to get edit URL for a dog
+  eleventyConfig.addFilter('editUrl', function(dogId) {
+    const API_URL = process.env.API_URL || 'http://localhost:3000';
+    return `${API_URL}/dogs/${dogId}`;
+  });
+
   // Add global metadata
   eleventyConfig.addGlobalData('metadata', {
     url: process.env.SITE_URL || 'http://localhost:8080'
