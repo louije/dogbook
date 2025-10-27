@@ -19,6 +19,11 @@ export const lists = {
       label: 'Chien',
       plural: 'Chiens',
       labelField: 'name',
+      listView: {
+        defaultFieldMode: 'read',
+        initialColumns: ['name', 'sex', 'breed', 'coat', 'owner', 'photoFeatured', 'description'],
+        initialSort: { field: 'name', direction: 'ASC' },
+      },
     },
     fields: {
       name: text({
