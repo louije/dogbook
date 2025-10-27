@@ -8,6 +8,7 @@ layout: base.njk
 eleventyComputed:
   title: "{{ dog.name }}"
   year: 2024
+  dogImage: "{{ dog | getFeaturedPhoto }}"
 ---
 
 <article class="dog-detail">

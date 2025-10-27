@@ -3,8 +3,18 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>{{ title }} - Trombinoscope Canin</title>
-  <meta name="description" content="Le trombinoscope de nos amis à quatre pattes">
+  <title>{{ title }} - Trombi Maisons-Doggo</title>
+  <meta name="description" content="Le trombi des chiens du coin">
+
+  <meta property="og:title" content="{{ title }} - Trombi Maisons-Doggo">
+  <meta property="og:description" content="Le trombi des chiens du coin">
+  <meta property="og:type" content="website">
+  {% if dogImage %}
+  <meta property="og:image" content="{{ dogImage }}">
+  {% else %}
+  <meta property="og:image" content="{{ '/images/packshot.jpg' | absoluteUrl(metadata.url) }}">
+  {% endif %}
+
   <link rel="stylesheet" href="/css/main.css">
 </head>
 <body>
