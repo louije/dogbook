@@ -28,6 +28,18 @@
   --transition: all 0.3s ease;
 }
 
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-primary: #4a4f8a;
+    --color-primary-light: #7b83d4;
+    --color-text: #e0e0e0;
+    --color-text-light: #b0b0b0;
+    --color-background: #1a1a1a;
+    --color-background-light: #2a2a2a;
+    --color-border: #3a3a3a;
+  }
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -138,22 +150,6 @@ a:hover {
   top: 0;
   z-index: 100;
   box-shadow: 2px 0px 10px rgba(00, 00, 00, 0.4);
-  overflow: visible;
-}
-
-.hero::before {
-  content: '';
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 150vh;
-  background-image: url(/images/planets.jpg);
-  background-size: cover;
-  background-position: center top;
-  z-index: -1;
-  opacity: .3;
-  pointer-events: none;
 }
 
 .hero__container {
@@ -164,6 +160,20 @@ a:hover {
   align-items: baseline;
   gap: var(--spacing-md);
   position: relative;
+}
+
+.hero__container::before {
+  content: '';
+  position: absolute;
+  top: -3rem;
+  left: -3rem;
+  right: -3rem;
+  bottom: 0;
+  background-image: url(/images/planets.jpg);
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
+  opacity: .3;
 }
 
 .hero__header {
