@@ -1,0 +1,9 @@
+[Unit]
+Description=Daily Dogbook Database Backup
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target

@@ -121,49 +121,102 @@ Si vous auto-hébergez le frontend:
 
 ## Déploiement
 
-### Backend sur Hetzner
+### Backend sur Hetzner (niche.maisonsdoggo.fr)
+
+Le déploiement utilise un workflow git push similaire à Capistrano.
+
+#### Configuration initiale du serveur
+
+Sur le serveur Hetzner (une seule fois):
 
 ```bash
-# Sur votre serveur Hetzner
-git clone https://github.com/yourusername/dogbook.git
-cd dogbook/backend
+# Créer la structure de répertoires
+sudo mkdir -p /srv/dogbook/{repo.git,backups,data/images}
+sudo chown -R caddy:caddy /srv/dogbook
 
-# Installer les dépendances
-npm install
+# Initialiser le dépôt git bare
+sudo -u caddy git init --bare /srv/dogbook/repo.git
 
-# Configurer l'environnement
-cp .env.example .env
-nano .env
+# Copier le hook post-receive
+sudo -u caddy cp deploy/post-receive /srv/dogbook/repo.git/hooks/
+sudo chmod +x /srv/dogbook/repo.git/hooks/post-receive
 
-# Build pour production
-npm run build
+# Installer le service systemd
+sudo cp deploy/dogbook.service /etc/systemd/system/
+sudo systemctl daemon-reload
+sudo systemctl enable dogbook
 
-# Démarrer avec PM2 (recommandé)
-npm install -g pm2
-pm2 start npm --name "dogbook-backend" -- start
-pm2 save
-pm2 startup
+# Installer le système de backup
+sudo cp deploy/dogbook-backup.{service,timer} /etc/systemd/system/
+sudo systemctl enable dogbook-backup.timer
+sudo systemctl start dogbook-backup.timer
+
+# Configurer l'environnement de production
+sudo -u caddy nano /srv/dogbook/data/.env
+# Copiez le contenu de backend/.env.production.example et remplissez les valeurs
 ```
 
-Configurez nginx comme reverse proxy:
+Ajoutez à `/etc/caddy/Caddyfile`:
 
-```nginx
-server {
-    listen 80;
-    server_name api.yourdomain.com;
-
-    location / {
-        proxy_pass http://localhost:3000;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
+```
+niche.maisonsdoggo.fr {
+    reverse_proxy 127.0.0.1:3002
+    log {
+        output file /srv/dogbook/access.log {
+            roll_size 20mb
+            roll_keep 10
+        }
     }
-
-    # Pour les uploads d'images
-    client_max_body_size 10M;
 }
+```
+
+Rechargez Caddy:
+```bash
+sudo systemctl reload caddy
+```
+
+#### Déploiement initial
+
+Sur votre machine locale:
+
+```bash
+# Ajoutez le remote de déploiement
+git remote add deploy ljt.cc:/srv/dogbook/repo.git
+
+# Premier déploiement
+git push deploy main
+
+# Sur le serveur, créez le symlink .env
+ssh ljt.cc "sudo -u caddy ln -s /srv/dogbook/data/.env /srv/dogbook/current/backend/.env"
+
+# Démarrez le service
+ssh ljt.cc "sudo systemctl start dogbook"
+```
+
+#### Déploiements futurs
+
+Simplement:
+```bash
+git push deploy main
+```
+
+Le hook post-receive s'occupe automatiquement de:
+- Checkout du code
+- Installation des dépendances
+- Build du backend
+- Redémarrage du service
+
+#### Vérification du déploiement
+
+```bash
+# Vérifier le statut du service
+ssh ljt.cc "sudo systemctl status dogbook"
+
+# Voir les logs
+ssh ljt.cc "sudo journalctl -u dogbook -f"
+
+# Vérifier les backups
+ssh ljt.cc "ls -lh /srv/dogbook/backups/"
 ```
 
 ### Frontend sur Netlify

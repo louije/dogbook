@@ -1,0 +1,48 @@
+#!/bin/bash
+# Git post-receive hook for dogbook deployment
+# This runs automatically after 'git push deploy main'
+
+set -e
+
+TARGET="/srv/dogbook/current"
+GIT_DIR="/srv/dogbook/repo.git"
+BRANCH="main"
+
+while read oldrev newrev ref
+do
+    # Only deploy if pushing to main branch
+    if [[ $ref = "refs/heads/$BRANCH" ]]; then
+        echo "======================================"
+        echo "Deploying dogbook backend to production"
+        echo "======================================"
+
+        # Checkout latest code
+        echo "→ Checking out code..."
+        git --work-tree=$TARGET --git-dir=$GIT_DIR checkout -f $BRANCH
+
+        # Navigate to backend directory
+        cd $TARGET/backend
+
+        # Install dependencies
+        echo "→ Installing dependencies..."
+        /home/louije/.nvm/versions/node/v22.18.0/bin/npm install --production
+
+        # Build backend
+        echo "→ Building backend..."
+        /home/louije/.nvm/versions/node/v22.18.0/bin/npm run build
+
+        # Ensure data symlink exists
+        if [ ! -L "$TARGET/data" ]; then
+            echo "→ Creating data symlink..."
+            ln -s /srv/dogbook/data $TARGET/data
+        fi
+
+        # Restart systemd service
+        echo "→ Restarting dogbook service..."
+        sudo systemctl restart dogbook
+
+        echo "======================================"
+        echo "✓ Deployment complete!"
+        echo "======================================"
+    fi
+done
