@@ -7,13 +7,56 @@ import {
   calendarDay,
   image,
   checkbox,
+  password,
+  timestamp,
 } from '@keystone-6/core/fields';
 import { document } from '@keystone-6/fields-document';
 import { buildTriggerHooks } from './hooks';
 
+// Helper function to check if user is authenticated
+const isAuthenticated = ({ session }: any) => !!session;
+
 export const lists = {
-  Dog: list({
+  User: list({
     access: allowAll,
+    ui: {
+      label: 'Utilisateur',
+      plural: 'Utilisateurs',
+      labelField: 'name',
+      listView: {
+        initialColumns: ['name', 'email'],
+      },
+    },
+    fields: {
+      name: text({
+        validation: { isRequired: true },
+        label: 'Nom',
+      }),
+      email: text({
+        validation: { isRequired: true },
+        isIndexed: 'unique',
+        label: 'Email',
+      }),
+      password: password({
+        validation: { isRequired: true },
+        label: 'Mot de passe',
+      }),
+      createdAt: timestamp({
+        defaultValue: { kind: 'now' },
+        label: 'Créé le',
+      }),
+    },
+  }),
+
+  Dog: list({
+    access: {
+      operation: {
+        query: () => true, // Anyone can view
+        create: isAuthenticated, // Only authenticated users can create
+        update: () => true, // Anyone can update (controlled at field level)
+        delete: isAuthenticated, // Only authenticated users can delete
+      },
+    },
     hooks: buildTriggerHooks,
     ui: {
       label: 'Chien',
@@ -29,6 +72,9 @@ export const lists = {
       name: text({
         validation: { isRequired: true },
         label: 'Nom',
+        access: {
+          update: isAuthenticated, // Only authenticated users can change name
+        },
       }),
       sex: select({
         type: 'enum',
@@ -56,6 +102,9 @@ export const lists = {
         many: false,
         label: 'Humain',
         validation: { isRequired: true },
+        access: {
+          update: isAuthenticated, // Only authenticated users can change owner
+        },
       }),
       // Note: KeystoneJS 6 uses cloud storage for images by default
       // For local storage, we'll need to configure this
@@ -79,7 +128,14 @@ export const lists = {
   }),
 
   Owner: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: () => true, // Anyone can view
+        create: isAuthenticated, // Only authenticated users can create
+        update: isAuthenticated, // Only authenticated users can update
+        delete: isAuthenticated, // Only authenticated users can delete
+      },
+    },
     hooks: buildTriggerHooks,
     ui: {
       label: 'Humain',

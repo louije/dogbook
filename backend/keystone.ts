@@ -1,5 +1,6 @@
 import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
+import { createAuth } from '@keystone-6/auth';
 import { lists } from './schema';
 
 const sessionConfig = {
@@ -7,9 +8,19 @@ const sessionConfig = {
   secret: process.env.SESSION_SECRET || 'change-me-in-production-min-32-chars',
 };
 
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  secretField: 'password',
+  sessionData: 'name email',
+  initFirstItem: {
+    fields: ['name', 'email', 'password'],
+  },
+});
+
 const session = statelessSessions(sessionConfig);
 
-export default config({
+export default withAuth(config({
   db: {
     provider: 'sqlite',
     url: process.env.DATABASE_URL || 'file:../data/keystone.db',
@@ -32,11 +43,5 @@ export default config({
       credentials: true,
     },
   },
-  ui: {
-    isAccessAllowed: async (context) => {
-      // Allow all access for now (anonymous editing)
-      return true;
-    },
-  },
   session,
-});
+}));
