@@ -10,7 +10,6 @@ import {
   password,
   timestamp,
 } from '@keystone-6/core/fields';
-import { document } from '@keystone-6/fields-document';
 import { buildTriggerHooks } from './hooks';
 
 // Helper function to check if user is authenticated
@@ -72,7 +71,7 @@ export const lists = {
       labelField: 'name',
       listView: {
         defaultFieldMode: 'read',
-        initialColumns: ['name', 'sex', 'breed', 'coat', 'owner', 'photoFeatured', 'description'],
+        initialColumns: ['name', 'sex', 'breed', 'coat', 'owner', 'photoFeatured'],
         initialSort: { field: 'name', direction: 'ASC' },
       },
     },
@@ -125,12 +124,6 @@ export const lists = {
         ref: 'Media.dog',
         many: true,
         label: 'Photos',
-      }),
-      description: document({
-        formatting: true,
-        links: true,
-        dividers: true,
-        label: 'Description',
       }),
     },
   }),

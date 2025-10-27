@@ -67,9 +67,6 @@ module.exports = function(eleventyConfig) {
                 birthday
                 breed
                 coat
-                description {
-                  document
-                }
                 photoFeatured {
                   url
                   width

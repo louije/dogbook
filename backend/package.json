@@ -20,7 +20,6 @@
   "dependencies": {
     "@keystone-6/auth": "^7.0.3",
     "@keystone-6/core": "^5.7.0",
-    "@keystone-6/fields-document": "^8.0.1",
     "better-sqlite3": "^9.2.2",
     "dotenv": "^16.3.1"
   },
