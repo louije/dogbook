@@ -118,6 +118,10 @@ export const lists = {
       label: 'Média',
       plural: 'Médias',
       labelField: 'name',
+      listView: {
+        defaultFieldMode: 'read',
+        initialColumns: ['type', 'dog', 'file'],
+      },
     },
     graphql: {
       plural: 'MediaItems',
