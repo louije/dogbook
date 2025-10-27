@@ -13,23 +13,21 @@
     setupImageGallery();
     setupLazyLoading();
     setupSortingAndFiltering();
-    setupSearchFilterToggle();
+    setupSearchToggle();
   }
 
   /**
-   * Setup combined search and filter toggle for mobile
+   * Setup search toggle for mobile
    */
-  function setupSearchFilterToggle() {
-    const toggleButton = document.getElementById('search-filter-toggle');
+  function setupSearchToggle() {
+    const toggleButton = document.getElementById('search-toggle');
     const searchContainer = document.getElementById('search-container');
-    const filterControls = document.getElementById('filter-controls');
 
-    if (!toggleButton || !searchContainer || !filterControls) return;
+    if (!toggleButton || !searchContainer) return;
 
     toggleButton.addEventListener('click', function() {
       toggleButton.classList.toggle('active');
       searchContainer.classList.toggle('active');
-      filterControls.classList.toggle('active');
 
       // Focus input when opened on mobile
       if (searchContainer.classList.contains('active')) {
@@ -110,29 +108,9 @@
     if (!grid) return;
 
     const cards = Array.from(grid.querySelectorAll('.dog-card'));
-    const sortSelect = document.getElementById('sort');
-    const filterSex = document.getElementById('filter-sex');
-    const filterBreed = document.getElementById('filter-breed');
-    const filterCoat = document.getElementById('filter-coat');
     const searchInput = document.getElementById('search-input');
 
-    // Populate breed and coat filters
-    populateFilterOptions(cards, 'breed', filterBreed);
-    populateFilterOptions(cards, 'coat', filterCoat);
-
-    // Add event listeners
-    if (sortSelect) {
-      sortSelect.addEventListener('change', applyChanges);
-    }
-    if (filterSex) {
-      filterSex.addEventListener('change', applyChanges);
-    }
-    if (filterBreed) {
-      filterBreed.addEventListener('change', applyChanges);
-    }
-    if (filterCoat) {
-      filterCoat.addEventListener('change', applyChanges);
-    }
+    // Add event listener for search
     if (searchInput) {
       searchInput.addEventListener('input', applyChanges);
     }
@@ -147,21 +125,13 @@
     }
 
     function filterCards(cards) {
-      const sexValue = filterSex ? filterSex.value : '';
-      const breedValue = filterBreed ? filterBreed.value : '';
-      const coatValue = filterCoat ? filterCoat.value : '';
       const searchValue = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
       return cards.filter(function(card) {
-        const cardSex = card.dataset.sex || '';
+        const cardName = card.dataset.name || '';
         const cardBreed = card.dataset.breed || '';
         const cardCoat = card.dataset.coat || '';
-        const cardName = card.dataset.name || '';
         const cardOwner = card.dataset.owner || '';
-
-        const sexMatch = !sexValue || cardSex === sexValue;
-        const breedMatch = !breedValue || cardBreed === breedValue;
-        const coatMatch = !coatValue || cardCoat === coatValue;
 
         // Search matches name, breed, coat, or owner
         const searchMatch = !searchValue ||
@@ -170,16 +140,14 @@
           cardCoat.includes(searchValue) ||
           cardOwner.includes(searchValue);
 
-        return sexMatch && breedMatch && coatMatch && searchMatch;
+        return searchMatch;
       });
     }
 
     function sortCards(cards) {
-      const sortBy = sortSelect ? sortSelect.value : 'name';
-
       return cards.slice().sort(function(a, b) {
-        const aValue = a.dataset[sortBy] || '';
-        const bValue = b.dataset[sortBy] || '';
+        const aValue = a.dataset.name || '';
+        const bValue = b.dataset.name || '';
         return aValue.localeCompare(bValue, 'fr');
       });
     }
@@ -192,32 +160,6 @@
       visibleCards.forEach(function(card) {
         grid.appendChild(card);
       });
-    }
-
-    function populateFilterOptions(cards, attribute, selectElement) {
-      const values = new Set();
-      cards.forEach(function(card) {
-        const value = card.dataset[attribute];
-        if (value && value !== 'undefined' && value !== '') {
-          values.add(value);
-        }
-      });
-
-      const sortedValues = Array.from(values).sort(function(a, b) {
-        return a.localeCompare(b, 'fr');
-      });
-
-      sortedValues.forEach(function(value) {
-        const option = document.createElement('option');
-        option.value = value;
-        option.textContent = capitalizeFirst(value);
-        selectElement.appendChild(option);
-      });
-    }
-
-    function capitalizeFirst(str) {
-      if (!str) return '';
-      return str.charAt(0).toUpperCase() + str.slice(1);
     }
   }
 
