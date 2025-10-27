@@ -30,6 +30,7 @@ eleventyComputed:
         {% if dog.coat %}
         <span class="dog-tag">{{ dog.coat }}</span>
         {% endif %}
+        <a href="{{ dog.id | editUrl }}" target="_blank" rel="noopener" class="dog-tag dog-tag--edit" title="Modifier cette fiche">✏️</a>
       </div>
     </div>
 
