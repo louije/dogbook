@@ -501,8 +501,8 @@ a:hover {
 
 .dog-gallery__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: var(--spacing-sm);
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: var(--spacing-md);
 }
 
 .dog-gallery__item {
