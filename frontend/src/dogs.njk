@@ -21,8 +21,9 @@ eleventyComputed:
             <h1 class="dog-detail__name">{{ dog.name }}</h1>
             {% set metaParts = [] %}
             {% if dog.owner %}
-              {% set ownerText %}{% if dog.owner.name.includes('&') %}👥{% else %}👤{% endif %} {{ dog.owner.name }}{% endset %}
-              {% set _ = metaParts.push(ownerText.trim()) %}
+              {% set hasMultiple = '&' in dog.owner.name %}
+              {% set ownerText = (('👥' if hasMultiple else '👤') + ' ' + dog.owner.name) %}
+              {% set _ = metaParts.push(ownerText) %}
             {% endif %}
             {% if dog.breed or dog.sex %}
               {% set breedSexParts = [] %}
@@ -30,7 +31,7 @@ eleventyComputed:
               {% if dog.sex %}{% set _ = breedSexParts.push('mâle' if dog.sex === 'male' else 'femelle') %}{% endif %}
               {% set _ = metaParts.push(breedSexParts.join(' ')) %}
             {% endif %}
-            <p class="dog-detail__meta">{{ metaParts.join(', ') }}</p>
+            <p class="dog-detail__meta">{{ metaParts.join('. ') }}</p>
           </figcaption>
           <img
             src="{{ dog | getFeaturedPhoto }}"
