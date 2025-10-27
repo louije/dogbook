@@ -52,21 +52,28 @@
 
   .dog-card:hover {
     transform: none !important;
+    outline: 2px solid var(--color-primary-light);
+    outline-offset: -2px;
+  }
+
+  .dog-card:hover .dog-card__image {
+    transform: none !important;
   }
 
   .dog-gallery__item:hover {
     transform: none !important;
+    outline: 2px solid var(--color-primary-light);
+    outline-offset: -2px;
   }
 
   .dog-detail__image-button:hover .dog-detail__image {
     transform: none !important;
+    outline: 2px solid var(--color-primary-light);
+    outline-offset: -2px;
   }
 
-  .dog-card:hover,
-  .dog-gallery__item:hover,
   .dog-detail__image-button:hover {
-    outline: 2px solid var(--color-primary-light);
-    outline-offset: 2px;
+    outline: none;
   }
 }
 
