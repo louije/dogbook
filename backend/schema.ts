@@ -49,7 +49,7 @@ export const lists = {
       owner: relationship({
         ref: 'Owner.dogs',
         many: false,
-        label: 'Maître',
+        label: 'Humain',
         validation: { isRequired: true },
       }),
       // Note: KeystoneJS 6 uses cloud storage for images by default
@@ -77,8 +77,8 @@ export const lists = {
     access: allowAll,
     hooks: buildTriggerHooks,
     ui: {
-      label: 'Maître',
-      plural: 'Maîtres',
+      label: 'Humain',
+      plural: 'Humains',
       labelField: 'name',
     },
     fields: {
