@@ -315,29 +315,22 @@ a:hover {
   padding: 0 var(--spacing-md);
 }
 
-.dog-detail__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-lg);
-  flex-wrap: wrap;
-  gap: var(--spacing-md);
-}
-
-.dog-detail__name {
-  font-size: var(--font-size-2xl);
-  color: var(--color-primary);
-}
-
 .dog-detail__back {
+  display: inline-block;
   color: var(--color-text-light);
   font-size: 0.9rem;
+  margin-bottom: var(--spacing-md);
+  transition: var(--transition);
+}
+
+.dog-detail__back:hover {
+  color: var(--color-primary);
 }
 
 .dog-detail__content {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: var(--spacing-xl);
+  gap: var(--spacing-lg);
 }
 
 @media (max-width: 768px) {
@@ -346,36 +339,47 @@ a:hover {
   }
 }
 
-.dog-detail__image-wrapper {
-  border-radius: var(--border-radius);
-  overflow: hidden;
-  margin-bottom: var(--spacing-lg);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+.dog-detail__figure {
+  margin: 0;
+  position: relative;
+}
+
+.dog-detail__info {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: var(--spacing-md);
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 60%, transparent 100%);
+}
+
+.dog-detail__name {
+  font-size: var(--font-size-2xl);
+  color: white;
+  margin: 0 0 0.25rem 0;
+}
+
+.dog-detail__meta {
+  font-size: 0.9rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin: 0;
 }
 
 .dog-detail__image {
   width: 100%;
   height: auto;
+  display: block;
+  border-radius: var(--border-radius);
 }
 
 /* ==========================================================================
    Dog Gallery
    ========================================================================== */
 
-.dog-gallery {
-  margin-top: var(--spacing-lg);
-}
-
-.dog-gallery__title {
-  font-size: var(--font-size-xl);
-  margin-bottom: var(--spacing-md);
-  color: var(--color-primary);
-}
-
 .dog-gallery__grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-  gap: var(--spacing-md);
+  grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+  gap: var(--spacing-sm);
 }
 
 .dog-gallery__item {
@@ -385,6 +389,9 @@ a:hover {
   background-color: var(--color-background-light);
   cursor: pointer;
   transition: var(--transition);
+  border: none;
+  padding: 0;
+  display: block;
 }
 
 .dog-gallery__item:hover {
@@ -396,6 +403,7 @@ a:hover {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
 }
 
 .dog-gallery__item--video {
@@ -413,73 +421,47 @@ a:hover {
 }
 
 /* ==========================================================================
-   Dog Info
+   Lightbox Dialog
    ========================================================================== */
 
-.dog-info {
-  background-color: var(--color-background-light);
-  border-radius: var(--border-radius);
-  padding: var(--spacing-lg);
-  margin-bottom: var(--spacing-lg);
+.lightbox {
+  max-width: 90vw;
+  max-height: 90vh;
+  padding: 0;
+  border: none;
+  background: transparent;
 }
 
-.dog-info__title {
-  font-size: var(--font-size-xl);
-  margin-bottom: var(--spacing-md);
-  color: var(--color-primary);
+.lightbox::backdrop {
+  background-color: rgba(0, 0, 0, 0.9);
 }
 
-.dog-info__list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
+.lightbox__image {
+  max-width: 90vw;
+  max-height: 90vh;
+  display: block;
 }
 
-.dog-info__item {
-  display: grid;
-  grid-template-columns: 100px 1fr;
-  gap: var(--spacing-sm);
+.lightbox__close {
+  position: absolute;
+  top: -40px;
+  right: 0;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 40px;
+  cursor: pointer;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  line-height: 1;
+  transition: opacity 0.2s;
 }
 
-.dog-info__term {
-  font-weight: 600;
-  color: var(--color-text);
+.lightbox__close:hover {
+  opacity: 0.7;
 }
 
-.dog-info__description {
-  color: var(--color-text-light);
-}
-
-.dog-info__link {
-  color: var(--color-primary);
-  text-decoration: underline;
-}
-
-/* ==========================================================================
-   Dog Contact
-   ========================================================================== */
-
-.dog-contact {
-  background-color: var(--color-background-light);
-  border-radius: var(--border-radius);
-  padding: var(--spacing-lg);
-}
-
-.dog-contact__title {
-  font-size: var(--font-size-xl);
-  margin-bottom: var(--spacing-md);
-  color: var(--color-primary);
-}
-
-.dog-contact__item {
-  margin-bottom: var(--spacing-sm);
-  line-height: 1.8;
-}
-
-.dog-contact__link {
-  color: var(--color-primary);
-  text-decoration: underline;
-}
 
 /* ==========================================================================
    Owners Section

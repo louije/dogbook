@@ -12,108 +12,56 @@ eleventyComputed:
 
 <article class="dog-detail">
   <div class="dog-detail__container">
-    <div class="dog-detail__header">
-      <h2 class="dog-detail__name">{{ dog.name }}</h2>
-      <a href="/" class="dog-detail__back">← Retour à la liste</a>
-    </div>
+    <a href="/" class="dog-detail__back">← Retour</a>
 
     <div class="dog-detail__content">
       <div class="dog-detail__main">
-        <div class="dog-detail__image-wrapper">
+        <figure class="dog-detail__figure">
+          <figcaption class="dog-detail__info">
+            <h1 class="dog-detail__name">{{ dog.name }}</h1>
+            <p class="dog-detail__meta">
+              {% if dog.breed %}<span>{{ dog.breed }}</span>{% endif %}{% if dog.breed and dog.sex %}, {% endif %}{% if dog.sex %}<span>{{ 'Mâle' if dog.sex === 'male' else 'Femelle' }}</span>{% endif %}{% if (dog.breed or dog.sex) and dog.owner %}, {% endif %}{% if dog.owner %}<span>{% if dog.owner.name.includes('&') %}👥{% else %}👤{% endif %} {{ dog.owner.name }}</span>{% endif %}
+            </p>
+          </figcaption>
           <img
             src="{{ dog | getFeaturedPhoto }}"
             alt="{{ dog.name }}"
             class="dog-detail__image"
           >
-        </div>
+        </figure>
+      </div>
 
-        {% if dog.photos.length > 0 %}
+      {% if dog.photos.length > 0 %}
+      <aside class="dog-detail__sidebar">
         <div class="dog-gallery">
-          <h3 class="dog-gallery__title">Galerie photos</h3>
           <div class="dog-gallery__grid">
             {% for photo in dog.photos %}
               {% if photo.type === 'photo' and photo.file %}
-              <div class="dog-gallery__item">
+              <button class="dog-gallery__item" data-image="{{ photo.file.url | imageUrl }}" data-alt="{{ photo.name or dog.name }}">
                 <img
                   src="{{ photo.file.url | imageUrl }}"
                   alt="{{ photo.name or dog.name }}"
                   class="dog-gallery__image"
                   loading="lazy"
                 >
-              </div>
+              </button>
               {% elif photo.type === 'video' and photo.videoUrl %}
               <div class="dog-gallery__item dog-gallery__item--video">
                 <a href="{{ photo.videoUrl }}" target="_blank" class="dog-gallery__video-link">
-                  📹 Voir la vidéo
+                  📹 Vidéo
                 </a>
               </div>
               {% endif %}
             {% endfor %}
           </div>
         </div>
-        {% endif %}
-      </div>
-
-      <aside class="dog-detail__sidebar">
-        <div class="dog-info">
-          <h3 class="dog-info__title">Informations</h3>
-          <dl class="dog-info__list">
-            {% if dog.breed %}
-            <div class="dog-info__item">
-              <dt class="dog-info__term">Race</dt>
-              <dd class="dog-info__description">{{ dog.breed }}</dd>
-            </div>
-            {% endif %}
-            {% if dog.sex %}
-            <div class="dog-info__item">
-              <dt class="dog-info__term">Sexe</dt>
-              <dd class="dog-info__description">{{ 'Mâle' if dog.sex === 'male' else 'Femelle' }}</dd>
-            </div>
-            {% endif %}
-            {% if dog.age %}
-            <div class="dog-info__item">
-              <dt class="dog-info__term">Âge</dt>
-              <dd class="dog-info__description">{{ dog.age }} ans</dd>
-            </div>
-            {% endif %}
-            {% if dog.coat %}
-            <div class="dog-info__item">
-              <dt class="dog-info__term">Robe</dt>
-              <dd class="dog-info__description">{{ dog.coat }}</dd>
-            </div>
-            {% endif %}
-            {% if dog.owner %}
-            <div class="dog-info__item">
-              <dt class="dog-info__term">Maître</dt>
-              <dd class="dog-info__description">
-                <a href="/maitres/{{ dog.owner.id }}/" class="dog-info__link">
-                  {{ dog.owner.name }}
-                </a>
-              </dd>
-            </div>
-            {% endif %}
-          </dl>
-        </div>
-
-        {% if dog.owner and (dog.owner.email or dog.owner.phone) %}
-        <div class="dog-contact">
-          <h3 class="dog-contact__title">Contact</h3>
-          {% if dog.owner.phone %}
-          <p class="dog-contact__item">
-            <strong>Téléphone:</strong> {{ dog.owner.phone }}
-          </p>
-          {% endif %}
-          {% if dog.owner.email %}
-          <p class="dog-contact__item">
-            <strong>Email:</strong>
-            <a href="mailto:{{ dog.owner.email }}" class="dog-contact__link">
-              {{ dog.owner.email }}
-            </a>
-          </p>
-          {% endif %}
-        </div>
-        {% endif %}
       </aside>
+      {% endif %}
     </div>
   </div>
 </article>
+
+<dialog id="lightbox" class="lightbox">
+  <button class="lightbox__close" aria-label="Fermer">&times;</button>
+  <img src="" alt="" class="lightbox__image">
+</dialog>
