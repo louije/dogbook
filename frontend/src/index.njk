@@ -11,13 +11,30 @@ year: 2025
         <h2 class="hero__title">Trombi Maisons-Doggo</h2>
         <p class="hero__description">Ils sont tous beaux.</p>
       </div>
-      <button class="hero__filter-toggle" id="filter-toggle" aria-label="Toggle filters">
-        <svg width="24" height="18" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="24" height="3" rx="1.5" fill="currentColor"/>
-          <rect x="4" y="7.5" width="16" height="3" rx="1.5" fill="currentColor"/>
-          <rect x="8" y="15" width="8" height="3" rx="1.5" fill="currentColor"/>
-        </svg>
-      </button>
+      <div class="hero__actions">
+        <button class="hero__search-toggle" id="search-toggle" aria-label="Toggle search">
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2"/>
+            <path d="M12.5 12.5L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+        <button class="hero__filter-toggle" id="filter-toggle" aria-label="Toggle filters">
+          <svg width="24" height="18" viewBox="0 0 24 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="24" height="3" rx="1.5" fill="currentColor"/>
+            <rect x="4" y="7.5" width="16" height="3" rx="1.5" fill="currentColor"/>
+            <rect x="8" y="15" width="8" height="3" rx="1.5" fill="currentColor"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+    <div class="hero__search-container" id="search-container">
+      <input
+        type="search"
+        id="search-input"
+        class="hero__search-input"
+        placeholder="Rechercher..."
+        aria-label="Rechercher par nom, race, robe ou maître"
+      >
     </div>
     <div class="hero__controls" id="filter-controls">
       <div class="control-group">
@@ -52,7 +69,8 @@ year: 2025
                data-name="{{ dog.name | lower }}"
                data-sex="{{ dog.sex }}"
                data-breed="{{ dog.breed | lower }}"
-               data-coat="{{ dog.coat | lower }}">
+               data-coat="{{ dog.coat | lower }}"
+               data-owner="{{ (dog.owner.name if dog.owner else '') | lower }}">
         <a href="/chiens/{{ dog.id }}/" class="dog-card__link">
           <img
             src="{{ dog | getFeaturedPhoto }}"

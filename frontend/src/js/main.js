@@ -14,6 +14,32 @@
     setupLazyLoading();
     setupSortingAndFiltering();
     setupFilterToggle();
+    setupSearchToggle();
+  }
+
+  /**
+   * Setup search toggle for mobile
+   */
+  function setupSearchToggle() {
+    const searchToggle = document.getElementById('search-toggle');
+    const searchContainer = document.getElementById('search-container');
+
+    if (!searchToggle || !searchContainer) return;
+
+    searchToggle.addEventListener('click', function() {
+      searchToggle.classList.toggle('active');
+      searchContainer.classList.toggle('active');
+
+      // Focus input when opened on mobile
+      if (searchContainer.classList.contains('active')) {
+        const searchInput = document.getElementById('search-input');
+        if (searchInput) {
+          setTimeout(function() {
+            searchInput.focus();
+          }, 100);
+        }
+      }
+    });
   }
 
   /**
@@ -102,6 +128,7 @@
     const filterSex = document.getElementById('filter-sex');
     const filterBreed = document.getElementById('filter-breed');
     const filterCoat = document.getElementById('filter-coat');
+    const searchInput = document.getElementById('search-input');
 
     // Populate breed and coat filters
     populateFilterOptions(cards, 'breed', filterBreed);
@@ -120,6 +147,9 @@
     if (filterCoat) {
       filterCoat.addEventListener('change', applyChanges);
     }
+    if (searchInput) {
+      searchInput.addEventListener('input', applyChanges);
+    }
 
     // Apply initial sort by name
     applyChanges();
@@ -134,17 +164,27 @@
       const sexValue = filterSex ? filterSex.value : '';
       const breedValue = filterBreed ? filterBreed.value : '';
       const coatValue = filterCoat ? filterCoat.value : '';
+      const searchValue = searchInput ? searchInput.value.toLowerCase().trim() : '';
 
       return cards.filter(function(card) {
         const cardSex = card.dataset.sex || '';
         const cardBreed = card.dataset.breed || '';
         const cardCoat = card.dataset.coat || '';
+        const cardName = card.dataset.name || '';
+        const cardOwner = card.dataset.owner || '';
 
         const sexMatch = !sexValue || cardSex === sexValue;
         const breedMatch = !breedValue || cardBreed === breedValue;
         const coatMatch = !coatValue || cardCoat === coatValue;
 
-        return sexMatch && breedMatch && coatMatch;
+        // Search matches name, breed, coat, or owner
+        const searchMatch = !searchValue ||
+          cardName.includes(searchValue) ||
+          cardBreed.includes(searchValue) ||
+          cardCoat.includes(searchValue) ||
+          cardOwner.includes(searchValue);
+
+        return sexMatch && breedMatch && coatMatch && searchMatch;
       });
     }
 

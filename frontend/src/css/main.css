@@ -166,6 +166,31 @@ a:hover {
   opacity: 0.9;
 }
 
+.hero__actions {
+  display: flex;
+  gap: var(--spacing-xs);
+  align-items: center;
+}
+
+.hero__search-toggle {
+  display: none;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--border-radius);
+  color: white;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.hero__search-toggle svg {
+  display: block;
+}
+
+.hero__search-toggle:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
 .hero__filter-toggle {
   display: none;
   background: rgba(255, 255, 255, 0.2);
@@ -183,6 +208,32 @@ a:hover {
 
 .hero__filter-toggle:hover {
   background: rgba(255, 255, 255, 0.3);
+}
+
+.hero__search-container {
+  width: 100%;
+  order: 1;
+}
+
+.hero__search-input {
+  width: 100%;
+  padding: var(--spacing-xs) var(--spacing-md);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  border-radius: var(--border-radius);
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  font-size: 0.95rem;
+  transition: var(--transition);
+}
+
+.hero__search-input::placeholder {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.hero__search-input:focus {
+  outline: none;
+  border-color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(255, 255, 255, 0.25);
 }
 
 .hero__controls {
@@ -208,8 +259,22 @@ a:hover {
     justify-content: space-between;
   }
 
+  .hero__search-toggle {
+    display: flex;
+  }
+
   .hero__filter-toggle {
     display: flex;
+  }
+
+  .hero__search-container {
+    display: none;
+    width: 100%;
+    margin-top: var(--spacing-md);
+  }
+
+  .hero__search-container.active {
+    display: block;
   }
 
   .hero__controls {
