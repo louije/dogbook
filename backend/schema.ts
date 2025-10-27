@@ -223,6 +223,10 @@ export const lists = {
         ref: 'Dog.photos',
         many: false,
         label: 'Chien',
+        ui: {
+          displayMode: 'select',
+          labelField: 'name',
+        },
       }),
       isFeatured: checkbox({
         defaultValue: false,
