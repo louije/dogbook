@@ -5,7 +5,7 @@ type Dog {
   id: ID!
   name: String
   sex: DogSexType
-  age: Int
+  birthday: CalendarDay
   breed: String
   coat: String
   owner: Owner
@@ -19,6 +19,8 @@ enum DogSexType {
   male
   female
 }
+
+scalar CalendarDay @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
 
 type ImageFieldOutput {
   id: ID!
@@ -51,7 +53,7 @@ input DogWhereInput {
   id: IDFilter
   name: StringFilter
   sex: DogSexTypeNullableFilter
-  age: IntNullableFilter
+  birthday: CalendarDayNullableFilter
   breed: StringFilter
   coat: StringFilter
   owner: OwnerWhereInput
@@ -104,15 +106,15 @@ input DogSexTypeNullableFilter {
   not: DogSexTypeNullableFilter
 }
 
-input IntNullableFilter {
-  equals: Int
-  in: [Int!]
-  notIn: [Int!]
-  lt: Int
-  lte: Int
-  gt: Int
-  gte: Int
-  not: IntNullableFilter
+input CalendarDayNullableFilter {
+  equals: CalendarDay
+  in: [CalendarDay!]
+  notIn: [CalendarDay!]
+  lt: CalendarDay
+  lte: CalendarDay
+  gt: CalendarDay
+  gte: CalendarDay
+  not: CalendarDayNullableFilter
 }
 
 input MediaManyRelationFilter {
@@ -125,7 +127,7 @@ input DogOrderByInput {
   id: OrderDirection
   name: OrderDirection
   sex: OrderDirection
-  age: OrderDirection
+  birthday: OrderDirection
   breed: OrderDirection
   coat: OrderDirection
 }
@@ -138,7 +140,7 @@ enum OrderDirection {
 input DogUpdateInput {
   name: String
   sex: DogSexType
-  age: Int
+  birthday: CalendarDay
   breed: String
   coat: String
   owner: OwnerRelateToOneForUpdateInput
@@ -175,7 +177,7 @@ input DogUpdateArgs {
 input DogCreateInput {
   name: String
   sex: DogSexType
-  age: Int
+  birthday: CalendarDay
   breed: String
   coat: String
   owner: OwnerRelateToOneForCreateInput

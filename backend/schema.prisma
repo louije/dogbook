@@ -15,7 +15,7 @@ model Dog {
   id                      String  @id @default(cuid())
   name                    String  @default("")
   sex                     String?
-  age                     Int?
+  birthday                String?
   breed                   String  @default("")
   coat                    String  @default("")
   owner                   Owner?  @relation("Dog_owner", fields: [ownerId], references: [id])
