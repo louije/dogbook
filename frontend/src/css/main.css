@@ -145,7 +145,7 @@ a:hover {
   padding: 0 var(--spacing-md);
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: baseline;
   gap: var(--spacing-md);
 }
 
@@ -193,7 +193,8 @@ a:hover {
 
 .hero__search-container {
   flex: 0 0 auto;
-  max-width: 300px;
+  width: 25rem;
+  max-width: 25rem;
 }
 
 .hero__search-input {
