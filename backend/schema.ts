@@ -4,7 +4,7 @@ import {
   text,
   relationship,
   select,
-  integer,
+  timestamp,
   image,
   checkbox,
 } from '@keystone-6/core/fields';
@@ -39,9 +39,9 @@ export const lists = {
         validation: { isRequired: false },
         label: 'Sexe',
       }),
-      age: integer({
+      birthday: timestamp({
         validation: { isRequired: false },
-        label: 'Âge',
+        label: 'Anniversaire',
       }),
       breed: text({
         validation: { isRequired: false },
@@ -85,6 +85,11 @@ export const lists = {
       label: 'Humain',
       plural: 'Humains',
       labelField: 'name',
+      listView: {
+        defaultFieldMode: 'read',
+        initialColumns: ['name', 'dogs', 'email', 'phone'],
+        initialSort: { field: 'name', direction: 'ASC' },
+      },
     },
     fields: {
       name: text({
