@@ -170,9 +170,11 @@ a:hover {
   color: white;
   padding: var(--spacing-xs) var(--spacing-sm);
   cursor: pointer;
-  font-size: 1.5rem;
-  line-height: 1;
   transition: var(--transition);
+}
+
+.hero__filter-toggle svg {
+  display: block;
 }
 
 .hero__filter-toggle:hover {
