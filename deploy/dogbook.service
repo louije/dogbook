@@ -6,7 +6,7 @@ After=network.target
 Type=simple
 User=caddy
 WorkingDirectory=/srv/dogbook/current/backend
-ExecStart=/home/louije/.nvm/versions/node/v22.18.0/bin/npm start
+ExecStart=/home/louije/.nvm/versions/node/v22.18.0/bin/node /srv/dogbook/current/backend/node_modules/.bin/keystone start
 Environment=NODE_ENV=production
 Environment=PATH=/home/louije/.nvm/versions/node/v22.18.0/bin:/usr/local/bin:/usr/bin:/bin
 Restart=always
