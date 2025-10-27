@@ -170,23 +170,13 @@ a:hover {
   color: white;
   padding: var(--spacing-xs) var(--spacing-sm);
   cursor: pointer;
-  font-size: 0.9rem;
-  gap: 0.5rem;
-  align-items: center;
+  font-size: 1.5rem;
+  line-height: 1;
   transition: var(--transition);
 }
 
 .hero__filter-toggle:hover {
   background: rgba(255, 255, 255, 0.3);
-}
-
-.hero__filter-toggle-icon {
-  transition: transform 0.3s ease;
-  display: inline-block;
-}
-
-.hero__filter-toggle.active .hero__filter-toggle-icon {
-  transform: rotate(180deg);
 }
 
 .hero__controls {
