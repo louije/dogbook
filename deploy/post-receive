@@ -35,6 +35,11 @@ do
         echo "→ Building backend..."
         npm run build
 
+        # Fix Prisma binary targets for production server
+        echo "→ Updating Prisma binary targets..."
+        sed -i 's/provider = "prisma-client-js"/provider = "prisma-client-js"\n  binaryTargets = ["native", "debian-openssl-3.0.x"]/' schema.prisma
+        npm run postinstall
+
         # Ensure data symlink exists
         if [ ! -L "$TARGET/data" ]; then
             echo "→ Creating data symlink..."
