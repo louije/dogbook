@@ -12,11 +12,14 @@ generator client {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  name      String    @default("")
-  email     String    @unique @default("")
-  password  String
-  createdAt DateTime? @default(now())
+  id                      String    @id @default(cuid())
+  name                    String    @default("")
+  email                   String    @unique @default("")
+  password                String
+  createdAt               DateTime? @default(now())
+  passwordResetToken      String?
+  passwordResetIssuedAt   DateTime?
+  passwordResetRedeemedAt DateTime?
 }
 
 model Dog {
@@ -49,7 +52,7 @@ model Owner {
 
 model Media {
   id             String  @id @default(cuid())
-  name           String  @default("")
+  name           String  @default("Photo")
   file_id        String?
   file_filesize  Int?
   file_width     Int?
