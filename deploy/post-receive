@@ -48,7 +48,12 @@ do
 
         # Restart systemd service
         echo "→ Restarting dogbook service..."
-        sudo systemctl restart dogbook
+        if sudo systemctl restart dogbook 2>&1; then
+            echo "✓ Service restarted successfully"
+        else
+            echo "⚠ Warning: Failed to restart service (exit code: $?)"
+            echo "  You may need to restart manually: sudo systemctl restart dogbook"
+        fi
 
         echo "======================================"
         echo "✓ Deployment complete!"
