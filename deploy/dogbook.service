@@ -1,0 +1,16 @@
+[Unit]
+Description=Dogbook Backend (KeystoneJS)
+After=network.target
+
+[Service]
+Type=simple
+User=caddy
+WorkingDirectory=/srv/dogbook/current/backend
+ExecStart=/home/deploy-user/.nvm/versions/node/v22.18.0/bin/npm start
+Environment=NODE_ENV=production
+Environment=PATH=/home/deploy-user/.nvm/versions/node/v22.18.0/bin:/usr/local/bin:/usr/bin:/bin
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
