@@ -30,6 +30,7 @@ export const lists = {
       label: 'Utilisateur',
       plural: 'Utilisateurs',
       labelField: 'name',
+      isHidden: ({ session }) => !session, // Hide from non-authenticated users
       listView: {
         initialColumns: ['name', 'email'],
       },
@@ -148,6 +149,7 @@ export const lists = {
       label: 'Humain',
       plural: 'Humains',
       labelField: 'name',
+      isHidden: ({ session }) => !session, // Hide from non-authenticated users
       listView: {
         defaultFieldMode: 'read',
         initialColumns: ['name', 'dogs', 'email', 'phone'],
@@ -181,6 +183,7 @@ export const lists = {
       label: 'Média',
       plural: 'Médias',
       labelField: 'name',
+      isHidden: ({ session }) => !session, // Hide from non-authenticated users
       listView: {
         defaultFieldMode: 'read',
         initialColumns: ['type', 'dog', 'file'],
