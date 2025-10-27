@@ -77,6 +77,13 @@
         dialog.close();
       }
     });
+
+    // Close on Escape key
+    dialog.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') {
+        dialog.close();
+      }
+    });
   }
 
   /**
