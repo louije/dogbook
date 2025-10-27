@@ -43,5 +43,10 @@ export default withAuth(config({
       credentials: true,
     },
   },
+  ui: {
+    // Allow anyone to access the admin UI
+    // They still need to log in to perform authenticated operations
+    isAccessAllowed: () => true,
+  },
   session,
 }));
