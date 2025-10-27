@@ -341,27 +341,21 @@ a:hover {
 
 .dog-detail__figure {
   margin: 0;
-  position: relative;
 }
 
 .dog-detail__info {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  padding: var(--spacing-md);
-  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.7) 0%, rgba(0, 0, 0, 0.3) 60%, transparent 100%);
+  margin-bottom: var(--spacing-sm);
 }
 
 .dog-detail__name {
   font-size: var(--font-size-2xl);
-  color: white;
+  color: var(--color-primary);
   margin: 0 0 0.25rem 0;
 }
 
 .dog-detail__meta {
   font-size: 0.9rem;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--color-text-light);
   margin: 0;
 }
 
