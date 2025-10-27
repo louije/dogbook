@@ -172,7 +172,7 @@ a:hover {
   align-items: center;
 }
 
-.hero__search-filter-toggle {
+.hero__search-toggle {
   display: none;
   background: rgba(255, 255, 255, 0.2);
   border: 1px solid rgba(255, 255, 255, 0.3);
@@ -183,11 +183,11 @@ a:hover {
   transition: var(--transition);
 }
 
-.hero__search-filter-toggle svg {
+.hero__search-toggle svg {
   display: block;
 }
 
-.hero__search-filter-toggle:hover {
+.hero__search-toggle:hover {
   background: rgba(255, 255, 255, 0.3);
 }
 
@@ -217,13 +217,6 @@ a:hover {
   background-color: rgba(255, 255, 255, 0.25);
 }
 
-.hero__controls {
-  display: flex;
-  gap: var(--spacing-md);
-  flex-wrap: wrap;
-  flex: 1 1 100%;
-  order: 3;
-}
 
 @media (max-width: 768px) {
   .hero__container {
@@ -242,7 +235,7 @@ a:hover {
     justify-content: space-between;
   }
 
-  .hero__search-filter-toggle {
+  .hero__search-toggle {
     display: flex;
   }
 
@@ -260,54 +253,8 @@ a:hover {
   .hero__search-input {
     border-radius: var(--border-radius);
   }
-
-  .hero__controls {
-    display: none;
-    width: 100%;
-    margin-top: var(--spacing-md);
-  }
-
-  .hero__controls.active {
-    display: flex;
-  }
 }
 
-.control-group {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-}
-
-.control-label {
-  font-size: 0.9rem;
-  font-weight: 500;
-}
-
-.control-select {
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  border-radius: var(--border-radius);
-  background-color: rgba(255, 255, 255, 0.2);
-  color: white;
-  font-size: 0.9rem;
-  cursor: pointer;
-  transition: var(--transition);
-}
-
-.control-select:hover {
-  background-color: rgba(255, 255, 255, 0.3);
-}
-
-.control-select:focus {
-  outline: none;
-  border-color: rgba(255, 255, 255, 0.5);
-  background-color: rgba(255, 255, 255, 0.3);
-}
-
-.control-select option {
-  background-color: var(--color-primary);
-  color: white;
-}
 
 /* ==========================================================================
    Dogs Section

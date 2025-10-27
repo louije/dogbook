@@ -12,7 +12,7 @@ year: 2025
         <p class="hero__description">Ils sont tous beaux.</p>
       </div>
       <div class="hero__actions">
-        <button class="hero__search-filter-toggle" id="search-filter-toggle" aria-label="Toggle search and filters">
+        <button class="hero__search-toggle" id="search-toggle" aria-label="Toggle search">
           <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
             <circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="2"/>
             <path d="M12.5 12.5L17 17" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
@@ -25,31 +25,9 @@ year: 2025
         type="search"
         id="search-input"
         class="hero__search-input"
-        placeholder="Rechercher..."
-        aria-label="Rechercher par nom, race, robe ou maître"
+        placeholder="Rechercher par chien, par race, par humain..."
+        aria-label="Rechercher par nom de chien, race, robe ou humain"
       >
-    </div>
-    <div class="hero__controls" id="filter-controls">
-      <div class="control-group">
-        <label for="sort" class="control-label">Classer par :</label>
-        <select id="sort" class="control-select">
-          <option value="name">Nom</option>
-          <option value="breed">Race</option>
-          <option value="coat">Robe</option>
-        </select>
-      </div>
-      <div class="control-group">
-        <label for="filter-breed" class="control-label">Race :</label>
-        <select id="filter-breed" class="control-select">
-          <option value="">Toutes</option>
-        </select>
-      </div>
-      <div class="control-group">
-        <label for="filter-coat" class="control-label">Robe :</label>
-        <select id="filter-coat" class="control-select">
-          <option value="">Toutes</option>
-        </select>
-      </div>
     </div>
   </div>
 </section>
