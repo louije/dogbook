@@ -12,7 +12,7 @@
   {% if dogImage %}
   <meta property="og:image" content="{{ dogImage }}">
   {% else %}
-  <meta property="og:image" content="{{ '/images/packshot.jpg' | absoluteUrl(metadata.url) }}">
+  <meta property="og:image" content="{{ metadata.url }}/images/packshot.jpg">
   {% endif %}
 
   <link rel="stylesheet" href="/css/main.css">
