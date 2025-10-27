@@ -47,8 +47,6 @@ export default withAuth(config({
     // Allow anyone to access the admin UI
     // They still need to log in to perform authenticated operations
     isAccessAllowed: () => true,
-  },
-  admin: {
     components: {
       Navigation: './admin/config#Navigation',
     },
