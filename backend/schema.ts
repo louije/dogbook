@@ -182,11 +182,14 @@ export const lists = {
     ui: {
       label: 'Média',
       plural: 'Médias',
-      labelField: 'name',
+      labelField: 'dog',
       isHidden: ({ session }) => !session, // Hide from non-authenticated users
       listView: {
         defaultFieldMode: 'read',
         initialColumns: ['type', 'dog', 'file'],
+      },
+      itemView: {
+        defaultFieldMode: 'edit',
       },
     },
     graphql: {
