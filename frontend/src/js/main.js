@@ -13,6 +13,22 @@
     setupImageGallery();
     setupLazyLoading();
     setupSortingAndFiltering();
+    setupFilterToggle();
+  }
+
+  /**
+   * Setup filter toggle for mobile
+   */
+  function setupFilterToggle() {
+    const toggleButton = document.getElementById('filter-toggle');
+    const filterControls = document.getElementById('filter-controls');
+
+    if (!toggleButton || !filterControls) return;
+
+    toggleButton.addEventListener('click', function() {
+      toggleButton.classList.toggle('active');
+      filterControls.classList.toggle('active');
+    });
   }
 
   /**

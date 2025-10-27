@@ -6,11 +6,17 @@ year: 2025
 
 <section class="hero">
   <div class="hero__container">
-    <div>
-      <h2 class="hero__title">Trombinoscope Maisons-Doggo</h2>
-      <p class="hero__description">Ils sont tous beaux.</p>
+    <div class="hero__header">
+      <div>
+        <h2 class="hero__title">Trombinoscope Maisons-Doggo</h2>
+        <p class="hero__description">Ils sont tous beaux.</p>
+      </div>
+      <button class="hero__filter-toggle" id="filter-toggle" aria-label="Toggle filters">
+        <span class="hero__filter-toggle-text">Filtres</span>
+        <span class="hero__filter-toggle-icon">▼</span>
+      </button>
     </div>
-    <div class="hero__controls">
+    <div class="hero__controls" id="filter-controls">
       <div class="control-group">
         <label for="sort" class="control-label">Classer par :</label>
         <select id="sort" class="control-select">
