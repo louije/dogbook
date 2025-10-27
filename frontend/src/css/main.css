@@ -49,6 +49,25 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+
+  .dog-card:hover {
+    transform: none !important;
+  }
+
+  .dog-gallery__item:hover {
+    transform: none !important;
+  }
+
+  .dog-detail__image-button:hover .dog-detail__image {
+    transform: none !important;
+  }
+
+  .dog-card:hover,
+  .dog-gallery__item:hover,
+  .dog-detail__image-button:hover {
+    outline: 2px solid var(--color-primary-light);
+    outline-offset: 2px;
+  }
 }
 
 * {
