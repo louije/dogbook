@@ -15,6 +15,11 @@ export const lists = {
   Dog: list({
     access: allowAll,
     hooks: buildTriggerHooks,
+    ui: {
+      label: 'Chien',
+      plural: 'Chiens',
+      labelField: 'name',
+    },
     fields: {
       name: text({
         validation: { isRequired: true },
@@ -71,6 +76,11 @@ export const lists = {
   Owner: list({
     access: allowAll,
     hooks: buildTriggerHooks,
+    ui: {
+      label: 'Maître',
+      plural: 'Maîtres',
+      labelField: 'name',
+    },
     fields: {
       name: text({
         validation: { isRequired: true },
@@ -94,6 +104,11 @@ export const lists = {
   Media: list({
     access: allowAll,
     hooks: buildTriggerHooks,
+    ui: {
+      label: 'Média',
+      plural: 'Médias',
+      labelField: 'name',
+    },
     graphql: {
       plural: 'MediaItems',
     },
