@@ -15,31 +15,31 @@ eleventyComputed:
   <div class="dog-detail__container">
     <a href="/" class="dog-detail__back">← Retour</a>
 
+    <div class="dog-detail__header">
+      <h1 class="dog-detail__name">{{ dog.name }}</h1>
+      <div class="dog-detail__tags">
+        {% if dog.owner %}
+        <span class="dog-tag">{{ dog.owner.name }}</span>
+        {% endif %}
+        {% if dog.sex %}
+        <span class="dog-tag">{{ 'Mâle' if dog.sex === 'male' else 'Femelle' }}</span>
+        {% endif %}
+        {% if dog.breed %}
+        <span class="dog-tag">{{ dog.breed }}</span>
+        {% endif %}
+        {% if dog.coat %}
+        <span class="dog-tag">{{ dog.coat }}</span>
+        {% endif %}
+      </div>
+    </div>
+
     <div class="dog-detail__content">
       <div class="dog-detail__main">
-        <figure class="dog-detail__figure">
-          <figcaption class="dog-detail__info">
-            <h1 class="dog-detail__name">{{ dog.name }}</h1>
-            {% set metaParts = [] %}
-            {% if dog.owner %}
-              {% set hasMultiple = '&' in dog.owner.name %}
-              {% set ownerText = (('👥' if hasMultiple else '👤') + ' ' + dog.owner.name) %}
-              {% set _ = metaParts.push(ownerText) %}
-            {% endif %}
-            {% if dog.breed or dog.sex %}
-              {% set breedSexParts = [] %}
-              {% if dog.breed %}{% set _ = breedSexParts.push(dog.breed) %}{% endif %}
-              {% if dog.sex %}{% set _ = breedSexParts.push('mâle' if dog.sex === 'male' else 'femelle') %}{% endif %}
-              {% set _ = metaParts.push(breedSexParts.join(' ')) %}
-            {% endif %}
-            <p class="dog-detail__meta">{{ metaParts.join('. ') }}</p>
-          </figcaption>
-          <img
-            src="{{ dog | getFeaturedPhoto }}"
-            alt="{{ dog.name }}"
-            class="dog-detail__image"
-          >
-        </figure>
+        <img
+          src="{{ dog | getFeaturedPhoto }}"
+          alt="{{ dog.name }}"
+          class="dog-detail__image"
+        >
       </div>
 
       {% if dog.photos.length > 0 %}

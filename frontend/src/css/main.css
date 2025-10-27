@@ -444,6 +444,33 @@ a:hover {
   color: var(--color-primary);
 }
 
+.dog-detail__header {
+  margin-bottom: var(--spacing-xl);
+}
+
+.dog-detail__name {
+  font-size: var(--font-size-2xl);
+  color: var(--color-primary-light);
+  margin: 0 0 var(--spacing-md) 0;
+}
+
+.dog-detail__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--spacing-xs);
+}
+
+.dog-tag {
+  display: inline-block;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  background-color: var(--color-background-light);
+  border: 1px solid var(--color-border);
+  border-radius: calc(var(--border-radius) / 2);
+  font-size: 0.85rem;
+  color: var(--color-text);
+  transition: var(--transition);
+}
+
 .dog-detail__content {
   display: grid;
   grid-template-columns: 2fr 1fr;
@@ -457,23 +484,7 @@ a:hover {
   }
 }
 
-.dog-detail__figure {
-  margin: 0;
-}
-
-.dog-detail__info {
-  margin-bottom: var(--spacing-sm);
-}
-
-.dog-detail__name {
-  font-size: var(--font-size-2xl);
-  color: var(--color-primary-light);
-  margin: 0 0 0.25rem 0;
-}
-
-.dog-detail__meta {
-  font-size: 0.9rem;
-  color: var(--color-text-light);
+.dog-detail__main {
   margin: 0;
 }
 
