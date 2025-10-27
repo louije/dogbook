@@ -4,7 +4,7 @@ import {
   text,
   relationship,
   select,
-  timestamp,
+  calendarDay,
   image,
   checkbox,
 } from '@keystone-6/core/fields';
@@ -39,15 +39,9 @@ export const lists = {
         validation: { isRequired: false },
         label: 'Sexe',
       }),
-      birthday: timestamp({
+      birthday: calendarDay({
         validation: { isRequired: false },
         label: 'Anniversaire',
-        db: {
-          map: 'birthday',
-        },
-        ui: {
-          displayMode: 'dateonly',
-        },
       }),
       breed: text({
         validation: { isRequired: false },
