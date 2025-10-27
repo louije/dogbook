@@ -30,8 +30,8 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --color-primary: #4a4f8a;
-    --color-primary-light: #7b83d4;
+    --color-primary: #3a3e6a;
+    --color-primary-light: #5a5f9a;
     --color-text: #e0e0e0;
     --color-text-light: #b0b0b0;
     --color-background: #1a1a1a;
@@ -324,7 +324,7 @@ a:hover {
 
 .dog-card {
   background-color: var(--color-background);
-  border: 2px solid var(--color-border);
+  border: 1px solid var(--color-border);
   border-radius: var(--border-radius);
   overflow: hidden;
   transition: var(--transition);
