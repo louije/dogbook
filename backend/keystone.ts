@@ -48,5 +48,10 @@ export default withAuth(config({
     // They still need to log in to perform authenticated operations
     isAccessAllowed: () => true,
   },
+  admin: {
+    components: {
+      Navigation: './admin/config#Navigation',
+    },
+  },
   session,
 }));
