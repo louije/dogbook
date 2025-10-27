@@ -45,16 +45,16 @@
    * Setup image gallery lightbox functionality
    */
   function setupImageGallery() {
-    const galleryButtons = document.querySelectorAll('.dog-gallery__item[data-image]');
+    const allImageButtons = document.querySelectorAll('.dog-gallery__item[data-image], .dog-detail__image-button[data-image]');
     const dialog = document.getElementById('lightbox');
 
-    if (!dialog || galleryButtons.length === 0) return;
+    if (!dialog) return;
 
     const dialogImage = dialog.querySelector('.lightbox__image');
     const closeButton = dialog.querySelector('.lightbox__close');
 
-    // Open lightbox on gallery item click
-    galleryButtons.forEach(function(button) {
+    // Open lightbox on any image button click
+    allImageButtons.forEach(function(button) {
       button.addEventListener('click', function() {
         const src = this.dataset.image;
         const alt = this.dataset.alt;
@@ -65,9 +65,11 @@
     });
 
     // Close on button click
-    closeButton.addEventListener('click', function() {
-      dialog.close();
-    });
+    if (closeButton) {
+      closeButton.addEventListener('click', function() {
+        dialog.close();
+      });
+    }
 
     // Close on backdrop click
     dialog.addEventListener('click', function(e) {

@@ -488,11 +488,26 @@ a:hover {
   margin: 0;
 }
 
+.dog-detail__image-button {
+  width: 100%;
+  padding: 0;
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: block;
+}
+
 .dog-detail__image {
   width: 100%;
   height: auto;
   display: block;
   border-radius: var(--border-radius);
+  transition: var(--transition);
+}
+
+.dog-detail__image-button:hover .dog-detail__image {
+  transform: scale(1.02);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 /* ==========================================================================
@@ -553,6 +568,7 @@ a:hover {
   padding: 0;
   border: none;
   background: transparent;
+  margin: auto;
 }
 
 .lightbox::backdrop {
@@ -562,7 +578,10 @@ a:hover {
 .lightbox__image {
   max-width: 90vw;
   max-height: 90vh;
+  width: auto;
+  height: auto;
   display: block;
+  margin: 0 auto;
 }
 
 .lightbox__close {

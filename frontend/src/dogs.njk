@@ -35,11 +35,13 @@ eleventyComputed:
 
     <div class="dog-detail__content">
       <div class="dog-detail__main">
-        <img
-          src="{{ dog | getFeaturedPhoto }}"
-          alt="{{ dog.name }}"
-          class="dog-detail__image"
-        >
+        <button class="dog-detail__image-button" data-image="{{ dog | getFeaturedPhoto }}" data-alt="{{ dog.name }}">
+          <img
+            src="{{ dog | getFeaturedPhoto }}"
+            alt="{{ dog.name }}"
+            class="dog-detail__image"
+          >
+        </button>
       </div>
 
       {% if dog.photos.length > 0 %}
