@@ -12,19 +12,11 @@ year: 2025
     </div>
     <div class="hero__controls">
       <div class="control-group">
-        <label for="sort" class="control-label">Trier par :</label>
+        <label for="sort" class="control-label">Classer par :</label>
         <select id="sort" class="control-select">
           <option value="name">Nom</option>
           <option value="breed">Race</option>
           <option value="coat">Pelage</option>
-        </select>
-      </div>
-      <div class="control-group">
-        <label for="filter-sex" class="control-label">Sexe :</label>
-        <select id="filter-sex" class="control-select">
-          <option value="">Tous</option>
-          <option value="male">Mâle</option>
-          <option value="female">Femelle</option>
         </select>
       </div>
       <div class="control-group">
@@ -34,7 +26,7 @@ year: 2025
         </select>
       </div>
       <div class="control-group">
-        <label for="filter-coat" class="control-label">Pelage :</label>
+        <label for="filter-coat" class="control-label">Robe :</label>
         <select id="filter-coat" class="control-select">
           <option value="">Tous</option>
         </select>
@@ -47,28 +39,26 @@ year: 2025
   <div class="dogs__container">
     <div class="dogs__grid" id="dogs-grid">
       {% for dog in dogs %}
-      <article class="dog-card"
+      <figure class="dog-card"
                data-name="{{ dog.name | lower }}"
                data-sex="{{ dog.sex }}"
                data-breed="{{ dog.breed | lower }}"
                data-coat="{{ dog.coat | lower }}">
         <a href="/chiens/{{ dog.id }}/" class="dog-card__link">
-          <div class="dog-card__image-wrapper">
-            <img
-              src="{{ dog | getFeaturedPhoto }}"
-              alt="{{ dog.name }}"
-              class="dog-card__image"
-              loading="lazy"
-            >
-          </div>
-          <div class="dog-card__content">
+          <img
+            src="{{ dog | getFeaturedPhoto }}"
+            alt="{{ dog.name }}"
+            class="dog-card__image"
+            loading="lazy"
+          >
+          <figcaption class="dog-card__caption">
             <h3 class="dog-card__name">{{ dog.name }}</h3>
             {% if dog.owner %}
-            <p class="dog-card__owner">{% if dog.owner.name.includes('&') %}👥{% else %}👤{% endif %} {{ dog.owner.name }}</p>
+            <p class="dog-card__owner">{{ dog.owner.name }}</p>
             {% endif %}
-          </div>
+          </figcaption>
         </a>
-      </article>
+      </figure>
       {% endfor %}
     </div>
   </div>
