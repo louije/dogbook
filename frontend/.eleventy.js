@@ -58,7 +58,7 @@ module.exports = function(eleventyConfig) {
                 id
                 name
                 sex
-                age
+                birthday
                 breed
                 coat
                 description {
