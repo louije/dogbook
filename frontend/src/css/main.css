@@ -145,7 +145,6 @@ a:hover {
   padding: 0 var(--spacing-md);
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
   align-items: baseline;
   gap: var(--spacing-md);
 }
@@ -154,7 +153,9 @@ a:hover {
   display: flex;
   flex-wrap: wrap;
   align-items: baseline;
+  justify-content: space-between;
   gap: var(--spacing-md);
+  flex: 1 1 100%;
 }
 
 .hero__title {
@@ -211,8 +212,8 @@ a:hover {
 }
 
 .hero__search-container {
-  width: 100%;
-  order: 1;
+  flex: 1 1 100%;
+  order: 2;
 }
 
 .hero__search-input {
@@ -240,6 +241,8 @@ a:hover {
   display: flex;
   gap: var(--spacing-md);
   flex-wrap: wrap;
+  flex: 1 1 100%;
+  order: 3;
 }
 
 @media (max-width: 768px) {
