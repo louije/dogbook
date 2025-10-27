@@ -52,7 +52,7 @@
 
   .dog-card:hover {
     transform: none !important;
-    outline: 2px solid var(--color-primary-light);
+    outline: 3px solid var(--color-primary-light);
     outline-offset: -2px;
   }
 
@@ -109,6 +109,13 @@ a {
 
 a:hover {
   color: var(--color-primary-light);
+}
+
+a:focus-visible,
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--color-primary-light);
+  outline-offset: 2px;
 }
 
 /* ==========================================================================
