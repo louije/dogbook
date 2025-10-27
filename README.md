@@ -70,7 +70,7 @@ npm run dev
 
 Le backend sera accessible sur http://localhost:3000
 
-**Important**: Modifiez `SESSION_SECRET` et `EDITOR_SECRET_PATH` dans le fichier `.env` avant de déployer en production.
+**Important**: Modifiez `SESSION_SECRET` dans le fichier `.env` avant de déployer en production.
 
 ### Frontend
 
@@ -93,14 +93,6 @@ npm run dev
 Le frontend sera accessible sur http://localhost:8080
 
 ## Configuration
-
-### Accès anonyme à l'édition
-
-Le backend permet l'accès à l'interface d'administration via une URL secrète, sans nécessiter d'authentification.
-
-1. Définissez `EDITOR_SECRET_PATH` dans `backend/.env` (par exemple: `my-secret-editor-path`)
-2. Accédez à l'admin via: `http://yourdomain.com/my-secret-editor-path`
-3. Un cookie sera créé pour maintenir l'accès pendant 24h
 
 ### Déclenchement automatique des builds
 
@@ -350,10 +342,9 @@ query {
 ## Sécurité
 
 - Changez `SESSION_SECRET` en production (utilisez une chaîne aléatoire longue)
-- Changez `EDITOR_SECRET_PATH` pour une URL difficile à deviner
 - Configurez HTTPS avec Let's Encrypt
-- Limitez les uploads de fichiers (configuré dans nginx)
-- Considérez l'ajout d'un système d'authentification complet si nécessaire
+- Limitez les uploads de fichiers (configuré dans Caddy)
+- L'interface d'administration nécessite une authentification par email/mot de passe
 
 ## Maintenance
 

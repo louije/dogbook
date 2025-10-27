@@ -48,14 +48,13 @@ Le frontend démarre sur http://localhost:8080
 2. Rafraîchissez la page
 3. Votre chien apparaît dans la liste!
 
-## Accès anonyme
+## Accès à l'administration
 
-Pour tester l'accès anonyme:
+Pour accéder à l'interface d'administration:
 
-1. Ouvrez `.env` dans le dossier backend
-2. Trouvez `EDITOR_SECRET_PATH=secret-edit-url`
-3. Visitez http://localhost:3000/secret-edit-url
-4. Vous avez maintenant accès à l'admin sans authentification
+1. Visitez http://localhost:3000
+2. Créez un premier utilisateur (vous serez invité à le faire au premier lancement)
+3. Connectez-vous avec votre email et mot de passe
 
 ## Prochaines étapes
 
