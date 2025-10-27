@@ -18,7 +18,14 @@ const isAuthenticated = ({ session }: any) => !!session;
 
 export const lists = {
   User: list({
-    access: allowAll,
+    access: {
+      operation: {
+        query: isAuthenticated, // Only authenticated users can view users
+        create: isAuthenticated, // Only authenticated users can create users
+        update: isAuthenticated, // Only authenticated users can update users
+        delete: isAuthenticated, // Only authenticated users can delete users
+      },
+    },
     ui: {
       label: 'Utilisateur',
       plural: 'Utilisateurs',
