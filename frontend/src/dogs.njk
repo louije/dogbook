@@ -19,9 +19,18 @@ eleventyComputed:
         <figure class="dog-detail__figure">
           <figcaption class="dog-detail__info">
             <h1 class="dog-detail__name">{{ dog.name }}</h1>
-            <p class="dog-detail__meta">
-              {% if dog.breed %}<span>{{ dog.breed }}</span>{% endif %}{% if dog.breed and dog.sex %}, {% endif %}{% if dog.sex %}<span>{{ 'Mâle' if dog.sex === 'male' else 'Femelle' }}</span>{% endif %}{% if (dog.breed or dog.sex) and dog.owner %}, {% endif %}{% if dog.owner %}<span>{% if dog.owner.name.includes('&') %}👥{% else %}👤{% endif %} {{ dog.owner.name }}</span>{% endif %}
-            </p>
+            {% set metaParts = [] %}
+            {% if dog.owner %}
+              {% set ownerText %}{% if dog.owner.name.includes('&') %}👥{% else %}👤{% endif %} {{ dog.owner.name }}{% endset %}
+              {% set _ = metaParts.push(ownerText.trim()) %}
+            {% endif %}
+            {% if dog.breed or dog.sex %}
+              {% set breedSexParts = [] %}
+              {% if dog.breed %}{% set _ = breedSexParts.push(dog.breed) %}{% endif %}
+              {% if dog.sex %}{% set _ = breedSexParts.push('mâle' if dog.sex === 'male' else 'femelle') %}{% endif %}
+              {% set _ = metaParts.push(breedSexParts.join(' ')) %}
+            {% endif %}
+            <p class="dog-detail__meta">{{ metaParts.join(', ') }}</p>
           </figcaption>
           <img
             src="{{ dog | getFeaturedPhoto }}"
