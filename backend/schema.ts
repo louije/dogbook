@@ -182,7 +182,7 @@ export const lists = {
     ui: {
       label: 'Média',
       plural: 'Médias',
-      labelField: 'dog',
+      labelField: 'type',
       isHidden: ({ session }) => !session, // Hide from non-authenticated users
       listView: {
         defaultFieldMode: 'read',
