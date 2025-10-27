@@ -38,6 +38,11 @@ module.exports = function(eleventyConfig) {
     return '/images/placeholder-dog.jpg';
   });
 
+  // Add global metadata
+  eleventyConfig.addGlobalData('metadata', {
+    url: process.env.SITE_URL || 'http://localhost:8080'
+  });
+
   // Fetch data from Keystone API
   eleventyConfig.addGlobalData('dogs', async () => {
     const API_URL = process.env.API_URL || 'http://localhost:3000';
