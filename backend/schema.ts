@@ -42,6 +42,13 @@ export const lists = {
       birthday: timestamp({
         validation: { isRequired: false },
         label: 'Anniversaire',
+        db: {
+          map: 'birthday',
+        },
+        ui: {
+          dateFormat: 'yyyy-MM-dd',
+          displayMode: 'date',
+        },
       }),
       breed: text({
         validation: { isRequired: false },
