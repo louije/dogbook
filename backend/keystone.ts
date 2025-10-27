@@ -16,6 +16,12 @@ const { withAuth } = createAuth({
   initFirstItem: {
     fields: ['name', 'email', 'password'],
   },
+  passwordResetLink: {
+    sendToken: async ({ itemId, identity, token, context }) => {
+      // We're not implementing password reset, but this prevents errors
+      console.log(`Password reset requested for ${identity}`);
+    },
+  },
 });
 
 const session = statelessSessions(sessionConfig);
