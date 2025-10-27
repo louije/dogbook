@@ -229,6 +229,7 @@ a:hover {
   overflow: hidden;
   transition: var(--transition);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+  margin: 0;
 }
 
 .dog-card:hover {
@@ -238,13 +239,10 @@ a:hover {
 
 .dog-card__link {
   display: block;
-  color: inherit;
-}
-
-.dog-card__image-wrapper {
+  position: relative;
   aspect-ratio: 4 / 3.66;
   overflow: hidden;
-  background-color: var(--color-background-light);
+  color: inherit;
 }
 
 .dog-card__image {
@@ -259,17 +257,23 @@ a:hover {
   transform: scale(1.05);
 }
 
-.dog-card__content {
-  padding: var(--spacing-xs) var(--spacing-md) var(--spacing-sm);
+.dog-card__caption {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: var(--spacing-lg) var(--spacing-md) var(--spacing-sm);
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0.4) 60%, transparent 100%);
 }
 
 .dog-card__name {
   font-size: var(--font-size-xl);
-  color: var(--color-primary);
+  color: white;
+  margin-bottom: 0.25rem;
 }
 
 .dog-card__meta {
-  color: var(--color-text-light);
+  color: rgba(255, 255, 255, 0.8);
   font-size: 0.9rem;
   margin-bottom: var(--spacing-xs);
 }
@@ -280,7 +284,7 @@ a:hover {
 
 .dog-card__owner {
   font-size: 0.75rem;
-  color: var(--color-text-light);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 /* ==========================================================================
