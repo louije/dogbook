@@ -143,18 +143,18 @@ a:hover {
 .hero__container {
   margin: 0 auto;
   padding: 0 var(--spacing-md);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: var(--spacing-md);
 }
 
 .hero__header {
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-between;
-  align-items: flex-start;
+  align-items: baseline;
   gap: var(--spacing-md);
-}
-
-.hero__header > div:first-child {
-  flex: 1 1 auto;
 }
 
 .hero__title {
@@ -175,8 +175,6 @@ a:hover {
   padding: var(--spacing-xs) var(--spacing-sm);
   cursor: pointer;
   transition: var(--transition);
-  flex: 0 0 auto;
-  align-self: center;
 }
 
 .hero__filter-toggle svg {
@@ -191,16 +189,23 @@ a:hover {
   display: flex;
   gap: var(--spacing-md);
   flex-wrap: wrap;
-  margin-top: var(--spacing-md);
 }
 
 @media (max-width: 768px) {
+  .hero__container {
+    display: block;
+  }
+
   .hero__title {
     font-size: 1.5rem;
   }
 
   .hero__description {
     font-size: 1rem;
+  }
+
+  .hero__header {
+    justify-content: space-between;
   }
 
   .hero__filter-toggle {
@@ -210,6 +215,7 @@ a:hover {
   .hero__controls {
     display: none;
     width: 100%;
+    margin-top: var(--spacing-md);
   }
 
   .hero__controls.active {
