@@ -7,8 +7,10 @@ export function CustomNavigation({ lists, authenticatedItem }: NavigationProps) 
     <NavigationContainer>
       <NavItem href="/">Dashboard</NavItem>
       <ListNavItems lists={lists} />
-      {!authenticatedItem && (
+      {authenticatedItem.state === "unauthenticated" ? (
         <NavItem href="/signin">Se connecter</NavItem>
+      ) : (
+        <NavItem href="/api/auth/signout">Se déconnecter</NavItem>
       )}
     </NavigationContainer>
   );
