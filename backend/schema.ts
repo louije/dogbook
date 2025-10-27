@@ -182,7 +182,7 @@ export const lists = {
     ui: {
       label: 'Média',
       plural: 'Médias',
-      labelField: 'type',
+      labelField: 'name',
       isHidden: ({ session }) => !session, // Hide from non-authenticated users
       listView: {
         defaultFieldMode: 'read',
@@ -198,6 +198,7 @@ export const lists = {
     fields: {
       name: text({
         label: 'Nom',
+        defaultValue: 'Photo',
       }),
       file: image({
         storage: 'local_images',
