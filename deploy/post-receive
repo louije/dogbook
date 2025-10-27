@@ -4,6 +4,10 @@
 
 set -e
 
+# Load nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+
 TARGET="/srv/dogbook/current"
 GIT_DIR="/srv/dogbook/repo.git"
 BRANCH="main"
@@ -25,11 +29,11 @@ do
 
         # Install dependencies
         echo "→ Installing dependencies..."
-        /home/louije/.nvm/versions/node/v22.18.0/bin/npm install --production
+        npm install --production
 
         # Build backend
         echo "→ Building backend..."
-        /home/louije/.nvm/versions/node/v22.18.0/bin/npm run build
+        npm run build
 
         # Ensure data symlink exists
         if [ ! -L "$TARGET/data" ]; then
