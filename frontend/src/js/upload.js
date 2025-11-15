@@ -231,10 +231,10 @@
       // GraphQL multipart request specification
       const operations = {
         query: `
-          mutation CreateMedia($dogId: ID!, $file: Upload!) {
+          mutation CreateMedia($dogId: ID!, $file: Upload) {
             createMedia(data: {
               dog: { connect: { id: $dogId } }
-              file: $file
+              file: { upload: $file }
               type: photo
               name: "Photo ajoutée"
             }) {
