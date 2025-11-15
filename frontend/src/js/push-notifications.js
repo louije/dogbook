@@ -7,7 +7,7 @@
   'use strict';
 
   const API_URL = window.API_URL || 'http://localhost:3000';
-  const VAPID_PUBLIC_KEY = 'YOUR_VAPID_PUBLIC_KEY_HERE'; // Will be replaced with actual key
+  const VAPID_PUBLIC_KEY = 'BD8ZCavx5V8BB5zWCUY06fjWZugVtNbESyaL1CvMYgAy-CSCbREIxe8JZOZpYhMO3zuvUjp5EmNp_Tl0uIf3BDo';
 
   /**
    * Initialize push notifications

@@ -37,7 +37,6 @@ model Dog {
   photoFeatured_height    Int?
   photoFeatured_extension String?
   photos                  Media[] @relation("Media_dog")
-  description             String  @default("[{\"type\":\"paragraph\",\"children\":[{\"text\":\"\"}]}]")
 
   @@index([ownerId])
 }
@@ -51,18 +50,32 @@ model Owner {
 }
 
 model Media {
-  id             String  @id @default(cuid())
-  name           String  @default("Photo")
+  id             String    @id @default(cuid())
+  name           String    @default("Photo")
   file_id        String?
   file_filesize  Int?
   file_width     Int?
   file_height    Int?
   file_extension String?
-  type           String? @default("photo")
-  videoUrl       String  @default("")
-  dog            Dog?    @relation("Media_dog", fields: [dogId], references: [id])
-  dogId          String? @map("dog")
-  isFeatured     Boolean @default(false)
+  type           String?   @default("photo")
+  videoUrl       String    @default("")
+  dog            Dog?      @relation("Media_dog", fields: [dogId], references: [id])
+  dogId          String?   @map("dog")
+  isFeatured     Boolean   @default(false)
+  status         String?   @default("pending")
+  uploadedAt     DateTime?
 
   @@index([dogId])
+}
+
+model Settings {
+  id             Int     @id
+  moderationMode String? @default("a_posteriori")
+}
+
+model PushSubscription {
+  id        String    @id @default(cuid())
+  endpoint  String    @unique @default("")
+  keys      String    @default("")
+  createdAt DateTime?
 }

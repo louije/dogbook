@@ -253,8 +253,8 @@ export const lists = {
         },
       }),
       uploadedAt: timestamp({
-        defaultValue: { kind: 'now' },
         label: 'Uploadée le',
+        db: { isNullable: true },
         ui: {
           createView: { fieldMode: 'hidden' },
           itemView: { fieldMode: 'read' },
@@ -273,6 +273,9 @@ export const lists = {
       },
     },
     isSingleton: true,
+    graphql: {
+      plural: 'SettingsItems',
+    },
     ui: {
       label: 'Paramètres',
       isHidden: ({ session }) => !session,
@@ -325,8 +328,8 @@ export const lists = {
         },
       }),
       createdAt: timestamp({
-        defaultValue: { kind: 'now' },
         label: 'Créé le',
+        db: { isNullable: true },
       }),
     },
   }),
