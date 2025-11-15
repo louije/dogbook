@@ -71,7 +71,7 @@
       await setFeaturedPhoto(currentDogId, currentPhotoId);
 
       // Success feedback
-      button.textContent = '✓ Photo principale mise à jour';
+      button.textContent = '✓ La photo principale sera mise à jour dans quelques minutes';
 
       // Reload page after short delay to show the change
       setTimeout(() => {
