@@ -137,10 +137,8 @@ type Dog {
   breed: String
   coat: String
   owner: Owner
-  photoFeatured: ImageFieldOutput
   photos(where: MediaWhereInput! = {}, orderBy: [MediaOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MediaWhereUniqueInput): [Media!]
   photosCount(where: MediaWhereInput! = {}): Int
-  description: Dog_description_Document
 }
 
 enum DogSexType {
@@ -149,26 +147,6 @@ enum DogSexType {
 }
 
 scalar CalendarDay @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
-
-type ImageFieldOutput {
-  id: ID!
-  filesize: Int!
-  width: Int!
-  height: Int!
-  extension: ImageExtension!
-  url: String!
-}
-
-enum ImageExtension {
-  jpg
-  png
-  webp
-  gif
-}
-
-type Dog_description_Document {
-  document(hydrateRelationships: Boolean! = false): JSON!
-}
 
 input DogWhereUniqueInput {
   id: ID
@@ -228,9 +206,7 @@ input DogUpdateInput {
   breed: String
   coat: String
   owner: OwnerRelateToOneForUpdateInput
-  photoFeatured: ImageFieldInput
   photos: MediaRelateToManyForUpdateInput
-  description: JSON
 }
 
 input OwnerRelateToOneForUpdateInput {
@@ -238,13 +214,6 @@ input OwnerRelateToOneForUpdateInput {
   connect: OwnerWhereUniqueInput
   disconnect: Boolean
 }
-
-input ImageFieldInput {
-  upload: Upload!
-}
-
-"""The `Upload` scalar type represents a file upload."""
-scalar Upload
 
 input MediaRelateToManyForUpdateInput {
   disconnect: [MediaWhereUniqueInput!]
@@ -265,9 +234,7 @@ input DogCreateInput {
   breed: String
   coat: String
   owner: OwnerRelateToOneForCreateInput
-  photoFeatured: ImageFieldInput
   photos: MediaRelateToManyForCreateInput
-  description: JSON
 }
 
 input OwnerRelateToOneForCreateInput {
@@ -356,11 +323,35 @@ type Media {
   videoUrl: String
   dog: Dog
   isFeatured: Boolean
+  status: MediaStatusType
+  uploadedAt: DateTime
+}
+
+type ImageFieldOutput {
+  id: ID!
+  filesize: Int!
+  width: Int!
+  height: Int!
+  extension: ImageExtension!
+  url: String!
+}
+
+enum ImageExtension {
+  jpg
+  png
+  webp
+  gif
 }
 
 enum MediaTypeType {
   photo
   video
+}
+
+enum MediaStatusType {
+  pending
+  approved
+  rejected
 }
 
 input MediaWhereUniqueInput {
@@ -377,6 +368,8 @@ input MediaWhereInput {
   videoUrl: StringFilter
   dog: DogWhereInput
   isFeatured: BooleanFilter
+  status: MediaStatusTypeNullableFilter
+  uploadedAt: DateTimeNullableFilter
 }
 
 input MediaTypeTypeNullableFilter {
@@ -391,12 +384,21 @@ input BooleanFilter {
   not: BooleanFilter
 }
 
+input MediaStatusTypeNullableFilter {
+  equals: MediaStatusType
+  in: [MediaStatusType!]
+  notIn: [MediaStatusType!]
+  not: MediaStatusTypeNullableFilter
+}
+
 input MediaOrderByInput {
   id: OrderDirection
   name: OrderDirection
   type: OrderDirection
   videoUrl: OrderDirection
   isFeatured: OrderDirection
+  status: OrderDirection
+  uploadedAt: OrderDirection
 }
 
 input MediaUpdateInput {
@@ -406,7 +408,16 @@ input MediaUpdateInput {
   videoUrl: String
   dog: DogRelateToOneForUpdateInput
   isFeatured: Boolean
+  status: MediaStatusType
+  uploadedAt: DateTime
 }
+
+input ImageFieldInput {
+  upload: Upload!
+}
+
+"""The `Upload` scalar type represents a file upload."""
+scalar Upload
 
 input DogRelateToOneForUpdateInput {
   create: DogCreateInput
@@ -426,11 +437,106 @@ input MediaCreateInput {
   videoUrl: String
   dog: DogRelateToOneForCreateInput
   isFeatured: Boolean
+  status: MediaStatusType
+  uploadedAt: DateTime
 }
 
 input DogRelateToOneForCreateInput {
   create: DogCreateInput
   connect: DogWhereUniqueInput
+}
+
+type Settings {
+  id: ID!
+  moderationMode: SettingsModerationModeType
+}
+
+enum SettingsModerationModeType {
+  a_posteriori
+  a_priori
+}
+
+input SettingsWhereUniqueInput {
+  id: ID
+}
+
+input SettingsWhereInput {
+  AND: [SettingsWhereInput!]
+  OR: [SettingsWhereInput!]
+  NOT: [SettingsWhereInput!]
+  id: IDFilter
+  moderationMode: SettingsModerationModeTypeNullableFilter
+}
+
+input SettingsModerationModeTypeNullableFilter {
+  equals: SettingsModerationModeType
+  in: [SettingsModerationModeType!]
+  notIn: [SettingsModerationModeType!]
+  not: SettingsModerationModeTypeNullableFilter
+}
+
+input SettingsOrderByInput {
+  id: OrderDirection
+  moderationMode: OrderDirection
+}
+
+input SettingsUpdateInput {
+  moderationMode: SettingsModerationModeType
+}
+
+input SettingsUpdateArgs {
+  where: SettingsWhereUniqueInput! = {id: 1}
+  data: SettingsUpdateInput!
+}
+
+input SettingsCreateInput {
+  moderationMode: SettingsModerationModeType
+}
+
+type PushSubscription {
+  id: ID!
+  endpoint: String
+  keys: String
+  createdAt: DateTime
+}
+
+input PushSubscriptionWhereUniqueInput {
+  id: ID
+  endpoint: String
+}
+
+input PushSubscriptionWhereInput {
+  AND: [PushSubscriptionWhereInput!]
+  OR: [PushSubscriptionWhereInput!]
+  NOT: [PushSubscriptionWhereInput!]
+  id: IDFilter
+  endpoint: StringFilter
+  keys: StringFilter
+  createdAt: DateTimeNullableFilter
+}
+
+input PushSubscriptionOrderByInput {
+  id: OrderDirection
+  endpoint: OrderDirection
+  keys: OrderDirection
+  createdAt: OrderDirection
+}
+
+input PushSubscriptionUpdateInput {
+  endpoint: String
+  keys: String
+  createdAt: DateTime
+}
+
+input PushSubscriptionUpdateArgs {
+  where: PushSubscriptionWhereUniqueInput!
+  data: PushSubscriptionUpdateInput!
+}
+
+input PushSubscriptionCreateInput {
+  endpoint: String
+  keys: String
+  createdAt: DateTime
 }
 
 """
@@ -463,6 +569,18 @@ type Mutation {
   updateMediaItems(data: [MediaUpdateArgs!]!): [Media]
   deleteMedia(where: MediaWhereUniqueInput!): Media
   deleteMediaItems(where: [MediaWhereUniqueInput!]!): [Media]
+  createSettings(data: SettingsCreateInput!): Settings
+  createSettingsItems(data: [SettingsCreateInput!]!): [Settings]
+  updateSettings(where: SettingsWhereUniqueInput! = {id: 1}, data: SettingsUpdateInput!): Settings
+  updateSettingsItems(data: [SettingsUpdateArgs!]!): [Settings]
+  deleteSettings(where: SettingsWhereUniqueInput! = {id: 1}): Settings
+  deleteSettingsItems(where: [SettingsWhereUniqueInput!]!): [Settings]
+  createPushSubscription(data: PushSubscriptionCreateInput!): PushSubscription
+  createPushSubscriptions(data: [PushSubscriptionCreateInput!]!): [PushSubscription]
+  updatePushSubscription(where: PushSubscriptionWhereUniqueInput!, data: PushSubscriptionUpdateInput!): PushSubscription
+  updatePushSubscriptions(data: [PushSubscriptionUpdateArgs!]!): [PushSubscription]
+  deletePushSubscription(where: PushSubscriptionWhereUniqueInput!): PushSubscription
+  deletePushSubscriptions(where: [PushSubscriptionWhereUniqueInput!]!): [PushSubscription]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -511,6 +629,12 @@ type Query {
   mediaItems(where: MediaWhereInput! = {}, orderBy: [MediaOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MediaWhereUniqueInput): [Media!]
   media(where: MediaWhereUniqueInput!): Media
   mediaItemsCount(where: MediaWhereInput! = {}): Int
+  settingsItems(where: SettingsWhereInput! = {id: {equals: 1}}, orderBy: [SettingsOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: SettingsWhereUniqueInput): [Settings!]
+  settings(where: SettingsWhereUniqueInput! = {id: 1}): Settings
+  settingsItemsCount(where: SettingsWhereInput! = {id: {equals: 1}}): Int
+  pushSubscriptions(where: PushSubscriptionWhereInput! = {}, orderBy: [PushSubscriptionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PushSubscriptionWhereUniqueInput): [PushSubscription!]
+  pushSubscription(where: PushSubscriptionWhereUniqueInput!): PushSubscription
+  pushSubscriptionsCount(where: PushSubscriptionWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
   validateUserPasswordResetToken(email: String!, token: String!): ValidateUserPasswordResetTokenResult
