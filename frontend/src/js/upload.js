@@ -13,11 +13,43 @@
 
   let selectedFile = null;
   let compressedBlob = null;
+  let moderationMode = 'a_posteriori'; // Default
+
+  /**
+   * Fetch moderation mode from backend
+   */
+  async function fetchModerationMode() {
+    try {
+      const response = await fetch(`${API_URL}/api/graphql`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          query: `
+            query {
+              settings {
+                moderationMode
+              }
+            }
+          `
+        })
+      });
+
+      const data = await response.json();
+      if (data.data?.settings?.moderationMode) {
+        moderationMode = data.data.settings.moderationMode;
+      }
+    } catch (error) {
+      console.error('Failed to fetch moderation mode:', error);
+      // Keep default a_posteriori
+    }
+  }
 
   /**
    * Initialize upload functionality
    */
-  function init() {
+  async function init() {
+    // Fetch moderation mode first
+    await fetchModerationMode();
     const uploadForm = document.getElementById('upload-form');
     if (!uploadForm) return;
 
@@ -198,7 +230,12 @@
 
       // Success
       updateProgress(100, 'Photo envoyée avec succès !');
-      showStatus('✓ Photo envoyée ! Elle sera visible après validation.', 'success');
+      // Show appropriate message based on moderation mode
+      if (moderationMode === 'a_posteriori') {
+        showStatus('✓ Photo envoyée ! Elle sera visible dans 2-3 minutes.', 'success');
+      } else {
+        showStatus('✓ Photo envoyée ! Elle sera visible après validation manuelle.', 'success');
+      }
 
       // Reset form after delay
       setTimeout(() => {
