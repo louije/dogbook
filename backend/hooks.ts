@@ -49,8 +49,9 @@ export const mediaHooks = {
     }
 
     // When a new media is created, check moderation mode and set status accordingly
-    if (!resolvedData.status) {
+    if (operation === 'create') {
       const settings = await context.query.Settings.findOne({
+        where: { id: 1 },
         query: 'moderationMode',
       });
 
