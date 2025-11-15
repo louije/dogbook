@@ -28,15 +28,23 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addFilter('getFeaturedPhoto', function(dog) {
     const API_URL = process.env.API_URL || 'http://localhost:3000';
 
-    if (dog.photoFeatured?.url) {
-      return API_URL + dog.photoFeatured.url;
+    // No photos at all - use placeholder
+    if (!dog.photos || dog.photos.length === 0) {
+      return '/images/placeholder-dog.jpg';
     }
-    // If no featured photo, use first photo from media
-    if (dog.photos && dog.photos.length > 0) {
-      const featured = dog.photos.find(p => p.isFeatured);
-      if (featured?.file?.url) return API_URL + featured.file.url;
-      if (dog.photos[0]?.file?.url) return API_URL + dog.photos[0].file.url;
+
+    // Try to find featured photo
+    const featured = dog.photos.find(p => p.isFeatured);
+    if (featured?.file?.url) {
+      return API_URL + featured.file.url;
     }
+
+    // Fall back to first photo
+    if (dog.photos[0]?.file?.url) {
+      return API_URL + dog.photos[0].file.url;
+    }
+
+    // No valid photos - use placeholder
     return '/images/placeholder-dog.jpg';
   });
 
@@ -70,11 +78,6 @@ module.exports = function(eleventyConfig) {
                 birthday
                 breed
                 coat
-                photoFeatured {
-                  url
-                  width
-                  height
-                }
                 owner {
                   name
                   email

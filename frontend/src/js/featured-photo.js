@@ -62,56 +62,9 @@
   /**
    * Set a photo as featured via GraphQL mutation
    * Updates the Media item's isFeatured flag
+   * Note: Backend hook automatically unfeatures other photos for this dog
    */
   async function setFeaturedPhoto(dogId, mediaId) {
-    // First, get all media for this dog to unset isFeatured
-    const getAllResponse = await fetch(`${API_URL}/api/graphql`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'apollo-require-preflight': 'true',
-      },
-      body: JSON.stringify({
-        query: `
-          query GetDogPhotos($dogId: ID!) {
-            dog(where: { id: $dogId }) {
-              photos {
-                id
-              }
-            }
-          }
-        `,
-        variables: { dogId }
-      })
-    });
-
-    const allPhotosData = await getAllResponse.json();
-    const photoIds = allPhotosData.data?.dog?.photos?.map(p => p.id) || [];
-
-    // Unset isFeatured on all photos for this dog
-    if (photoIds.length > 0) {
-      await Promise.all(photoIds.map(id =>
-        fetch(`${API_URL}/api/graphql`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'apollo-require-preflight': 'true',
-          },
-          body: JSON.stringify({
-            query: `
-              mutation UnsetFeatured($id: ID!) {
-                updateMedia(where: { id: $id }, data: { isFeatured: false }) {
-                  id
-                }
-              }
-            `,
-            variables: { id }
-          })
-        })
-      ));
-    }
-
-    // Set this photo as featured
     const response = await fetch(`${API_URL}/api/graphql`, {
       method: 'POST',
       headers: {
