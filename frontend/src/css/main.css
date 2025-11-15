@@ -399,7 +399,7 @@ input:focus-visible {
 }
 
 .dog-card:hover .dog-card__image {
-  transform: scale(1.05);
+  transform: scale(1.02);
 }
 
 .dog-card__caption {
@@ -550,7 +550,7 @@ input:focus-visible {
 }
 
 .dog-detail__image-button:hover .dog-detail__image {
-  transform: scale(1.02);
+  transform: scale(1.005);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -577,7 +577,7 @@ input:focus-visible {
 }
 
 .dog-gallery__item:hover {
-  transform: scale(1.05);
+  transform: scale(1.02);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
@@ -864,35 +864,6 @@ input:focus-visible {
   position: relative;
 }
 
-.dog-gallery__set-featured {
-  position: absolute;
-  top: var(--spacing-xs);
-  right: var(--spacing-xs);
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.9);
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: var(--transition);
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.dog-gallery__set-featured:hover:not(:disabled) {
-  background-color: white;
-  transform: scale(1.15);
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-}
-
-.dog-gallery__set-featured:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
 /* ==========================================================================
    Mobile Optimizations
    ========================================================================== */
@@ -927,13 +898,6 @@ input:focus-visible {
     font-size: 1rem;
     padding: var(--spacing-md);
   }
-
-  /* Improve touch areas for gallery buttons */
-  .dog-gallery__set-featured {
-    width: 40px;
-    height: 40px;
-    font-size: 22px;
-  }
 }
 
 /* iOS Safari specific fixes */
@@ -959,12 +923,12 @@ input:focus-visible {
   background-color: rgba(0, 0, 0, 0.5);
   color: rgba(255, 255, 255, 0.7);
   border: 1px solid rgba(255, 255, 255, 0.3);
-  padding: var(--spacing-xs) var(--spacing-sm);
-  font-size: 0.8rem;
+  padding: var(--spacing-xs) var(--spacing-xs);
+  font-size: 0.75rem;
   border-radius: var(--border-radius);
   cursor: pointer;
   transition: var(--transition);
-  margin-top: var(--spacing-md);
+  margin-top: var(--spacing-xs);
   margin-bottom: var(--spacing-md);
   text-align: left;
   width: fit-content;
