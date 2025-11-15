@@ -42,7 +42,12 @@ export const buildTriggerHooks = {
  * Media-specific hooks for handling upload notifications and auto-approval
  */
 export const mediaHooks = {
-  resolveInput: async ({ resolvedData, context }: any) => {
+  resolveInput: async ({ resolvedData, context, operation }: any) => {
+    // Set timestamp on create
+    if (operation === 'create' && !resolvedData.uploadedAt) {
+      resolvedData.uploadedAt = new Date().toISOString();
+    }
+
     // When a new media is created, check moderation mode and set status accordingly
     if (!resolvedData.status) {
       const settings = await context.query.Settings.findOne({
