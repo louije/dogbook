@@ -4,6 +4,8 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addPassthroughCopy('src/js');
   eleventyConfig.addPassthroughCopy('src/images');
   eleventyConfig.addPassthroughCopy('src/robots.txt');
+  eleventyConfig.addPassthroughCopy({ 'src/sw.js': 'sw.js' });
+  eleventyConfig.addPassthroughCopy({ 'src/manifest.json': 'manifest.json' });
 
   // Watch for changes
   eleventyConfig.addWatchTarget('src/css/');
@@ -46,7 +48,8 @@ module.exports = function(eleventyConfig) {
 
   // Add global metadata
   eleventyConfig.addGlobalData('metadata', {
-    url: process.env.SITE_URL || 'http://localhost:8080'
+    url: process.env.SITE_URL || 'http://localhost:8080',
+    apiUrl: process.env.API_URL || 'http://localhost:3000'
   });
 
   // Fetch data from Keystone API
@@ -77,7 +80,7 @@ module.exports = function(eleventyConfig) {
                   email
                   phone
                 }
-                photos {
+                photos(where: { status: { equals: approved } }) {
                   id
                   name
                   type
