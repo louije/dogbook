@@ -48,7 +48,6 @@ eleventyComputed:
       {% if dog.photos.length > 0 %}
       <aside class="dog-detail__sidebar">
         <div class="dog-gallery">
-          <h3 class="dog-gallery__title">Galerie photos</h3>
           <div class="dog-gallery__grid">
             {% for photo in dog.photos %}
               {# Skip featured photo - it's already shown as main #}
@@ -116,6 +115,6 @@ eleventyComputed:
   <button class="lightbox__close" aria-label="Fermer">&times;</button>
   <img src="" alt="" class="lightbox__image">
   <button id="lightbox-set-featured" class="lightbox__set-featured" hidden>
-    ★ Utiliser comme photo principale (mise à jour dans quelques minutes)
+    ★ Utiliser comme photo principale
   </button>
 </dialog>
