@@ -613,6 +613,7 @@ input:focus-visible {
   border: none;
   background: transparent;
   margin: auto;
+  overflow: visible;
 }
 
 .lightbox::backdrop {
@@ -963,7 +964,8 @@ input:focus-visible {
   border-radius: var(--border-radius);
   cursor: pointer;
   transition: var(--transition);
-  margin-top: var(--spacing-sm);
+  margin-top: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
   text-align: left;
   width: fit-content;
 }
