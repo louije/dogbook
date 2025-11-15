@@ -16,6 +16,9 @@
   {% endif %}
 
   <link rel="stylesheet" href="/css/main.css">
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#2c5f2d">
+  <link rel="apple-touch-icon" href="/images/icon-192.png">
 </head>
 <body>
 
@@ -23,6 +26,13 @@
     {{ content | safe }}
   </main>
 
+  <script>
+    // Pass API URL to client-side scripts
+    window.API_URL = '{{ metadata.apiUrl or "http://localhost:3000" }}';
+  </script>
   <script src="/js/main.js"></script>
+  <script src="/js/upload.js"></script>
+  <script src="/js/featured-photo.js"></script>
+  <script src="/js/push-notifications.js"></script>
 </body>
 </html>

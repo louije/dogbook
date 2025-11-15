@@ -1,3 +1,5 @@
+import { sendUploadNotification } from './notifications';
+
 /**
  * Trigger frontend build webhook
  * Call this after any data change that should update the frontend
@@ -31,6 +33,93 @@ export const buildTriggerHooks = {
   afterOperation: async ({ operation }: any) => {
     // Trigger build on create, update, or delete
     if (['create', 'update', 'delete'].includes(operation)) {
+      await triggerFrontendBuild();
+    }
+  },
+};
+
+/**
+ * Media-specific hooks for handling upload notifications and auto-approval
+ */
+export const mediaHooks = {
+  resolveInput: async ({ resolvedData, context, operation, item }: any) => {
+    // Set timestamp on create
+    if (operation === 'create' && !resolvedData.uploadedAt) {
+      resolvedData.uploadedAt = new Date().toISOString();
+    }
+
+    // When a new media is created, check moderation mode and set status accordingly
+    if (!resolvedData.status) {
+      const settings = await context.query.Settings.findOne({
+        query: 'moderationMode',
+      });
+
+      const moderationMode = settings?.moderationMode || 'a_posteriori';
+
+      // Auto-approve in a_posteriori mode
+      if (moderationMode === 'a_posteriori') {
+        resolvedData.status = 'approved';
+      } else {
+        resolvedData.status = 'pending';
+      }
+    }
+
+    // If setting isFeatured to true, unfeature all other photos for this dog
+    if (operation === 'update' && resolvedData.isFeatured === true) {
+      // Get the current media item's dog
+      const currentMedia = await context.query.Media.findOne({
+        where: { id: item.id },
+        query: 'dog { id }',
+      });
+
+      if (currentMedia?.dog?.id) {
+        // Find all other featured photos for this dog
+        const otherFeaturedPhotos = await context.query.Media.findMany({
+          where: {
+            dog: { id: { equals: currentMedia.dog.id } },
+            id: { not: { equals: item.id } },
+            isFeatured: { equals: true },
+          },
+          query: 'id',
+        });
+
+        // Unfeature them
+        await Promise.all(
+          otherFeaturedPhotos.map((photo: any) =>
+            context.query.Media.updateOne({
+              where: { id: photo.id },
+              data: { isFeatured: false },
+            })
+          )
+        );
+
+        if (otherFeaturedPhotos.length > 0) {
+          console.log(`Unfeatured ${otherFeaturedPhotos.length} other photo(s) for dog ${currentMedia.dog.id}`);
+        }
+      }
+    }
+
+    return resolvedData;
+  },
+
+  afterOperation: async ({ operation, item, context }: any) => {
+    // Send notification on new upload
+    if (operation === 'create') {
+      await sendUploadNotification(item, context);
+    }
+
+    // Trigger frontend build when media is approved or deleted
+    if (operation === 'delete' || (operation === 'update' && item.status === 'approved')) {
+      await triggerFrontendBuild();
+    }
+
+    // Also trigger build on create if auto-approved
+    if (operation === 'create' && item.status === 'approved') {
+      await triggerFrontendBuild();
+    }
+
+    // Trigger build when featured photo changes
+    if (operation === 'update' && item.isFeatured === true) {
       await triggerFrontendBuild();
     }
   },
