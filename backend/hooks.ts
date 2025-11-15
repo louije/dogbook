@@ -51,11 +51,11 @@ export const mediaHooks = {
     // When a new media is created, check moderation mode and set status accordingly
     if (operation === 'create') {
       const settings = await context.query.Settings.findOne({
-        where: { id: 1 },
         query: 'moderationMode',
       });
 
       const moderationMode = settings?.moderationMode || 'a_posteriori';
+      console.log(`[Media Hook] Moderation mode: ${moderationMode}, setting status to: ${moderationMode === 'a_posteriori' ? 'approved' : 'pending'}`);
 
       // Auto-approve in a_posteriori mode
       if (moderationMode === 'a_posteriori') {
