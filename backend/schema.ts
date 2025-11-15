@@ -10,7 +10,7 @@ import {
   password,
   timestamp,
 } from '@keystone-6/core/fields';
-import { buildTriggerHooks } from './hooks';
+import { buildTriggerHooks, mediaHooks } from './hooks';
 
 // Helper function to check if user is authenticated
 const isAuthenticated = ({ session }: any) => !!session;
@@ -170,8 +170,15 @@ export const lists = {
   }),
 
   Media: list({
-    access: allowAll,
-    hooks: buildTriggerHooks,
+    access: {
+      operation: {
+        query: () => true, // Anyone can view
+        create: () => true, // Anyone can upload
+        update: ({ session }) => !!session, // Only authenticated users can approve/reject
+        delete: isAuthenticated,
+      },
+    },
+    hooks: mediaHooks,
     ui: {
       label: 'Média',
       plural: 'Médias',
@@ -179,7 +186,7 @@ export const lists = {
       isHidden: ({ session }) => !session, // Hide from non-authenticated users
       listView: {
         defaultFieldMode: 'read',
-        initialColumns: ['type', 'dog', 'file'],
+        initialColumns: ['status', 'type', 'dog', 'file', 'uploadedAt'],
       },
       itemView: {
         defaultFieldMode: 'edit',
@@ -227,6 +234,99 @@ export const lists = {
           description: 'Utiliser comme photo principale',
         },
         label: 'Photo principale',
+      }),
+      status: select({
+        type: 'enum',
+        options: [
+          { label: '⏳ En attente', value: 'pending' },
+          { label: '✅ Approuvée', value: 'approved' },
+          { label: '❌ Rejetée', value: 'rejected' },
+        ],
+        defaultValue: 'pending',
+        label: 'Statut',
+        access: {
+          create: () => true,
+          update: isAuthenticated, // Only admin can change status
+        },
+        ui: {
+          displayMode: 'segmented-control',
+        },
+      }),
+      uploadedAt: timestamp({
+        defaultValue: { kind: 'now' },
+        label: 'Uploadée le',
+        ui: {
+          createView: { fieldMode: 'hidden' },
+          itemView: { fieldMode: 'read' },
+        },
+      }),
+    },
+  }),
+
+  Settings: list({
+    access: {
+      operation: {
+        query: () => true, // Anyone can view settings (for moderation mode)
+        create: isAuthenticated,
+        update: isAuthenticated,
+        delete: isAuthenticated,
+      },
+    },
+    isSingleton: true,
+    ui: {
+      label: 'Paramètres',
+      isHidden: ({ session }) => !session,
+    },
+    fields: {
+      moderationMode: select({
+        type: 'enum',
+        options: [
+          { label: 'A posteriori (publier puis notifier)', value: 'a_posteriori' },
+          { label: 'A priori (approuver avant de publier)', value: 'a_priori' },
+        ],
+        defaultValue: 'a_posteriori',
+        label: 'Mode de modération',
+        ui: {
+          displayMode: 'segmented-control',
+          description: 'A posteriori: les photos sont publiées immédiatement. A priori: les photos doivent être approuvées avant publication.',
+        },
+      }),
+    },
+  }),
+
+  PushSubscription: list({
+    access: {
+      operation: {
+        query: isAuthenticated,
+        create: () => true, // Anyone can subscribe
+        update: isAuthenticated,
+        delete: () => true, // Anyone can unsubscribe
+      },
+    },
+    ui: {
+      label: 'Abonnement Push',
+      plural: 'Abonnements Push',
+      isHidden: ({ session }) => !session,
+      listView: {
+        initialColumns: ['endpoint', 'createdAt'],
+      },
+    },
+    fields: {
+      endpoint: text({
+        validation: { isRequired: true },
+        isIndexed: 'unique',
+        label: 'Endpoint',
+      }),
+      keys: text({
+        validation: { isRequired: true },
+        label: 'Keys (JSON)',
+        ui: {
+          displayMode: 'textarea',
+        },
+      }),
+      createdAt: timestamp({
+        defaultValue: { kind: 'now' },
+        label: 'Créé le',
       }),
     },
   }),

@@ -1,3 +1,5 @@
+import { sendUploadNotification } from './notifications';
+
 /**
  * Trigger frontend build webhook
  * Call this after any data change that should update the frontend
@@ -31,6 +33,48 @@ export const buildTriggerHooks = {
   afterOperation: async ({ operation }: any) => {
     // Trigger build on create, update, or delete
     if (['create', 'update', 'delete'].includes(operation)) {
+      await triggerFrontendBuild();
+    }
+  },
+};
+
+/**
+ * Media-specific hooks for handling upload notifications and auto-approval
+ */
+export const mediaHooks = {
+  resolveInput: async ({ resolvedData, context }: any) => {
+    // When a new media is created, check moderation mode and set status accordingly
+    if (!resolvedData.status) {
+      const settings = await context.query.Settings.findOne({
+        query: 'moderationMode',
+      });
+
+      const moderationMode = settings?.moderationMode || 'a_posteriori';
+
+      // Auto-approve in a_posteriori mode
+      if (moderationMode === 'a_posteriori') {
+        resolvedData.status = 'approved';
+      } else {
+        resolvedData.status = 'pending';
+      }
+    }
+
+    return resolvedData;
+  },
+
+  afterOperation: async ({ operation, item, context }: any) => {
+    // Send notification on new upload
+    if (operation === 'create') {
+      await sendUploadNotification(item, context);
+    }
+
+    // Trigger frontend build when media is approved or deleted
+    if (operation === 'delete' || (operation === 'update' && item.status === 'approved')) {
+      await triggerFrontendBuild();
+    }
+
+    // Also trigger build on create if auto-approved
+    if (operation === 'create' && item.status === 'approved') {
       await triggerFrontendBuild();
     }
   },
