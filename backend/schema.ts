@@ -174,7 +174,7 @@ export const lists = {
       operation: {
         query: () => true, // Anyone can view
         create: () => true, // Anyone can upload
-        update: ({ session }) => !!session, // Only authenticated users can approve/reject
+        update: () => true, // Anyone can update (field-level control below)
         delete: isAuthenticated,
       },
     },
