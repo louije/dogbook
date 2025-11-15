@@ -67,6 +67,7 @@
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        'apollo-require-preflight': 'true',
       },
       body: JSON.stringify({
         query: `

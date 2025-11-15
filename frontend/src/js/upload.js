@@ -288,6 +288,8 @@
       });
 
       xhr.open('POST', `${API_URL}/api/graphql`);
+      // Add header to bypass CSRF protection for legitimate uploads
+      xhr.setRequestHeader('apollo-require-preflight', 'true');
       xhr.send(formData);
     });
   }
