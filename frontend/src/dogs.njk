@@ -43,44 +43,6 @@ eleventyComputed:
             class="dog-detail__image"
           >
         </button>
-
-        <!-- Mobile Photo Upload Section -->
-        <section class="photo-upload">
-          <h2 class="photo-upload__title">Ajouter une photo</h2>
-          <form id="upload-form" class="photo-upload__form" data-dog-id="{{ dog.id }}">
-            <label for="photo-input" class="photo-upload__label">
-              <span class="photo-upload__icon">📷</span>
-              <span class="photo-upload__text">Choisir une photo</span>
-              <input
-                type="file"
-                id="photo-input"
-                name="photo"
-                accept="image/*"
-                capture="environment"
-                class="photo-upload__input"
-                required
-              >
-            </label>
-
-            <div id="preview-container" class="photo-upload__preview" hidden>
-              <img id="preview-image" class="photo-upload__preview-image" alt="Aperçu">
-              <button type="button" id="remove-preview" class="photo-upload__remove" aria-label="Supprimer">×</button>
-            </div>
-
-            <button type="submit" id="upload-button" class="photo-upload__submit" disabled>
-              Envoyer
-            </button>
-
-            <div id="upload-progress" class="photo-upload__progress" hidden>
-              <div class="photo-upload__progress-bar">
-                <div id="progress-fill" class="photo-upload__progress-fill"></div>
-              </div>
-              <p id="progress-text" class="photo-upload__progress-text">Envoi en cours...</p>
-            </div>
-
-            <div id="upload-status" class="photo-upload__status"></div>
-          </form>
-        </section>
       </div>
 
       {% if dog.photos.length > 0 %}
@@ -89,25 +51,16 @@ eleventyComputed:
           <h3 class="dog-gallery__title">Galerie photos</h3>
           <div class="dog-gallery__grid">
             {% for photo in dog.photos %}
-              {% if photo.type === 'photo' and photo.file %}
-              <div class="dog-gallery__item-wrapper">
-                <button class="dog-gallery__item" data-image="{{ photo.file.url | imageUrl }}" data-alt="{{ photo.name or dog.name }}">
-                  <img
-                    src="{{ photo.file.url | imageUrl }}"
-                    alt="{{ photo.name or dog.name }}"
-                    class="dog-gallery__image"
-                    loading="lazy"
-                  >
-                </button>
-                <button
-                  class="dog-gallery__set-featured"
-                  data-photo-id="{{ photo.id }}"
-                  data-dog-id="{{ dog.id }}"
-                  title="Définir comme photo principale"
+              {# Skip featured photo - it's already shown as main #}
+              {% if photo.type === 'photo' and photo.file and not photo.isFeatured %}
+              <button class="dog-gallery__item" data-image="{{ photo.file.url | imageUrl }}" data-alt="{{ photo.name or dog.name }}" data-photo-id="{{ photo.id }}" data-dog-id="{{ dog.id }}">
+                <img
+                  src="{{ photo.file.url | imageUrl }}"
+                  alt="{{ photo.name or dog.name }}"
+                  class="dog-gallery__image"
+                  loading="lazy"
                 >
-                  ⭐
-                </button>
-              </div>
+              </button>
               {% elif photo.type === 'video' and photo.videoUrl %}
               <div class="dog-gallery__item dog-gallery__item--video">
                 <a href="{{ photo.videoUrl }}" target="_blank" class="dog-gallery__video-link">
@@ -118,6 +71,41 @@ eleventyComputed:
             {% endfor %}
           </div>
         </div>
+
+        <!-- Photo Upload Section -->
+        <form id="upload-form" class="photo-upload" data-dog-id="{{ dog.id }}">
+          <label for="photo-input" class="photo-upload__label">
+            <span class="photo-upload__icon">📷</span>
+            <span class="photo-upload__text">Ajouter une photo</span>
+            <input
+              type="file"
+              id="photo-input"
+              name="photo"
+              accept="image/*"
+              capture="environment"
+              class="photo-upload__input"
+              required
+            >
+          </label>
+
+          <div id="preview-container" class="photo-upload__preview" hidden>
+            <img id="preview-image" class="photo-upload__preview-image" alt="Aperçu">
+            <button type="button" id="remove-preview" class="photo-upload__remove" aria-label="Supprimer">×</button>
+          </div>
+
+          <button type="submit" id="upload-button" class="photo-upload__submit" disabled>
+            Envoyer
+          </button>
+
+          <div id="upload-progress" class="photo-upload__progress" hidden>
+            <div class="photo-upload__progress-bar">
+              <div id="progress-fill" class="photo-upload__progress-fill"></div>
+            </div>
+            <p id="progress-text" class="photo-upload__progress-text"></p>
+          </div>
+
+          <div id="upload-status" class="photo-upload__status"></div>
+        </form>
       </aside>
       {% endif %}
     </div>
@@ -127,4 +115,7 @@ eleventyComputed:
 <dialog id="lightbox" class="lightbox">
   <button class="lightbox__close" aria-label="Fermer">&times;</button>
   <img src="" alt="" class="lightbox__image">
+  <button id="lightbox-set-featured" class="lightbox__set-featured" hidden>
+    ★ Utiliser comme photo principale
+  </button>
 </dialog>
