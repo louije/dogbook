@@ -71,7 +71,7 @@ export const lists = {
       labelField: 'name',
       listView: {
         defaultFieldMode: 'read',
-        initialColumns: ['name', 'sex', 'breed', 'coat', 'owner', 'photoFeatured'],
+        initialColumns: ['name', 'sex', 'breed', 'coat', 'owner', 'photos'],
         initialSort: { field: 'name', direction: 'ASC' },
       },
     },
@@ -113,17 +113,13 @@ export const lists = {
           update: isAuthenticated, // Only authenticated users can change owner
         },
       }),
-      // Note: KeystoneJS 6 uses cloud storage for images by default
-      // For local storage, we'll need to configure this
-      photoFeatured: image({
-        storage: 'local_images',
-        label: 'Photo principale',
-        validation: { isRequired: true },
-      }),
       photos: relationship({
         ref: 'Media.dog',
         many: true,
         label: 'Photos',
+        ui: {
+          description: 'Utilisez le bouton ⭐ pour définir la photo principale',
+        },
       }),
     },
   }),
@@ -231,7 +227,7 @@ export const lists = {
       isFeatured: checkbox({
         defaultValue: false,
         ui: {
-          description: 'Utiliser comme photo principale',
+          description: 'Photo principale du chien (une seule par chien)',
         },
         label: 'Photo principale',
       }),

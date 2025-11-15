@@ -42,7 +42,7 @@ export const buildTriggerHooks = {
  * Media-specific hooks for handling upload notifications and auto-approval
  */
 export const mediaHooks = {
-  resolveInput: async ({ resolvedData, context, operation }: any) => {
+  resolveInput: async ({ resolvedData, context, operation, item }: any) => {
     // Set timestamp on create
     if (operation === 'create' && !resolvedData.uploadedAt) {
       resolvedData.uploadedAt = new Date().toISOString();
@@ -64,6 +64,41 @@ export const mediaHooks = {
       }
     }
 
+    // If setting isFeatured to true, unfeature all other photos for this dog
+    if (operation === 'update' && resolvedData.isFeatured === true) {
+      // Get the current media item's dog
+      const currentMedia = await context.query.Media.findOne({
+        where: { id: item.id },
+        query: 'dog { id }',
+      });
+
+      if (currentMedia?.dog?.id) {
+        // Find all other featured photos for this dog
+        const otherFeaturedPhotos = await context.query.Media.findMany({
+          where: {
+            dog: { id: { equals: currentMedia.dog.id } },
+            id: { not: { equals: item.id } },
+            isFeatured: { equals: true },
+          },
+          query: 'id',
+        });
+
+        // Unfeature them
+        await Promise.all(
+          otherFeaturedPhotos.map((photo: any) =>
+            context.query.Media.updateOne({
+              where: { id: photo.id },
+              data: { isFeatured: false },
+            })
+          )
+        );
+
+        if (otherFeaturedPhotos.length > 0) {
+          console.log(`Unfeatured ${otherFeaturedPhotos.length} other photo(s) for dog ${currentMedia.dog.id}`);
+        }
+      }
+    }
+
     return resolvedData;
   },
 
@@ -80,6 +115,11 @@ export const mediaHooks = {
 
     // Also trigger build on create if auto-approved
     if (operation === 'create' && item.status === 'approved') {
+      await triggerFrontendBuild();
+    }
+
+    // Trigger build when featured photo changes
+    if (operation === 'update' && item.isFeatured === true) {
       await triggerFrontendBuild();
     }
   },

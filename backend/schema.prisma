@@ -23,20 +23,15 @@ model User {
 }
 
 model Dog {
-  id                      String  @id @default(cuid())
-  name                    String  @default("")
-  sex                     String?
-  birthday                String?
-  breed                   String  @default("")
-  coat                    String  @default("")
-  owner                   Owner?  @relation("Dog_owner", fields: [ownerId], references: [id])
-  ownerId                 String? @map("owner")
-  photoFeatured_id        String?
-  photoFeatured_filesize  Int?
-  photoFeatured_width     Int?
-  photoFeatured_height    Int?
-  photoFeatured_extension String?
-  photos                  Media[] @relation("Media_dog")
+  id       String  @id @default(cuid())
+  name     String  @default("")
+  sex      String?
+  birthday String?
+  breed    String  @default("")
+  coat     String  @default("")
+  owner    Owner?  @relation("Dog_owner", fields: [ownerId], references: [id])
+  ownerId  String? @map("owner")
+  photos   Media[] @relation("Media_dog")
 
   @@index([ownerId])
 }
