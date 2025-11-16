@@ -11,10 +11,44 @@ module.exports = function(eleventyConfig) {
   eleventyConfig.addWatchTarget('src/css/');
   eleventyConfig.addWatchTarget('src/js/');
 
-  // Add filter for age calculation
-  eleventyConfig.addFilter('calculateAge', function(birthYear) {
-    const currentYear = new Date().getFullYear();
-    return currentYear - birthYear;
+  // Add filter for age calculation from birthday date (YYYY-MM-DD)
+  eleventyConfig.addFilter('calculateAge', function(birthday) {
+    if (!birthday) return null;
+
+    const birthDate = new Date(birthday);
+    const today = new Date();
+
+    // Don't calculate age for future dates
+    if (birthDate > today) return null;
+
+    // Calculate years and months
+    let years = today.getFullYear() - birthDate.getFullYear();
+    let months = today.getMonth() - birthDate.getMonth();
+
+    // If we haven't reached the birth day this month, subtract a month
+    if (today.getDate() < birthDate.getDate()) {
+      months--;
+    }
+
+    // If months is negative, we haven't reached the birth month this year
+    if (months < 0) {
+      years--;
+      months += 12;
+    }
+
+    // Check if it's the dog's birthday today
+    const isBirthday = today.getMonth() === birthDate.getMonth() &&
+                       today.getDate() === birthDate.getDate();
+
+    // Calculate total months for dogs under 1 year
+    const totalMonths = years * 12 + months;
+
+    return {
+      years,
+      months,
+      totalMonths,
+      isBirthday
+    };
   });
 
   // Add filter to prefix image URL with API URL
