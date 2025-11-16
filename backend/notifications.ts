@@ -77,8 +77,10 @@ export async function sendUploadNotification(
     // Get admin subscriptions only
     const adminSubscriptions = await context.query.PushSubscription.findMany({
       where: { receivesAdminNotifications: { equals: true } },
-      query: 'id endpoint keys',
+      query: 'id endpoint keys receivesAdminNotifications',
     });
+
+    console.log('[Upload Notification] Found subscriptions:', adminSubscriptions.length, adminSubscriptions.map((s: any) => ({ id: s.id, receivesAdminNotifications: s.receivesAdminNotifications })));
 
     if (adminSubscriptions.length === 0) {
       console.log('No admin subscriptions, skipping notification');
