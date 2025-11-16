@@ -10,7 +10,7 @@ import {
   password,
   timestamp,
 } from '@keystone-6/core/fields';
-import { buildTriggerHooks, mediaHooks } from './hooks';
+import { buildTriggerHooks, mediaHooks, dogHooks } from './hooks';
 
 // Helper function to check if user is authenticated
 const isAuthenticated = ({ session }: any) => !!session;
@@ -64,7 +64,7 @@ export const lists = {
         delete: isAuthenticated, // Only authenticated users can delete
       },
     },
-    hooks: buildTriggerHooks,
+    hooks: dogHooks,
     ui: {
       label: 'Chien',
       plural: 'Chiens',
