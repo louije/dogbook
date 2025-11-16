@@ -7,11 +7,16 @@ const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY || '';
 const vapidSubject = process.env.VAPID_SUBJECT || 'mailto:admin@dogbook.com';
 
 if (vapidPublicKey && vapidPrivateKey) {
+  console.log('[Notifications] Initializing web-push with VAPID keys');
+  console.log('[Notifications] Public key:', vapidPublicKey.substring(0, 20) + '...');
+  console.log('[Notifications] Subject:', vapidSubject);
   webpush.setVapidDetails(
     vapidSubject,
     vapidPublicKey,
     vapidPrivateKey
   );
+} else {
+  console.error('[Notifications] VAPID keys not configured! Push notifications will not work.');
 }
 
 interface NotificationPayload {
