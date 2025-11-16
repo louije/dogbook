@@ -1,22 +1,29 @@
 import webpush from 'web-push';
 
-// Initialize web-push with VAPID keys
-// Generate keys with: npx web-push generate-vapid-keys
-const vapidPublicKey = process.env.VAPID_PUBLIC_KEY || '';
-const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY || '';
-const vapidSubject = process.env.VAPID_SUBJECT || 'mailto:admin@dogbook.com';
+let vapidInitialized = false;
 
-if (vapidPublicKey && vapidPrivateKey) {
-  console.log('[Notifications] Initializing web-push with VAPID keys');
-  console.log('[Notifications] Public key:', vapidPublicKey.substring(0, 20) + '...');
-  console.log('[Notifications] Subject:', vapidSubject);
-  webpush.setVapidDetails(
-    vapidSubject,
-    vapidPublicKey,
-    vapidPrivateKey
-  );
-} else {
-  console.error('[Notifications] VAPID keys not configured! Push notifications will not work.');
+// Initialize web-push with VAPID keys
+// Called lazily on first use to ensure .env is loaded
+function initializeVapid() {
+  if (vapidInitialized) return;
+
+  const vapidPublicKey = process.env.VAPID_PUBLIC_KEY || '';
+  const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY || '';
+  const vapidSubject = process.env.VAPID_SUBJECT || 'mailto:admin@dogbook.com';
+
+  if (vapidPublicKey && vapidPrivateKey) {
+    console.log('[Notifications] Initializing web-push with VAPID keys');
+    console.log('[Notifications] Public key:', vapidPublicKey.substring(0, 20) + '...');
+    console.log('[Notifications] Subject:', vapidSubject);
+    webpush.setVapidDetails(
+      vapidSubject,
+      vapidPublicKey,
+      vapidPrivateKey
+    );
+    vapidInitialized = true;
+  } else {
+    console.error('[Notifications] VAPID keys not configured! Push notifications will not work.');
+  }
 }
 
 interface NotificationPayload {
@@ -35,6 +42,9 @@ async function sendPushNotificationToSubscriptions(
   subscriptions: any[],
   payload: NotificationPayload
 ): Promise<void> {
+  // Initialize VAPID keys (happens once on first send)
+  initializeVapid();
+
   if (subscriptions.length === 0) {
     console.log('No push subscriptions found, skipping notification');
     return;
