@@ -558,6 +558,10 @@ input:focus-visible {
    Dog Gallery
    ========================================================================== */
 
+.dog_gallery {
+  margin-bottom: var(--spacing-xl);
+}
+
 .dog-gallery__grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
@@ -680,7 +684,6 @@ input:focus-visible {
   background-color: var(--color-background-light);
   border-radius: var(--border-radius);
   padding: var(--spacing-lg);
-  margin-top: var(--spacing-xl);
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
@@ -788,8 +791,7 @@ input:focus-visible {
 }
 
 .photo-upload__submit:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  display: none;
 }
 
 .photo-upload__progress {
@@ -824,6 +826,10 @@ input:focus-visible {
   border-radius: var(--border-radius);
   font-size: 0.9rem;
   text-align: center;
+}
+
+.photo-upload__status:empty {
+  display: none;
 }
 
 .photo-upload__status--success {
