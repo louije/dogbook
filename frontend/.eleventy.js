@@ -105,7 +105,7 @@ module.exports = function(eleventyConfig) {
         body: JSON.stringify({
           query: `
             query {
-              dogs {
+              dogs(orderBy: { name: asc }) {
                 id
                 name
                 sex
