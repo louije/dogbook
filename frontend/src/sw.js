@@ -28,8 +28,8 @@ self.addEventListener('push', (event) => {
 
   const options = {
     body: data.body,
-    icon: data.icon || '/images/icon-192.png',
-    badge: data.badge || '/images/badge-72.png',
+    icon: data.icon || '/images/hello-big-dog.png',
+    badge: data.badge || '/images/hello-dog.png',
     data: data.data,
     vibrate: [200, 100, 200],
     requireInteraction: true, // Keep notification visible until user interacts
