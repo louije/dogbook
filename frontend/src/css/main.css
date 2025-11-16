@@ -448,6 +448,13 @@ input:focus-visible {
   transition: var(--transition);
 }
 
+.dog-tag--birthday {
+  background: linear-gradient(135deg, #fff3cd 0%, #ffeaa7 100%);
+  border-color: #ffc107;
+  color: #856404;
+  font-weight: 600;
+}
+
 .dog-detail__content {
   display: grid;
   grid-template-columns: 2fr 1fr;
