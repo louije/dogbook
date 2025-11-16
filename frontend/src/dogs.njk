@@ -23,6 +23,21 @@ eleventyComputed:
         {% if dog.sex %}
         <span class="dog-tag">{{ 'Mâle' if dog.sex === 'male' else 'Femelle' }}</span>
         {% endif %}
+        {% if dog.birthday %}
+        {% set age = dog.birthday | calculateAge %}
+        {% if age %}
+          {% if age.totalMonths < 12 %}
+            <span class="dog-tag">{{ age.totalMonths }} mois</span>
+          {% elif age.years < 2 %}
+            <span class="dog-tag">{{ age.years }} an{% if age.months > 0 %} et {{ age.months }} mois{% endif %}</span>
+          {% else %}
+            <span class="dog-tag">{{ age.years }} ans</span>
+          {% endif %}
+          {% if age.isBirthday %}
+            <span class="dog-tag dog-tag--birthday">🎂 Anniversaire !</span>
+          {% endif %}
+        {% endif %}
+        {% endif %}
         {% if dog.breed %}
         <span class="dog-tag">{{ dog.breed }}</span>
         {% endif %}
