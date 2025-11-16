@@ -87,7 +87,7 @@ eleventyComputed:
         {% endif %}
 
         <!-- Photo Upload Section -->
-        <form id="upload-form" class="photo-upload" data-dog-id="{{ dog.id }}">
+        <form id="upload-form" class="photo-upload photo-upload--js-required" data-dog-id="{{ dog.id }}" hidden>
           <label for="photo-input" class="photo-upload__label">
             <span class="photo-upload__icon">📷</span>
             <span class="photo-upload__text">Ajouter une photo</span>
@@ -107,7 +107,7 @@ eleventyComputed:
             <button type="button" id="remove-preview" class="photo-upload__remove" aria-label="Supprimer">×</button>
           </div>
 
-          <button type="submit" id="upload-button" class="photo-upload__submit" hidden>
+          <button type="submit" id="upload-button" class="photo-upload__submit" disabled>
             Envoyer
           </button>
 
