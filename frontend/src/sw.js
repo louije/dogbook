@@ -1,8 +1,5 @@
 /**
- * Minimal Service Worker for Declarative Web Push
- * Safari requires a service worker to be registered for push notifications,
- * but with declarative web push, the browser handles notifications directly
- * so we don't need push event handlers
+ * Service Worker for Push Notifications
  */
 
 const CACHE_NAME = 'dogbook-v1';
@@ -19,4 +16,69 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(self.clients.claim());
 });
 
-// No push event handler needed - declarative web push handles it
+// Push notification event
+self.addEventListener('push', (event) => {
+  console.log('Push received', event);
+
+  if (!event.data) {
+    return;
+  }
+
+  const data = event.data.json();
+
+  const options = {
+    body: data.body,
+    icon: data.icon || '/images/hello-big-dog.png',
+    badge: data.badge || '/images/hello-dog.png',
+    data: data.data,
+    vibrate: [200, 100, 200],
+    requireInteraction: true, // Keep notification visible until user interacts
+    actions: [
+      {
+        action: 'view',
+        title: 'Voir'
+      },
+      {
+        action: 'close',
+        title: 'Fermer'
+      }
+    ]
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(data.title, options)
+  );
+});
+
+// Notification click event
+self.addEventListener('notificationclick', (event) => {
+  console.log('Notification clicked', event);
+
+  event.notification.close();
+
+  if (event.action === 'close') {
+    return;
+  }
+
+  // Open the app or focus existing tab
+  const urlToOpen = event.notification.data?.url
+    ? new URL(event.notification.data.url, self.location.origin).href
+    : self.location.origin;
+
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clientList) => {
+        // Check if app is already open
+        for (const client of clientList) {
+          if (client.url === urlToOpen && 'focus' in client) {
+            return client.focus();
+          }
+        }
+
+        // Open new window
+        if (self.clients.openWindow) {
+          return self.clients.openWindow(urlToOpen);
+        }
+      })
+  );
+});
