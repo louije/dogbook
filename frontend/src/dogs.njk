@@ -44,31 +44,32 @@ eleventyComputed:
         </button>
       </div>
 
-      {% if dog.photos.length > 0 %}
       <aside class="dog-detail__sidebar">
-        <div class="dog-gallery">
-          <div class="dog-gallery__grid">
-            {% for photo in dog.photos %}
-              {# Skip featured photo - it's already shown as main #}
-              {% if photo.type === 'photo' and photo.file and not photo.isFeatured %}
-              <button class="dog-gallery__item" data-image="{{ photo.file.url | imageUrl }}" data-alt="{{ photo.name or dog.name }}" data-photo-id="{{ photo.id }}" data-dog-id="{{ dog.id }}">
-                <img
-                  src="{{ photo.file.url | imageUrl }}"
-                  alt="{{ photo.name or dog.name }}"
-                  class="dog-gallery__image"
-                  loading="lazy"
-                >
-              </button>
-              {% elif photo.type === 'video' and photo.videoUrl %}
-              <div class="dog-gallery__item dog-gallery__item--video">
-                <a href="{{ photo.videoUrl }}" target="_blank" class="dog-gallery__video-link">
-                  📹 Vidéo
-                </a>
-              </div>
-              {% endif %}
-            {% endfor %}
+        {% if dog.photos.length > 1 %}
+          <div class="dog-gallery">
+            <div class="dog-gallery__grid">
+              {% for photo in dog.photos %}
+                {# Skip featured photo - it's already shown as main #}
+                {% if photo.type === 'photo' and photo.file and not photo.isFeatured %}
+                <button class="dog-gallery__item" data-image="{{ photo.file.url | imageUrl }}" data-alt="{{ photo.name or dog.name }}" data-photo-id="{{ photo.id }}" data-dog-id="{{ dog.id }}">
+                  <img
+                    src="{{ photo.file.url | imageUrl }}"
+                    alt="{{ photo.name or dog.name }}"
+                    class="dog-gallery__image"
+                    loading="lazy"
+                  >
+                </button>
+                {% elif photo.type === 'video' and photo.videoUrl %}
+                <div class="dog-gallery__item dog-gallery__item--video">
+                  <a href="{{ photo.videoUrl }}" target="_blank" class="dog-gallery__video-link">
+                    📹 Vidéo
+                  </a>
+                </div>
+                {% endif %}
+              {% endfor %}
+            </div>
           </div>
-        </div>
+        {% endif %}
 
         <!-- Photo Upload Section -->
         <form id="upload-form" class="photo-upload" data-dog-id="{{ dog.id }}">
@@ -105,7 +106,6 @@ eleventyComputed:
           <div id="upload-status" class="photo-upload__status"></div>
         </form>
       </aside>
-      {% endif %}
     </div>
   </div>
 </article>
