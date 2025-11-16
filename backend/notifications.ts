@@ -23,64 +23,68 @@ interface NotificationPayload {
 }
 
 /**
- * Send push notification to all subscribed admins
+ * Send push notification to specific subscriptions
  */
-export async function sendPushNotification(
+async function sendPushNotificationToSubscriptions(
   context: any,
+  subscriptions: any[],
   payload: NotificationPayload
 ): Promise<void> {
-  try {
-    // Fetch all push subscriptions
-    const subscriptions = await context.query.PushSubscription.findMany({
-      query: 'id endpoint keys',
-    });
-
-    if (subscriptions.length === 0) {
-      console.log('No push subscriptions found, skipping notification');
-      return;
-    }
-
-    // Send notification to each subscription
-    const promises = subscriptions.map(async (sub: any) => {
-      try {
-        const subscription = {
-          endpoint: sub.endpoint,
-          keys: JSON.parse(sub.keys),
-        };
-
-        await webpush.sendNotification(
-          subscription,
-          JSON.stringify(payload)
-        );
-
-        console.log(`Push notification sent to ${sub.endpoint}`);
-      } catch (error: any) {
-        console.error(`Failed to send push to ${sub.endpoint}:`, error);
-
-        // If subscription is invalid (410 Gone), delete it
-        if (error.statusCode === 410) {
-          await context.query.PushSubscription.deleteOne({
-            where: { id: sub.id },
-          });
-          console.log(`Deleted invalid subscription: ${sub.id}`);
-        }
-      }
-    });
-
-    await Promise.all(promises);
-  } catch (error) {
-    console.error('Error sending push notifications:', error);
+  if (subscriptions.length === 0) {
+    console.log('No push subscriptions found, skipping notification');
+    return;
   }
+
+  // Send notification to each subscription
+  const promises = subscriptions.map(async (sub: any) => {
+    try {
+      const subscription = {
+        endpoint: sub.endpoint,
+        keys: JSON.parse(sub.keys),
+      };
+
+      await webpush.sendNotification(
+        subscription,
+        JSON.stringify(payload)
+      );
+
+      console.log(`Push notification sent to ${sub.endpoint}`);
+    } catch (error: any) {
+      console.error(`Failed to send push to ${sub.endpoint}:`, error);
+
+      // If subscription is invalid (410 Gone), delete it
+      if (error.statusCode === 410) {
+        await context.query.PushSubscription.deleteOne({
+          where: { id: sub.id },
+        });
+        console.log(`Deleted invalid subscription: ${sub.id}`);
+      }
+    }
+  });
+
+  await Promise.all(promises);
 }
 
 /**
  * Send notification when a new photo is uploaded
+ * Only sends to admin subscriptions
  */
 export async function sendUploadNotification(
   item: any,
   context: any
 ): Promise<void> {
   try {
+    // Get admin subscriptions only
+    const adminSubscriptions = await context.query.PushSubscription.findMany({
+      where: { receivesAdminNotifications: { equals: true } },
+      query: 'id endpoint keys',
+    });
+
+    if (adminSubscriptions.length === 0) {
+      console.log('No admin subscriptions, skipping notification');
+      return;
+    }
+
     // Get the settings to check moderation mode
     const settings = await context.query.Settings.findOne({
       query: 'moderationMode',
@@ -110,8 +114,8 @@ export async function sendUploadNotification(
       body = `Une nouvelle photo de ${dogName} a été ajoutée.`;
     }
 
-    // Send push notification
-    await sendPushNotification(context, {
+    // Send push notification to admin subscriptions only
+    await sendPushNotificationToSubscriptions(context, adminSubscriptions, {
       title,
       body,
       icon: '/images/hello-big-dog.png',
@@ -125,5 +129,88 @@ export async function sendUploadNotification(
     });
   } catch (error) {
     console.error('Error in sendUploadNotification:', error);
+  }
+}
+
+/**
+ * Send notification when a dog is updated by a non-admin user
+ * Only sends to admin subscriptions
+ */
+export async function sendDogUpdateNotification(
+  item: any,
+  context: any
+): Promise<void> {
+  try {
+    // Only notify if updated by non-admin
+    if (context.session?.data?.isAdmin) {
+      console.log('Dog updated by admin, skipping notification');
+      return;
+    }
+
+    // Get admin subscriptions only
+    const adminSubscriptions = await context.query.PushSubscription.findMany({
+      where: { receivesAdminNotifications: { equals: true } },
+      query: 'id endpoint keys',
+    });
+
+    if (adminSubscriptions.length === 0) {
+      console.log('No admin subscriptions, skipping notification');
+      return;
+    }
+
+    await sendPushNotificationToSubscriptions(context, adminSubscriptions, {
+      title: '🐕 Modification d\'un chien',
+      body: `${item.name} a été modifié par un utilisateur`,
+      icon: '/images/hello-big-dog.png',
+      badge: '/images/hello-dog.png',
+      data: {
+        url: `/admin/dogs/${item.id}`,
+        dogId: item.id,
+      },
+    });
+  } catch (error) {
+    console.error('Error in sendDogUpdateNotification:', error);
+  }
+}
+
+/**
+ * Send notification when a new dog is added by a non-admin user
+ * Only sends to admin subscriptions
+ * Currently noop as only admins can create dogs
+ */
+export async function sendNewDogNotification(
+  item: any,
+  context: any
+): Promise<void> {
+  try {
+    // Only notify if created by non-admin (currently only admins can create)
+    if (context.session?.data?.isAdmin) {
+      console.log('Dog created by admin, skipping notification');
+      return;
+    }
+
+    // Get admin subscriptions only
+    const adminSubscriptions = await context.query.PushSubscription.findMany({
+      where: { receivesAdminNotifications: { equals: true } },
+      query: 'id endpoint keys',
+    });
+
+    if (adminSubscriptions.length === 0) {
+      console.log('No admin subscriptions, skipping notification');
+      return;
+    }
+
+    await sendPushNotificationToSubscriptions(context, adminSubscriptions, {
+      title: '🐕 Nouveau chien ajouté',
+      body: `${item.name} a été ajouté`,
+      icon: '/images/hello-big-dog.png',
+      badge: '/images/hello-dog.png',
+      data: {
+        url: `/admin/dogs/${item.id}`,
+        dogId: item.id,
+      },
+    });
+  } catch (error) {
+    console.error('Error in sendNewDogNotification:', error);
   }
 }
