@@ -1,6 +1,6 @@
 /**
- * Web Push Notifications for iOS/Safari (Declarative Web Push)
- * Handles subscription and permission requests for admin users only
+ * Web Push Notifications for iOS/Safari
+ * Handles subscription and permission requests
  */
 
 (function() {
@@ -11,12 +11,12 @@
 
   /**
    * Initialize push notifications
-   * Only for admins
+   * Only for admins - check if we should enable
    */
   function init() {
-    // Feature detection - only Safari/WebKit supports declarative web push
-    if (!('PushManager' in window) || !('serviceWorker' in navigator)) {
-      console.log('Push notifications not supported in this browser');
+    // Only enable push notifications if service workers are supported
+    if (!('serviceWorker' in navigator) || !('PushManager' in window)) {
+      console.log('Push notifications not supported');
       return;
     }
 
@@ -26,7 +26,9 @@
     if (notificationsEnabled === 'enabled') {
       setupPushNotifications();
     } else if (notificationsEnabled !== 'disabled') {
-      console.log('Push notifications available. Call window.enablePushNotifications() to enable.');
+      // Show prompt for admins (you can add a button or auto-prompt)
+      // For now, we'll just log it
+      console.log('Push notifications available. Enable in settings.');
     }
   }
 
@@ -35,7 +37,7 @@
    */
   async function setupPushNotifications() {
     try {
-      // Register minimal service worker (required even for declarative push)
+      // Register service worker
       const registration = await navigator.serviceWorker.register('/sw.js');
       console.log('Service Worker registered');
 
@@ -60,7 +62,7 @@
   }
 
   /**
-   * Subscribe to push notifications using declarative API
+   * Subscribe to push notifications
    */
   async function subscribeToPush(registration) {
     try {
@@ -69,18 +71,17 @@
 
       if (!subscription) {
         // Subscribe with VAPID public key
-        // userVisibleOnly: false enables declarative mode on Safari
         const convertedVapidKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
 
         subscription = await registration.pushManager.subscribe({
-          userVisibleOnly: false, // Declarative mode for Safari
+          userVisibleOnly: true,
           applicationServerKey: convertedVapidKey
         });
 
-        // Send subscription to backend with admin flag
+        // Send subscription to backend
         await sendSubscriptionToBackend(subscription);
 
-        console.log('Subscribed to push notifications (declarative mode)');
+        console.log('Subscribed to push notifications');
         localStorage.setItem('pushNotifications', 'enabled');
       } else {
         console.log('Already subscribed to push notifications');
@@ -91,7 +92,7 @@
   }
 
   /**
-   * Send subscription to backend with receivesAdminNotifications flag
+   * Send subscription to backend
    */
   async function sendSubscriptionToBackend(subscription) {
     const response = await fetch(`${API_URL}/api/graphql`, {
@@ -102,11 +103,10 @@
       },
       body: JSON.stringify({
         query: `
-          mutation CreatePushSubscription($endpoint: String!, $keys: String!, $receivesAdminNotifications: Boolean!) {
+          mutation CreatePushSubscription($endpoint: String!, $keys: String!) {
             createPushSubscription(data: {
               endpoint: $endpoint
               keys: $keys
-              receivesAdminNotifications: $receivesAdminNotifications
             }) {
               id
             }
@@ -114,8 +114,7 @@
         `,
         variables: {
           endpoint: subscription.endpoint,
-          keys: JSON.stringify(subscription.toJSON().keys),
-          receivesAdminNotifications: true // Always true for admin subscriptions
+          keys: JSON.stringify(subscription.toJSON().keys)
         }
       })
     });
@@ -148,8 +147,7 @@
   }
 
   /**
-   * Public method to enable notifications (can be called from a button or console)
-   * Admins only - check window.currentUser.isAdmin before calling if needed
+   * Public method to enable notifications (can be called from a button)
    */
   window.enablePushNotifications = function() {
     setupPushNotifications();
@@ -173,11 +171,8 @@
     }
   };
 
-  // Initialize on load
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
-  }
+  // Auto-initialize if enabled
+  // Removed auto-init - admin needs to manually enable via console or button
+  // Call window.enablePushNotifications() to enable
 
 })();
