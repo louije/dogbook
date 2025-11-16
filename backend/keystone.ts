@@ -58,8 +58,6 @@ export default withAuth(config({
         res.send(`
 /**
  * Service Worker for Keystone Admin UI Push Notifications
- * Safari requires a service worker for push notifications,
- * but with declarative web push, the browser handles notifications directly
  */
 
 // Install event
@@ -74,8 +72,72 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(self.clients.claim());
 });
 
-// No push event handler needed for declarative web push
-// Safari handles notifications directly with userVisibleOnly: false
+// Push notification event
+self.addEventListener('push', (event) => {
+  console.log('[Admin SW] Push received', event);
+
+  if (!event.data) {
+    return;
+  }
+
+  const data = event.data.json();
+
+  const options = {
+    body: data.body,
+    icon: data.icon || '/images/hello-big-dog.png',
+    badge: data.badge || '/images/hello-dog.png',
+    data: data.data,
+    vibrate: [200, 100, 200],
+    requireInteraction: true,
+    actions: [
+      {
+        action: 'view',
+        title: 'Voir'
+      },
+      {
+        action: 'close',
+        title: 'Fermer'
+      }
+    ]
+  };
+
+  event.waitUntil(
+    self.registration.showNotification(data.title, options)
+  );
+});
+
+// Notification click event
+self.addEventListener('notificationclick', (event) => {
+  console.log('[Admin SW] Notification clicked', event);
+
+  event.notification.close();
+
+  if (event.action === 'close') {
+    return;
+  }
+
+  // Open the admin URL
+  const urlToOpen = event.notification.data?.url
+    ? new URL(event.notification.data.url, self.location.origin).href
+    : self.location.origin;
+
+  event.waitUntil(
+    self.clients.matchAll({ type: 'window', includeUncontrolled: true })
+      .then((clientList) => {
+        // Check if app is already open
+        for (const client of clientList) {
+          if (client.url === urlToOpen && 'focus' in client) {
+            return client.focus();
+          }
+        }
+
+        // Open new window
+        if (self.clients.openWindow) {
+          return self.clients.openWindow(urlToOpen);
+        }
+      })
+  );
+});
         `);
       });
     },

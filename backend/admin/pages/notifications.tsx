@@ -102,10 +102,10 @@ export default function NotificationsPage() {
 
       setStatus('Création de la souscription...');
 
-      // Subscribe with VAPID key (declarative mode for Safari)
+      // Subscribe with VAPID key
       const convertedKey = urlBase64ToUint8Array(VAPID_PUBLIC_KEY);
       const subscription = await registration.pushManager.subscribe({
-        userVisibleOnly: false, // Declarative mode for Safari
+        userVisibleOnly: true, // Required by Safari/browsers
         applicationServerKey: convertedKey
       });
 
