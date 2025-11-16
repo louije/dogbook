@@ -130,16 +130,16 @@ self.addEventListener('notificationclick', (event) => {
       .then((clientList) => {
         console.log('[Admin SW] Found clients:', clientList.length);
 
-        // Check if app is already open
-        for (const client of clientList) {
-          console.log('[Admin SW] Checking client:', client.url);
-          if (client.url === urlToOpen && 'focus' in client) {
-            console.log('[Admin SW] Focusing existing window');
-            return client.focus();
-          }
+        // If we have an existing admin window, navigate it to the URL
+        if (clientList.length > 0) {
+          const client = clientList[0];
+          console.log('[Admin SW] Navigating existing client to:', urlToOpen);
+          return client.focus().then(() => {
+            return client.navigate(urlToOpen);
+          });
         }
 
-        // Open new window
+        // No existing window, try to open new one
         console.log('[Admin SW] Opening new window');
         if (self.clients.openWindow) {
           return self.clients.openWindow(urlToOpen).then(windowClient => {
