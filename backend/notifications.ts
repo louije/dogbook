@@ -140,7 +140,7 @@ export async function sendUploadNotification(
       icon: '/images/hello-big-dog.png',
       badge: '/images/hello-dog.png',
       data: {
-        url: `/media/${item.id}`,
+        url: moderationMode === 'a_priori' ? '/media' : `/media/${item.id}`,
         dogId: dog?.id,
         mediaId: item.id,
         action: moderationMode === 'a_priori' ? 'approve' : 'view',
@@ -183,7 +183,7 @@ export async function sendDogUpdateNotification(
       icon: '/images/hello-big-dog.png',
       badge: '/images/hello-dog.png',
       data: {
-        url: `/admin/dogs/${item.id}`,
+        url: `/dogs/${item.id}`,
         dogId: item.id,
       },
     });
@@ -225,7 +225,7 @@ export async function sendNewDogNotification(
       icon: '/images/hello-big-dog.png',
       badge: '/images/hello-dog.png',
       data: {
-        url: `/admin/dogs/${item.id}`,
+        url: `/dogs/${item.id}`,
         dogId: item.id,
       },
     });
