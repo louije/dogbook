@@ -558,7 +558,7 @@ input:focus-visible {
    Dog Gallery
    ========================================================================== */
 
-.dog_gallery {
+.dog-gallery {
   margin-bottom: var(--spacing-xl);
 }
 
