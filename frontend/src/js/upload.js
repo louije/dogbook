@@ -85,8 +85,10 @@
       // Show preview
       showPreview(compressedBlob);
 
-      // Enable submit button
-      document.getElementById('upload-button').disabled = false;
+      // Show submit button
+      const submitButton = document.getElementById('upload-button');
+      submitButton.hidden = false;
+      submitButton.disabled = false;
 
       // Show compression results only if there was improvement
       const originalSize = (file.size / 1024).toFixed(0);
@@ -107,7 +109,9 @@
       console.error('Error compressing image:', error);
       compressedBlob = file;
       showPreview(file);
-      document.getElementById('upload-button').disabled = false;
+      const submitButton = document.getElementById('upload-button');
+      submitButton.hidden = false;
+      submitButton.disabled = false;
       showStatus('', '');
     }
   }
@@ -215,6 +219,7 @@
     photoInput.value = '';
     previewImage.src = '';
     previewContainer.hidden = true;
+    uploadButton.hidden = true;
     uploadButton.disabled = true;
     selectedFile = null;
     compressedBlob = null;

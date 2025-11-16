@@ -711,10 +711,6 @@ input:focus-visible {
   transform: translateY(-1px);
 }
 
-.photo-upload__submit:disabled {
-  display: none;
-}
-
 .photo-upload__progress {
   display: flex;
   flex-direction: column;
