@@ -296,7 +296,7 @@ export const lists = {
   PushSubscription: list({
     access: {
       operation: {
-        query: isAuthenticated,
+        query: () => true, // Allow backend to query for notifications
         create: () => true, // Anyone can subscribe
         update: isAuthenticated,
         delete: () => true, // Anyone can unsubscribe
