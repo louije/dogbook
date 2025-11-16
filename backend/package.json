@@ -28,5 +28,8 @@
   },
   "devDependencies": {
     "tsx": "^4.20.6"
+  },
+  "overrides": {
+    "@azure/msal-node": "^2.16.2"
   }
 }
