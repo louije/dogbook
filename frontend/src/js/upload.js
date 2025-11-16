@@ -48,10 +48,14 @@
    * Initialize upload functionality
    */
   async function init() {
-    // Fetch moderation mode first
-    await fetchModerationMode();
     const uploadForm = document.getElementById('upload-form');
     if (!uploadForm) return;
+
+    // Show upload form (hidden by default for no-JS users)
+    uploadForm.hidden = false;
+
+    // Fetch moderation mode first
+    await fetchModerationMode();
 
     const photoInput = document.getElementById('photo-input');
     const removePreviewBtn = document.getElementById('remove-preview');
