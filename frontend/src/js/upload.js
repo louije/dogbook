@@ -77,9 +77,9 @@
 
     try {
       // Show loading state
-      showStatus('Optimisation de l\'image...', 'info');
+      showStatus('Préparation de l\'image...', 'info');
 
-      // Compress image
+      // Compress image (returns original if compression doesn't help)
       compressedBlob = await compressImage(file);
 
       // Show preview
@@ -88,26 +88,33 @@
       // Enable submit button
       document.getElementById('upload-button').disabled = false;
 
-      // Show compression results
+      // Show compression results only if there was improvement
       const originalSize = (file.size / 1024).toFixed(0);
       const compressedSize = (compressedBlob.size / 1024).toFixed(0);
       const savings = Math.round((1 - compressedBlob.size / file.size) * 100);
 
-      showStatus(
-        `Image optimisée (${originalSize}KB → ${compressedSize}KB, -${savings}%)`,
-        'success'
-      );
+      if (savings > 5) {
+        // Only show message if we saved more than 5%
+        showStatus(
+          `Image optimisée (${originalSize}KB → ${compressedSize}KB, -${savings}%)`,
+          'success'
+        );
+      } else {
+        // Clear the loading message, but don't show anything else
+        showStatus('', '');
+      }
     } catch (error) {
       console.error('Error compressing image:', error);
-      showStatus('Erreur lors de l\'optimisation. L\'image sera envoyée telle quelle.', 'warning');
       compressedBlob = file;
       showPreview(file);
       document.getElementById('upload-button').disabled = false;
+      showStatus('', '');
     }
   }
 
   /**
    * Compress image using canvas
+   * Returns the smaller of: compressed version or original
    */
   function compressImage(file) {
     return new Promise((resolve, reject) => {
@@ -120,18 +127,29 @@
           const canvas = document.createElement('canvas');
           let width = img.width;
           let height = img.height;
+          let needsResize = false;
 
           // Calculate new dimensions while maintaining aspect ratio
           if (width > height) {
             if (width > MAX_WIDTH) {
               height = Math.round((height * MAX_WIDTH) / width);
               width = MAX_WIDTH;
+              needsResize = true;
             }
           } else {
             if (height > MAX_HEIGHT) {
               width = Math.round((width * MAX_HEIGHT) / height);
               height = MAX_HEIGHT;
+              needsResize = true;
             }
+          }
+
+          // If image is already small and JPEG, consider keeping original
+          const isJpeg = file.type === 'image/jpeg' || file.type === 'image/jpg';
+          if (!needsResize && isJpeg && file.size < 500 * 1024) {
+            // Small JPEG, likely already optimized - use original
+            resolve(file);
+            return;
           }
 
           canvas.width = width;
@@ -148,7 +166,13 @@
           canvas.toBlob(
             (blob) => {
               if (blob) {
-                resolve(blob);
+                // Compare sizes and use the smaller one
+                if (blob.size < file.size) {
+                  resolve(blob);
+                } else {
+                  // Compression made it bigger - use original
+                  resolve(file);
+                }
               } else {
                 reject(new Error('Failed to compress image'));
               }
