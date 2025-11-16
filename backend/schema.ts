@@ -323,6 +323,13 @@ export const lists = {
           displayMode: 'textarea',
         },
       }),
+      receivesAdminNotifications: checkbox({
+        defaultValue: false,
+        label: 'Reçoit notifications admin',
+        ui: {
+          description: 'Cette souscription reçoit les notifications administrateur',
+        },
+      }),
       createdAt: timestamp({
         label: 'Créé le',
         db: { isNullable: true },
