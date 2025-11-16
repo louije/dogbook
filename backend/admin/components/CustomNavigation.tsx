@@ -20,7 +20,10 @@ export function CustomNavigation({ lists, authenticatedItem }: NavigationProps) 
       {authenticatedItem.state === "unauthenticated" ? (
         <NavItem href="/signin">Se connecter</NavItem>
       ) : (
-        <NavItem href="#" onClick={handleSignout}>Se déconnecter</NavItem>
+        <>
+          <NavItem href="/notifications">Activer les notifications</NavItem>
+          <NavItem href="javascript:void(0)" onClick={handleSignout}>Se déconnecter</NavItem>
+        </>
       )}
     </NavigationContainer>
   );
