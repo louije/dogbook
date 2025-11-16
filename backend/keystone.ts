@@ -2,6 +2,8 @@ import { config } from '@keystone-6/core';
 import { statelessSessions } from '@keystone-6/core/session';
 import { createAuth } from '@keystone-6/auth';
 import { lists } from './schema';
+import express from 'express';
+import path from 'path';
 
 const sessionConfig = {
   maxAge: 60 * 60 * 24 * 30, // 30 days
@@ -47,6 +49,10 @@ export default withAuth(config({
     cors: {
       origin: true,
       credentials: true,
+    },
+    extendExpressApp: (app) => {
+      // Serve static files from public directory
+      app.use(express.static(path.join(__dirname, 'public')));
     },
   },
   ui: {
