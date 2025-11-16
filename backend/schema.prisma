@@ -69,8 +69,9 @@ model Settings {
 }
 
 model PushSubscription {
-  id        String    @id @default(cuid())
-  endpoint  String    @unique @default("")
-  keys      String    @default("")
-  createdAt DateTime?
+  id                         String    @id @default(cuid())
+  endpoint                   String    @unique @default("")
+  keys                       String    @default("")
+  receivesAdminNotifications Boolean   @default(false)
+  createdAt                  DateTime?
 }
