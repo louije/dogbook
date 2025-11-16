@@ -53,6 +53,11 @@ export default withAuth(config({
     // Allow anyone to access the admin UI
     // They still need to log in to perform authenticated operations
     isAccessAllowed: () => true,
+    publicPages: ['/admin-sw.js'],
+    pageMiddleware: async ({ wasAccessAllowed }) => {
+      // Allow access to the custom notifications page
+      return wasAccessAllowed;
+    },
   },
   session,
 }));
