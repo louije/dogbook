@@ -109,32 +109,47 @@ self.addEventListener('push', (event) => {
 // Notification click event
 self.addEventListener('notificationclick', (event) => {
   console.log('[Admin SW] Notification clicked', event);
+  console.log('[Admin SW] Notification data:', event.notification.data);
 
   event.notification.close();
 
   if (event.action === 'close') {
+    console.log('[Admin SW] Close action, not opening anything');
     return;
   }
 
   // Open the admin URL
-  const urlToOpen = event.notification.data?.url
-    ? new URL(event.notification.data.url, self.location.origin).href
-    : self.location.origin;
+  const relativeUrl = event.notification.data?.url || '/';
+  const urlToOpen = new URL(relativeUrl, self.location.origin).href;
+
+  console.log('[Admin SW] Opening URL:', urlToOpen);
+  console.log('[Admin SW] Origin:', self.location.origin);
 
   event.waitUntil(
     self.clients.matchAll({ type: 'window', includeUncontrolled: true })
       .then((clientList) => {
+        console.log('[Admin SW] Found clients:', clientList.length);
+
         // Check if app is already open
         for (const client of clientList) {
+          console.log('[Admin SW] Checking client:', client.url);
           if (client.url === urlToOpen && 'focus' in client) {
+            console.log('[Admin SW] Focusing existing window');
             return client.focus();
           }
         }
 
         // Open new window
+        console.log('[Admin SW] Opening new window');
         if (self.clients.openWindow) {
-          return self.clients.openWindow(urlToOpen);
+          return self.clients.openWindow(urlToOpen).then(windowClient => {
+            console.log('[Admin SW] Window opened:', windowClient);
+            return windowClient;
+          });
         }
+      })
+      .catch(error => {
+        console.error('[Admin SW] Error handling click:', error);
       })
   );
 });
