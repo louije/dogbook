@@ -5,7 +5,6 @@
 :root {
   --color-primary: #2c305f;
   --color-primary-light: #6269bc;
-  --color-secondary: #d4a373;
   --color-text: #333333;
   --color-text-light: #666666;
   --color-background: #ffffff;
@@ -119,63 +118,6 @@ input:focus-visible {
 }
 
 /* ==========================================================================
-   Header
-   ========================================================================== */
-
-.header {
-  background-color: var(--color-primary);
-  color: white;
-  padding: var(--spacing-md) 0;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.header__container {
-  margin: 0 auto;
-  padding: 0 var(--spacing-md);
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: var(--spacing-md);
-}
-
-.header__title {
-  font-size: var(--font-size-2xl);
-  font-weight: 700;
-}
-
-.header__link {
-  color: white;
-  text-decoration: none;
-}
-
-.header__link:hover {
-  color: var(--color-primary-light);
-}
-
-/* ==========================================================================
-   Navigation
-   ========================================================================== */
-
-.nav__list {
-  list-style: none;
-  display: flex;
-  gap: var(--spacing-md);
-}
-
-.nav__link {
-  color: white;
-  font-weight: 500;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--border-radius);
-  transition: var(--transition);
-}
-
-.nav__link:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* ==========================================================================
    Main
    ========================================================================== */
 
@@ -249,9 +191,10 @@ input:focus-visible {
   border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: var(--border-radius);
   color: white;
-  padding: var(--spacing-xs) var(--spacing-sm);
   cursor: pointer;
   transition: var(--transition);
+  justify-content: center;
+  align-items: center;
 }
 
 .hero__search-toggle svg {
@@ -418,16 +361,6 @@ input:focus-visible {
   font-size: var(--font-size-xl);
   color: white;
   margin: 0;
-}
-
-.dog-card__meta {
-  color: rgba(255, 255, 255, 0.8);
-  font-size: 0.9rem;
-  margin-bottom: var(--spacing-xs);
-}
-
-.dog-card__separator {
-  margin: 0 var(--spacing-xs);
 }
 
 .dog-card__owner {
@@ -653,29 +586,6 @@ input:focus-visible {
   opacity: 0.7;
 }
 
-
-/* ==========================================================================
-   Footer
-   ========================================================================== */
-
-.footer {
-  background-color: var(--color-background-light);
-  border-top: 1px solid var(--color-border);
-  padding: var(--spacing-lg) 0;
-  margin-top: var(--spacing-xl);
-}
-
-.footer__container {
-  margin: 0 auto;
-  padding: 0 var(--spacing-md);
-  text-align: center;
-}
-
-.footer__text {
-  color: var(--color-text-light);
-  font-size: 0.9rem;
-}
-
 /* ==========================================================================
    Photo Upload Form
    ========================================================================== */
@@ -857,20 +767,6 @@ input:focus-visible {
 }
 
 /* ==========================================================================
-   Dog Gallery Enhancements
-   ========================================================================== */
-
-.dog-gallery__title {
-  font-size: var(--font-size-lg);
-  color: var(--color-primary);
-  margin-bottom: var(--spacing-md);
-}
-
-.dog-gallery__item-wrapper {
-  position: relative;
-}
-
-/* ==========================================================================
    Mobile Optimizations
    ========================================================================== */
 
@@ -949,22 +845,4 @@ input:focus-visible {
 .lightbox__set-featured:disabled {
   opacity: 0.5;
   cursor: not-allowed;
-}
-
-/* Dark mode support (for future) */
-@media (prefers-color-scheme: dark) {
-  :root {
-    /* Can add dark mode colors here later */
-  }
-}
-
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  *,
-  *::before,
-  *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
 }
