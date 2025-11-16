@@ -7,7 +7,6 @@ permalink: "/chiens/{{ dog.id }}/"
 layout: base.njk
 eleventyComputed:
   title: "{{ dog.name }}"
-  year: 2024
   dogImage: "{{ dog | getFeaturedPhoto }}"
 ---
 
