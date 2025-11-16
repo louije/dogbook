@@ -1,4 +1,4 @@
-import { sendUploadNotification } from './notifications';
+import { sendUploadNotification, sendDogUpdateNotification, sendNewDogNotification } from './notifications';
 
 /**
  * Trigger frontend build webhook
@@ -121,6 +121,28 @@ export const mediaHooks = {
 
     // Trigger build when featured photo changes
     if (operation === 'update' && item.isFeatured === true) {
+      await triggerFrontendBuild();
+    }
+  },
+};
+
+/**
+ * Dog-specific hooks for handling attribute change notifications
+ */
+export const dogHooks = {
+  afterOperation: async ({ operation, item, context }: any) => {
+    // Send notification on update (if by non-admin)
+    if (operation === 'update') {
+      await sendDogUpdateNotification(item, context);
+    }
+
+    // Send notification on create (if by non-admin)
+    if (operation === 'create') {
+      await sendNewDogNotification(item, context);
+    }
+
+    // Still trigger frontend builds
+    if (['create', 'update', 'delete'].includes(operation)) {
       await triggerFrontendBuild();
     }
   },
