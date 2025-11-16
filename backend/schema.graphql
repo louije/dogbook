@@ -497,6 +497,7 @@ type PushSubscription {
   id: ID!
   endpoint: String
   keys: String
+  receivesAdminNotifications: Boolean
   createdAt: DateTime
 }
 
@@ -512,6 +513,7 @@ input PushSubscriptionWhereInput {
   id: IDFilter
   endpoint: StringFilter
   keys: StringFilter
+  receivesAdminNotifications: BooleanFilter
   createdAt: DateTimeNullableFilter
 }
 
@@ -519,12 +521,14 @@ input PushSubscriptionOrderByInput {
   id: OrderDirection
   endpoint: OrderDirection
   keys: OrderDirection
+  receivesAdminNotifications: OrderDirection
   createdAt: OrderDirection
 }
 
 input PushSubscriptionUpdateInput {
   endpoint: String
   keys: String
+  receivesAdminNotifications: Boolean
   createdAt: DateTime
 }
 
@@ -536,6 +540,7 @@ input PushSubscriptionUpdateArgs {
 input PushSubscriptionCreateInput {
   endpoint: String
   keys: String
+  receivesAdminNotifications: Boolean
   createdAt: DateTime
 }
 
