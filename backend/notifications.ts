@@ -79,13 +79,15 @@ export async function sendUploadNotification(
   context: any
 ): Promise<void> {
   try {
-    // Get admin subscriptions only
-    const adminSubscriptions = await context.query.PushSubscription.findMany({
-      where: { receivesAdminNotifications: { equals: true } },
+    // Debug: Get ALL subscriptions first
+    const allSubscriptions = await context.query.PushSubscription.findMany({
       query: 'id endpoint keys receivesAdminNotifications',
     });
+    console.log('[Upload Notification] ALL subscriptions:', allSubscriptions.length, allSubscriptions.map((s: any) => ({ id: s.id, receivesAdminNotifications: s.receivesAdminNotifications })));
 
-    console.log('[Upload Notification] Found subscriptions:', adminSubscriptions.length, adminSubscriptions.map((s: any) => ({ id: s.id, receivesAdminNotifications: s.receivesAdminNotifications })));
+    // Get admin subscriptions only
+    const adminSubscriptions = allSubscriptions.filter((s: any) => s.receivesAdminNotifications === true);
+    console.log('[Upload Notification] Filtered admin subscriptions:', adminSubscriptions.length);
 
     if (adminSubscriptions.length === 0) {
       console.log('No admin subscriptions, skipping notification');
