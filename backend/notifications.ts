@@ -114,8 +114,8 @@ export async function sendUploadNotification(
     await sendPushNotification(context, {
       title,
       body,
-      icon: '/images/icon-192.png',
-      badge: '/images/badge-72.png',
+      icon: '/images/hello-big-dog.png',
+      badge: '/images/hello-dog.png',
       data: {
         url: `/media/${item.id}`,
         dogId: dog?.id,

@@ -19,7 +19,7 @@ module.exports = function(eleventyConfig) {
 
   // Add filter to prefix image URL with API URL
   eleventyConfig.addFilter('imageUrl', function(url) {
-    if (!url) return '/images/placeholder-dog.jpg';
+    if (!url) return '/images/placeholder.png';
     const API_URL = process.env.API_URL || 'http://localhost:3000';
     return API_URL + url;
   });
@@ -30,7 +30,7 @@ module.exports = function(eleventyConfig) {
 
     // No photos at all - use placeholder
     if (!dog.photos || dog.photos.length === 0) {
-      return '/images/placeholder-dog.jpg';
+      return '/images/placeholder.png';
     }
 
     // Try to find featured photo
@@ -45,7 +45,7 @@ module.exports = function(eleventyConfig) {
     }
 
     // No valid photos - use placeholder
-    return '/images/placeholder-dog.jpg';
+    return '/images/placeholder.png';
   });
 
   // Add filter to get edit URL for a dog
