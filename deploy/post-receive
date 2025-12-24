@@ -24,27 +24,46 @@ do
         echo "→ Checking out code..."
         git --work-tree=$TARGET --git-dir=$GIT_DIR checkout -f $BRANCH
 
+        # Fix ownership for build (files may be owned by caddy from service)
+        echo "→ Fixing file ownership for build..."
+        sudo chown -R deploy-user:deploy-user $TARGET
+
         # Navigate to backend directory
         cd $TARGET/backend
 
-        # Install dependencies
+        # Install dependencies (skip postinstall to avoid schema check)
         echo "→ Installing dependencies..."
-        npm install --production
-
-        # Build backend
-        echo "→ Building backend..."
-        npm run build
+        npm install --production --ignore-scripts
 
         # Fix Prisma binary targets for production server
         echo "→ Updating Prisma binary targets..."
         sed -i 's/provider = "prisma-client-js"/provider = "prisma-client-js"\n  binaryTargets = ["native", "debian-openssl-3.0.x"]/' schema.prisma
-        npm run postinstall || true  # May warn about schema being out of date, but that's ok
+
+        # Generate Prisma client
+        echo "→ Generating Prisma client..."
+        npx prisma generate
+
+        # Stop service before migrations (SQLite locks)
+        echo "→ Stopping service for migrations..."
+        sudo systemctl stop dogbook || true
+
+        # Run database migrations
+        echo "→ Running database migrations..."
+        npx prisma migrate deploy
+
+        # Build backend
+        echo "→ Building backend..."
+        npm run build
 
         # Ensure data symlink exists
         if [ ! -L "$TARGET/data" ]; then
             echo "→ Creating data symlink..."
             ln -s /srv/dogbook/data $TARGET/data
         fi
+
+        # Restore ownership to caddy for service
+        echo "→ Restoring file ownership to caddy..."
+        sudo chown -R caddy:caddy $TARGET
 
         # Restart systemd service
         echo "→ Restarting dogbook service..."

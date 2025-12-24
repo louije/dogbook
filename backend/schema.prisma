@@ -75,3 +75,16 @@ model PushSubscription {
   receivesAdminNotifications Boolean   @default(false)
   createdAt                  DateTime?
 }
+
+model ChangeLog {
+  id             String   @id @default(cuid())
+  timestamp      DateTime @default(now())
+  entityType     String
+  entityId       String   @default("")
+  entityName     String   @default("")
+  operation      String
+  changes        String?
+  changesSummary String   @default("")
+  changedBy      String?  @default("public")
+  status         String?  @default("pending")
+}

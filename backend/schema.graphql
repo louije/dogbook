@@ -544,6 +544,142 @@ input PushSubscriptionCreateInput {
   createdAt: DateTime
 }
 
+type ChangeLog {
+  id: ID!
+  timestamp: DateTime
+  entityType: ChangeLogEntityTypeType
+  entityId: String
+  entityName: String
+  operation: ChangeLogOperationType
+  changes: JSON
+  changesSummary: String
+  changedBy: ChangeLogChangedByType
+  status: ChangeLogStatusType
+}
+
+enum ChangeLogEntityTypeType {
+  Dog
+  Owner
+  Media
+}
+
+enum ChangeLogOperationType {
+  create
+  update
+  delete
+}
+
+enum ChangeLogChangedByType {
+  public
+  admin
+  system
+}
+
+enum ChangeLogStatusType {
+  pending
+  accepted
+  reverted
+}
+
+input ChangeLogWhereUniqueInput {
+  id: ID
+}
+
+input ChangeLogWhereInput {
+  AND: [ChangeLogWhereInput!]
+  OR: [ChangeLogWhereInput!]
+  NOT: [ChangeLogWhereInput!]
+  id: IDFilter
+  timestamp: DateTimeFilter
+  entityType: ChangeLogEntityTypeTypeNullableFilter
+  entityId: StringFilter
+  entityName: StringFilter
+  operation: ChangeLogOperationTypeNullableFilter
+  changesSummary: StringFilter
+  changedBy: ChangeLogChangedByTypeNullableFilter
+  status: ChangeLogStatusTypeNullableFilter
+}
+
+input DateTimeFilter {
+  equals: DateTime
+  in: [DateTime!]
+  notIn: [DateTime!]
+  lt: DateTime
+  lte: DateTime
+  gt: DateTime
+  gte: DateTime
+  not: DateTimeFilter
+}
+
+input ChangeLogEntityTypeTypeNullableFilter {
+  equals: ChangeLogEntityTypeType
+  in: [ChangeLogEntityTypeType!]
+  notIn: [ChangeLogEntityTypeType!]
+  not: ChangeLogEntityTypeTypeNullableFilter
+}
+
+input ChangeLogOperationTypeNullableFilter {
+  equals: ChangeLogOperationType
+  in: [ChangeLogOperationType!]
+  notIn: [ChangeLogOperationType!]
+  not: ChangeLogOperationTypeNullableFilter
+}
+
+input ChangeLogChangedByTypeNullableFilter {
+  equals: ChangeLogChangedByType
+  in: [ChangeLogChangedByType!]
+  notIn: [ChangeLogChangedByType!]
+  not: ChangeLogChangedByTypeNullableFilter
+}
+
+input ChangeLogStatusTypeNullableFilter {
+  equals: ChangeLogStatusType
+  in: [ChangeLogStatusType!]
+  notIn: [ChangeLogStatusType!]
+  not: ChangeLogStatusTypeNullableFilter
+}
+
+input ChangeLogOrderByInput {
+  id: OrderDirection
+  timestamp: OrderDirection
+  entityType: OrderDirection
+  entityId: OrderDirection
+  entityName: OrderDirection
+  operation: OrderDirection
+  changesSummary: OrderDirection
+  changedBy: OrderDirection
+  status: OrderDirection
+}
+
+input ChangeLogUpdateInput {
+  timestamp: DateTime
+  entityType: ChangeLogEntityTypeType
+  entityId: String
+  entityName: String
+  operation: ChangeLogOperationType
+  changes: JSON
+  changesSummary: String
+  changedBy: ChangeLogChangedByType
+  status: ChangeLogStatusType
+}
+
+input ChangeLogUpdateArgs {
+  where: ChangeLogWhereUniqueInput!
+  data: ChangeLogUpdateInput!
+}
+
+input ChangeLogCreateInput {
+  timestamp: DateTime
+  entityType: ChangeLogEntityTypeType
+  entityId: String
+  entityName: String
+  operation: ChangeLogOperationType
+  changes: JSON
+  changesSummary: String
+  changedBy: ChangeLogChangedByType
+  status: ChangeLogStatusType
+}
+
 """
 The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
 """
@@ -586,6 +722,12 @@ type Mutation {
   updatePushSubscriptions(data: [PushSubscriptionUpdateArgs!]!): [PushSubscription]
   deletePushSubscription(where: PushSubscriptionWhereUniqueInput!): PushSubscription
   deletePushSubscriptions(where: [PushSubscriptionWhereUniqueInput!]!): [PushSubscription]
+  createChangeLog(data: ChangeLogCreateInput!): ChangeLog
+  createChangeLogs(data: [ChangeLogCreateInput!]!): [ChangeLog]
+  updateChangeLog(where: ChangeLogWhereUniqueInput!, data: ChangeLogUpdateInput!): ChangeLog
+  updateChangeLogs(data: [ChangeLogUpdateArgs!]!): [ChangeLog]
+  deleteChangeLog(where: ChangeLogWhereUniqueInput!): ChangeLog
+  deleteChangeLogs(where: [ChangeLogWhereUniqueInput!]!): [ChangeLog]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -640,6 +782,9 @@ type Query {
   pushSubscriptions(where: PushSubscriptionWhereInput! = {}, orderBy: [PushSubscriptionOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: PushSubscriptionWhereUniqueInput): [PushSubscription!]
   pushSubscription(where: PushSubscriptionWhereUniqueInput!): PushSubscription
   pushSubscriptionsCount(where: PushSubscriptionWhereInput! = {}): Int
+  changeLogs(where: ChangeLogWhereInput! = {}, orderBy: [ChangeLogOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ChangeLogWhereUniqueInput): [ChangeLog!]
+  changeLog(where: ChangeLogWhereUniqueInput!): ChangeLog
+  changeLogsCount(where: ChangeLogWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
   validateUserPasswordResetToken(email: String!, token: String!): ValidateUserPasswordResetTokenResult
