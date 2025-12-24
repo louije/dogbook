@@ -1,4 +1,10 @@
-import { sendUploadNotification, sendDogUpdateNotification, sendNewDogNotification } from './notifications';
+import { sendUploadNotification, sendDogUpdateNotification, sendNewDogNotification, sendChangeNotification } from './notifications';
+import {
+  detectChanges,
+  createChangesSummary,
+  getEntityName,
+  logChange,
+} from './change-logging';
 
 /**
  * Trigger frontend build webhook
@@ -39,9 +45,118 @@ export const buildTriggerHooks = {
 };
 
 /**
- * Media-specific hooks for handling upload notifications and auto-approval
+ * Owner-specific hooks for change logging
+ */
+export const ownerHooks = {
+  beforeOperation: async ({ operation, item, context }: any) => {
+    // Store old item data for comparison
+    if ((operation === 'update' || operation === 'delete') && item) {
+      const fullItem = await context.query.Owner.findOne({
+        where: { id: item.id },
+        query: 'id name email phone',
+      });
+      context._oldOwnerItem = fullItem;
+    }
+  },
+
+  afterOperation: async ({ operation, item, context, inputData }: any) => {
+    const changedBy = context.session ? 'admin' : 'public';
+
+    // Handle create
+    if (operation === 'create') {
+      const entityName = getEntityName('Owner', item);
+
+      await logChange(context, {
+        entityType: 'Owner',
+        entityId: item.id,
+        entityName,
+        operation: 'create',
+        changes: [],
+        changesSummary: `Nouveau humain créé: ${entityName}`,
+        changedBy,
+      });
+
+      await sendChangeNotification(context, {
+        entityType: 'Owner',
+        entityName,
+        operation: 'create',
+        changes: [],
+      });
+    }
+
+    // Handle update
+    if (operation === 'update') {
+      const oldItem = context._oldOwnerItem;
+      const changes = detectChanges('Owner', oldItem, inputData);
+
+      if (changes.length > 0) {
+        const entityName = getEntityName('Owner', item);
+        const changesSummary = createChangesSummary('Owner', entityName, changes);
+
+        await logChange(context, {
+          entityType: 'Owner',
+          entityId: item.id,
+          entityName,
+          operation: 'update',
+          changes,
+          changesSummary,
+          changedBy,
+        });
+
+        await sendChangeNotification(context, {
+          entityType: 'Owner',
+          entityName,
+          operation: 'update',
+          changes,
+        });
+      }
+    }
+
+    // Handle delete
+    if (operation === 'delete') {
+      const oldItem = context._oldOwnerItem;
+      const entityName = getEntityName('Owner', oldItem);
+
+      await logChange(context, {
+        entityType: 'Owner',
+        entityId: item.id,
+        entityName,
+        operation: 'delete',
+        changes: [],
+        changesSummary: `Humain supprimé: ${entityName}`,
+        changedBy,
+      });
+
+      await sendChangeNotification(context, {
+        entityType: 'Owner',
+        entityName,
+        operation: 'delete',
+        changes: [],
+      });
+    }
+
+    // Trigger frontend builds
+    if (['create', 'update', 'delete'].includes(operation)) {
+      await triggerFrontendBuild();
+    }
+  },
+};
+
+/**
+ * Media-specific hooks for handling upload notifications, auto-approval, and change logging
  */
 export const mediaHooks = {
+  beforeOperation: async ({ operation, item, context }: any) => {
+    // Store old item data for comparison
+    if ((operation === 'update' || operation === 'delete') && item) {
+      const fullItem = await context.query.Media.findOne({
+        where: { id: item.id },
+        query: 'id name status isFeatured dog { id name }',
+      });
+      context._oldMediaItem = fullItem;
+    }
+  },
+
   resolveInput: async ({ resolvedData, context, operation, item }: any) => {
     // Set timestamp on create
     if (operation === 'create' && !resolvedData.uploadedAt) {
@@ -103,10 +218,81 @@ export const mediaHooks = {
     return resolvedData;
   },
 
-  afterOperation: async ({ operation, item, context }: any) => {
-    // Send notification on new upload
+  afterOperation: async ({ operation, item, context, inputData }: any) => {
+    const changedBy = context.session ? 'admin' : 'public';
+
+    // Handle create (new photo upload)
     if (operation === 'create') {
+      const entityName = getEntityName('Media', item);
+
+      await logChange(context, {
+        entityType: 'Media',
+        entityId: item.id,
+        entityName,
+        operation: 'create',
+        changes: [],
+        changesSummary: `Nouvelle photo uploadée: ${entityName}`,
+        changedBy,
+      });
+
+      // Send existing upload notification
       await sendUploadNotification(item, context);
+    }
+
+    // Handle update (status changes, featured photo changes)
+    if (operation === 'update') {
+      const oldItem = context._oldMediaItem;
+      const changes = detectChanges('Media', oldItem, inputData);
+
+      if (changes.length > 0) {
+        const entityName = getEntityName('Media', item);
+        const changesSummary = createChangesSummary('Media', entityName, changes);
+
+        await logChange(context, {
+          entityType: 'Media',
+          entityId: item.id,
+          entityName,
+          operation: 'update',
+          changes,
+          changesSummary,
+          changedBy,
+        });
+
+        // Send notification if non-admin made the change
+        if (!context.session) {
+          await sendChangeNotification(context, {
+            entityType: 'Media',
+            entityName,
+            operation: 'update',
+            changes,
+          });
+        }
+      }
+    }
+
+    // Handle delete
+    if (operation === 'delete') {
+      const oldItem = context._oldMediaItem;
+      const entityName = getEntityName('Media', oldItem);
+
+      await logChange(context, {
+        entityType: 'Media',
+        entityId: item.id,
+        entityName,
+        operation: 'delete',
+        changes: [],
+        changesSummary: `Photo supprimée: ${entityName}`,
+        changedBy,
+      });
+
+      if (!context.session) {
+        await sendChangeNotification(context, {
+          entityType: 'Media',
+          entityName,
+          operation: 'delete',
+          changes: [],
+        });
+      }
     }
 
     // Trigger frontend build when media is approved or deleted
@@ -127,18 +313,94 @@ export const mediaHooks = {
 };
 
 /**
- * Dog-specific hooks for handling attribute change notifications
+ * Dog-specific hooks for handling attribute change notifications and change logging
  */
 export const dogHooks = {
-  afterOperation: async ({ operation, item, context }: any) => {
-    // Send notification on update (if by non-admin)
-    if (operation === 'update') {
-      await sendDogUpdateNotification(item, context);
+  beforeOperation: async ({ operation, item, context, inputData }: any) => {
+    // Store old item data for comparison (for updates and deletes)
+    if ((operation === 'update' || operation === 'delete') && item) {
+      // Fetch full item with relationships
+      const fullItem = await context.query.Dog.findOne({
+        where: { id: item.id },
+        query: 'id name sex birthday breed coat owner { id name }',
+      });
+
+      // Store in context for afterOperation
+      context._oldDogItem = fullItem;
+    }
+  },
+
+  afterOperation: async ({ operation, item, context, inputData, originalItem }: any) => {
+    const changedBy = context.session ? 'admin' : 'public';
+
+    // Handle create
+    if (operation === 'create') {
+      const entityName = getEntityName('Dog', item);
+
+      await logChange(context, {
+        entityType: 'Dog',
+        entityId: item.id,
+        entityName,
+        operation: 'create',
+        changes: [],
+        changesSummary: `Nouveau chien créé: ${entityName}`,
+        changedBy,
+      });
+
+      // Send notification
+      await sendNewDogNotification(item, context);
     }
 
-    // Send notification on create (if by non-admin)
-    if (operation === 'create') {
-      await sendNewDogNotification(item, context);
+    // Handle update
+    if (operation === 'update') {
+      const oldItem = context._oldDogItem;
+      const changes = detectChanges('Dog', oldItem, inputData);
+
+      if (changes.length > 0) {
+        const entityName = getEntityName('Dog', item);
+        const changesSummary = createChangesSummary('Dog', entityName, changes);
+
+        await logChange(context, {
+          entityType: 'Dog',
+          entityId: item.id,
+          entityName,
+          operation: 'update',
+          changes,
+          changesSummary,
+          changedBy,
+        });
+
+        // Send notification with change details
+        await sendChangeNotification(context, {
+          entityType: 'Dog',
+          entityName,
+          operation: 'update',
+          changes,
+        });
+      }
+    }
+
+    // Handle delete
+    if (operation === 'delete') {
+      const oldItem = context._oldDogItem;
+      const entityName = getEntityName('Dog', oldItem);
+
+      await logChange(context, {
+        entityType: 'Dog',
+        entityId: item.id,
+        entityName,
+        operation: 'delete',
+        changes: [],
+        changesSummary: `Chien supprimé: ${entityName}`,
+        changedBy,
+      });
+
+      await sendChangeNotification(context, {
+        entityType: 'Dog',
+        entityName,
+        operation: 'delete',
+        changes: [],
+      });
     }
 
     // Still trigger frontend builds
