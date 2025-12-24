@@ -21,6 +21,8 @@ interface ChangeLogData {
   changesSummary: string;
   changedBy: 'public' | 'admin' | 'system';
   status: 'pending' | 'accepted';
+  frontendUrl?: string;
+  backendUrl?: string;
 }
 
 /**
@@ -269,6 +271,41 @@ export function getEntityName(entityType: 'Dog' | 'Owner' | 'Media', item: any):
 }
 
 /**
+ * Generate frontend and backend URLs for an entity
+ */
+export function generateEntityUrls(
+  entityType: 'Dog' | 'Owner' | 'Media',
+  entityId: string,
+  dogId?: string
+): { frontendUrl: string; backendUrl: string } {
+  const backendBaseUrl = process.env.BACKEND_URL || 'http://localhost:3000';
+  const frontendBaseUrl = process.env.FRONTEND_URL || 'http://localhost:8080';
+
+  let frontendUrl = '';
+  let backendUrl = '';
+
+  switch (entityType) {
+    case 'Dog':
+      frontendUrl = `${frontendBaseUrl}/chiens/${entityId}/`;
+      backendUrl = `${backendBaseUrl}/dogs/${entityId}`;
+      break;
+    case 'Owner':
+      frontendUrl = `${frontendBaseUrl}/humains/${entityId}/`;
+      backendUrl = `${backendBaseUrl}/owners/${entityId}`;
+      break;
+    case 'Media':
+      // For media, link to the dog's page on frontend
+      if (dogId) {
+        frontendUrl = `${frontendBaseUrl}/chiens/${dogId}/`;
+      }
+      backendUrl = `${backendBaseUrl}/media/${entityId}`;
+      break;
+  }
+
+  return { frontendUrl, backendUrl };
+}
+
+/**
  * Determine change status based on moderation mode
  */
 export async function getChangeStatus(context: any): Promise<'pending' | 'accepted'> {
@@ -291,10 +328,11 @@ export async function getChangeStatus(context: any): Promise<'pending' | 'accept
  */
 export async function logChange(
   context: any,
-  data: Omit<ChangeLogData, 'status'> & { status?: 'pending' | 'accepted' }
+  data: Omit<ChangeLogData, 'status'> & { status?: 'pending' | 'accepted'; dogId?: string }
 ): Promise<void> {
   try {
     const status = data.status || await getChangeStatus(context);
+    const urls = generateEntityUrls(data.entityType, data.entityId, data.dogId);
 
     await context.query.ChangeLog.createOne({
       data: {
@@ -306,6 +344,8 @@ export async function logChange(
         changesSummary: data.changesSummary,
         changedBy: data.changedBy,
         status,
+        frontendUrl: urls.frontendUrl,
+        backendUrl: urls.backendUrl,
       },
     });
   } catch (error) {

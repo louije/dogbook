@@ -221,9 +221,27 @@ export const mediaHooks = {
   afterOperation: async ({ operation, item, context, inputData }: any) => {
     const changedBy = context.session ? 'admin' : 'public';
 
+    // Fetch dog information for all operations (for linking)
+    let dogId: string | undefined;
+    let fullItem = item;
+
+    if (operation === 'create' || operation === 'update') {
+      // For create and update, fetch the dog info
+      fullItem = await context.query.Media.findOne({
+        where: { id: item.id },
+        query: 'id name dog { id name }',
+      });
+      dogId = fullItem?.dog?.id;
+    } else if (operation === 'delete') {
+      // For delete, use the stored old item
+      const oldItem = context._oldMediaItem;
+      dogId = oldItem?.dog?.id;
+      fullItem = oldItem;
+    }
+
     // Handle create (new photo upload)
     if (operation === 'create') {
-      const entityName = getEntityName('Media', item);
+      const entityName = getEntityName('Media', fullItem);
 
       await logChange(context, {
         entityType: 'Media',
@@ -233,6 +251,7 @@ export const mediaHooks = {
         changes: [],
         changesSummary: `Nouvelle photo uploadée: ${entityName}`,
         changedBy,
+        dogId,
       });
 
       // Send existing upload notification
@@ -245,7 +264,7 @@ export const mediaHooks = {
       const changes = detectChanges('Media', oldItem, inputData);
 
       if (changes.length > 0) {
-        const entityName = getEntityName('Media', item);
+        const entityName = getEntityName('Media', fullItem);
         const changesSummary = createChangesSummary('Media', entityName, changes);
 
         await logChange(context, {
@@ -256,6 +275,7 @@ export const mediaHooks = {
           changes,
           changesSummary,
           changedBy,
+          dogId,
         });
 
         // Send notification if non-admin made the change
@@ -283,6 +303,7 @@ export const mediaHooks = {
         changes: [],
         changesSummary: `Photo supprimée: ${entityName}`,
         changedBy,
+        dogId,
       });
 
       if (!context.session) {

@@ -444,6 +444,20 @@ export const lists = {
           displayMode: 'segmented-control',
         },
       }),
+      frontendUrl: text({
+        validation: { isRequired: false },
+        label: 'Lien Frontend',
+        ui: {
+          description: 'URL vers la page frontend de l\'entité',
+        },
+      }),
+      backendUrl: text({
+        validation: { isRequired: false },
+        label: 'Lien Backend',
+        ui: {
+          description: 'URL vers la page backend de l\'entité',
+        },
+      }),
     },
   }),
 };
