@@ -9,8 +9,9 @@ import {
   checkbox,
   password,
   timestamp,
+  json,
 } from '@keystone-6/core/fields';
-import { buildTriggerHooks, mediaHooks, dogHooks } from './hooks';
+import { buildTriggerHooks, mediaHooks, dogHooks, ownerHooks } from './hooks';
 
 // Helper function to check if user is authenticated
 const isAuthenticated = ({ session }: any) => !!session;
@@ -133,7 +134,7 @@ export const lists = {
         delete: isAuthenticated, // Only authenticated users can delete
       },
     },
-    hooks: buildTriggerHooks,
+    hooks: ownerHooks,
     ui: {
       label: 'Humain',
       plural: 'Humains',
@@ -333,6 +334,115 @@ export const lists = {
       createdAt: timestamp({
         label: 'Créé le',
         db: { isNullable: true },
+      }),
+    },
+  }),
+
+  ChangeLog: list({
+    access: {
+      operation: {
+        query: isAuthenticated, // Only authenticated users can view change log
+        create: () => true, // System can create logs
+        update: isAuthenticated, // Only authenticated users can update (for status changes)
+        delete: isAuthenticated,
+      },
+    },
+    ui: {
+      label: 'Journal des modifications',
+      plural: 'Journal des modifications',
+      isHidden: ({ session }) => !session,
+      listView: {
+        initialColumns: ['timestamp', 'entityType', 'changesSummary', 'changedBy', 'status'],
+        initialSort: { field: 'timestamp', direction: 'DESC' },
+        pageSize: 50,
+      },
+    },
+    fields: {
+      timestamp: timestamp({
+        defaultValue: { kind: 'now' },
+        label: 'Date',
+        ui: {
+          createView: { fieldMode: 'hidden' },
+          itemView: { fieldMode: 'read' },
+        },
+        db: {
+          isNullable: false,
+        },
+      }),
+      entityType: select({
+        type: 'enum',
+        options: [
+          { label: '🐕 Chien', value: 'Dog' },
+          { label: '👤 Humain', value: 'Owner' },
+          { label: '📸 Média', value: 'Media' },
+        ],
+        validation: { isRequired: true },
+        label: 'Type',
+        ui: {
+          displayMode: 'select',
+        },
+      }),
+      entityId: text({
+        validation: { isRequired: true },
+        label: 'ID Entité',
+        ui: {
+          createView: { fieldMode: 'hidden' },
+        },
+      }),
+      entityName: text({
+        validation: { isRequired: false },
+        label: 'Nom',
+        ui: {
+          description: 'Nom du chien/humain/média concerné',
+        },
+      }),
+      operation: select({
+        type: 'enum',
+        options: [
+          { label: 'Création', value: 'create' },
+          { label: 'Modification', value: 'update' },
+          { label: 'Suppression', value: 'delete' },
+        ],
+        validation: { isRequired: true },
+        label: 'Opération',
+      }),
+      changes: json({
+        label: 'Détails des changements',
+        ui: {
+          views: './admin/components/ChangeLogViews',
+          createView: { fieldMode: 'hidden' },
+        },
+      }),
+      changesSummary: text({
+        validation: { isRequired: false },
+        label: 'Résumé',
+        ui: {
+          displayMode: 'textarea',
+          description: 'Résumé formaté des changements',
+        },
+      }),
+      changedBy: select({
+        type: 'enum',
+        options: [
+          { label: '👤 Public', value: 'public' },
+          { label: '🔐 Admin', value: 'admin' },
+          { label: '⚙️ Système', value: 'system' },
+        ],
+        defaultValue: 'public',
+        label: 'Modifié par',
+      }),
+      status: select({
+        type: 'enum',
+        options: [
+          { label: '⏳ En attente', value: 'pending' },
+          { label: '✅ Accepté', value: 'accepted' },
+          { label: '↩️ Annulé', value: 'reverted' },
+        ],
+        defaultValue: 'pending',
+        label: 'Statut',
+        ui: {
+          displayMode: 'segmented-control',
+        },
       }),
     },
   }),

@@ -1,4 +1,5 @@
 import webpush from 'web-push';
+import { createNotificationMessage } from './change-logging';
 
 let vapidInitialized = false;
 
@@ -231,5 +232,68 @@ export async function sendNewDogNotification(
     });
   } catch (error) {
     console.error('Error in sendNewDogNotification:', error);
+  }
+}
+
+/**
+ * Send notification for entity changes with detailed change information
+ * Only sends to admin subscriptions
+ */
+export async function sendChangeNotification(
+  context: any,
+  changeData: {
+    entityType: 'Dog' | 'Owner' | 'Media';
+    entityName: string;
+    operation: 'create' | 'update' | 'delete';
+    changes: Array<{
+      field: string;
+      fieldLabel: string;
+      oldValue: any;
+      newValue: any;
+      displayOld: string;
+      displayNew: string;
+    }>;
+  }
+): Promise<void> {
+  try {
+    // Only notify for non-admin changes
+    if (context.session) {
+      console.log('Change made by admin, skipping notification');
+      return;
+    }
+
+    // Get admin subscriptions only
+    const adminSubscriptions = await context.query.PushSubscription.findMany({
+      where: { receivesAdminNotifications: { equals: true } },
+      query: 'id endpoint keys',
+    });
+
+    if (adminSubscriptions.length === 0) {
+      console.log('No admin subscriptions, skipping notification');
+      return;
+    }
+
+    // Create notification message with change details
+    const { title, body } = createNotificationMessage(
+      changeData.entityType,
+      changeData.entityName,
+      changeData.operation,
+      changeData.changes
+    );
+
+    await sendPushNotificationToSubscriptions(context, adminSubscriptions, {
+      title,
+      body,
+      icon: '/images/hello-big-dog.png',
+      badge: '/images/hello-dog.png',
+      data: {
+        url: '/change-log',
+        entityType: changeData.entityType,
+        entityName: changeData.entityName,
+        operation: changeData.operation,
+      },
+    });
+  } catch (error) {
+    console.error('Error in sendChangeNotification:', error);
   }
 }
