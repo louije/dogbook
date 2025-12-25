@@ -12,7 +12,7 @@ import {
   json,
   integer,
 } from '@keystone-6/core/fields';
-import { buildTriggerHooks, mediaHooks, dogHooks, ownerHooks } from './hooks';
+import { buildTriggerHooks, mediaHooks, dogHooks, ownerHooks, editTokenHooks } from './hooks';
 import { isAuthenticated, hasValidEditToken } from './auth';
 
 export const lists = {
@@ -486,6 +486,7 @@ export const lists = {
         delete: isAuthenticated,
       },
     },
+    hooks: editTokenHooks,
     ui: {
       label: 'Lien magique',
       plural: 'Liens magiques',
@@ -507,11 +508,6 @@ export const lists = {
         validation: { isRequired: true },
         isIndexed: 'unique',
         label: 'Token',
-        defaultValue: () => {
-          // Generate cryptographically secure token
-          const crypto = require('crypto');
-          return crypto.randomBytes(24).toString('base64url');
-        },
         ui: {
           createView: { fieldMode: 'hidden' },
           itemView: { fieldMode: 'read' },
