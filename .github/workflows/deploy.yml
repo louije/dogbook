@@ -16,5 +16,4 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           username: dogbook
           key: ${{ secrets.DEPLOY_SSH_KEY }}
-          script_stop: true
           script: /srv/dogbook/deploy.sh
