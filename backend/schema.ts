@@ -505,7 +505,6 @@ export const lists = {
         },
       }),
       token: text({
-        validation: { isRequired: true },
         isIndexed: 'unique',
         label: 'Token',
         ui: {
