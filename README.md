@@ -7,14 +7,14 @@ Un trombinoscope (annuaire photo) de chiens construit avec une architecture JAMs
 ### Backend
 - **KeystoneJS 6** - CMS headless avec interface d'administration
 - **SQLite** - Base de données légère
-- Hébergement sur serveur Hetzner
+- Hébergement sur serveur VPS
 - Accès anonyme via URL secrète
 
 ### Frontend
 - **11ty (Eleventy)** - Générateur de sites statiques
 - **Vanilla JavaScript** - Sans framework
 - **CSS sémantique avec BEM** - Pas de Tailwind
-- Déploiement sur Hetzner ou Netlify
+- Déploiement sur VPS ou Netlify
 - Régénération automatique à chaque modification du backend
 
 ## Modèle de données
@@ -119,7 +119,7 @@ Le déploiement utilise un workflow git push similaire à Capistrano.
 
 #### Configuration initiale du serveur
 
-Sur le serveur Hetzner (une seule fois):
+Sur le serveur (une seule fois):
 
 ```bash
 # Créer la structure de répertoires
@@ -223,7 +223,7 @@ ssh your-server "ls -lh /srv/dogbook/backups/"
    - `API_URL`: URL de votre backend (ex: `https://api.yourdomain.com`)
 5. Créez un Build Hook et ajoutez-le dans `backend/.env`
 
-### Frontend sur Hetzner
+### Frontend sur VPS
 
 ```bash
 # Build le frontend
