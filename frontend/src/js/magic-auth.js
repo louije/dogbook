@@ -35,10 +35,26 @@ export function initMagicAuth(text) {
 
 /**
  * Set magic token cookie
+ * Uses domain attribute to share cookie across subdomains (e.g., example.com and niche.example.com)
  */
 function setMagicCookie(token) {
-  const cookieValue = `${COOKIE_NAME}=${token}; path=/; max-age=${COOKIE_MAX_AGE}; SameSite=Lax`;
-  document.cookie = cookieValue + (window.location.protocol === 'https:' ? '; Secure' : '');
+  // Get root domain for cookie sharing across subdomains
+  const hostParts = window.location.hostname.split('.');
+  const rootDomain = hostParts.length > 2
+    ? '.' + hostParts.slice(-2).join('.')  // .example.com
+    : hostParts.length === 2
+      ? '.' + hostParts.join('.')  // .example.com from example.com
+      : '';  // localhost
+
+  const isSecure = window.location.protocol === 'https:';
+  // SameSite=None required for cross-origin requests, but requires Secure
+  const sameSite = isSecure ? 'None' : 'Lax';
+
+  let cookieValue = `${COOKIE_NAME}=${token}; path=/; max-age=${COOKIE_MAX_AGE}; SameSite=${sameSite}`;
+  if (rootDomain) cookieValue += `; domain=${rootDomain}`;
+  if (isSecure) cookieValue += '; Secure';
+
+  document.cookie = cookieValue;
 }
 
 /**
@@ -60,7 +76,18 @@ export function getMagicToken() {
  * Clear magic cookie and reload
  */
 export function clearMagicCookie() {
-  document.cookie = `${COOKIE_NAME}=; path=/; max-age=0`;
+  // Get root domain to clear cookie properly
+  const hostParts = window.location.hostname.split('.');
+  const rootDomain = hostParts.length > 2
+    ? '.' + hostParts.slice(-2).join('.')
+    : hostParts.length === 2
+      ? '.' + hostParts.join('.')
+      : '';
+
+  let cookieValue = `${COOKIE_NAME}=; path=/; max-age=0`;
+  if (rootDomain) cookieValue += `; domain=${rootDomain}`;
+
+  document.cookie = cookieValue;
   location.reload();
 }
 
