@@ -20,29 +20,35 @@ Un trombinoscope (annuaire photo) de chiens construit avec une architecture JAMs
 ## Modèle de données
 
 ### Dog (Chien)
-- `nom` - Nom du chien
-- `sexe` - Mâle ou Femelle
-- `age` - Âge en années
-- `race` - Race du chien
-- `robe` - Couleur/type de pelage
-- `maitre` - Relation vers le propriétaire
-- `photoFeatured` - Photo principale
-- `photos` - Galerie de photos et vidéos
-- `description` - Description en texte riche
+- `name`, `sex`, `birthday`, `breed`, `coat`
+- `owner` → Owner (requis, admin-only update)
+- `photos` → Media[] (relation many)
 
-### Owner (Maître)
-- `nom` - Nom du propriétaire
-- `email` - Email (optionnel)
-- `telephone` - Numéro de téléphone (optionnel)
-- `dogs` - Relation vers les chiens
+### Owner (Humain)
+- `name`, `email`, `phone`
+- `dogs` → Dog[]
 
 ### Media
-- `nom` - Nom du média
-- `file` - Fichier image
-- `type` - Photo ou Vidéo
-- `videoUrl` - URL de la vidéo (si type = vidéo)
-- `dog` - Relation vers le chien
-- `isFeatured` - Marquer comme photo principale
+- `file` (image), `type` (photo/video), `videoUrl`
+- `dog` → Dog
+- `isFeatured` (checkbox) - Une seule par chien (hook auto-exclusif)
+- `status`: pending/approved/rejected (modération)
+- `uploadedAt` (timestamp)
+
+### Settings (singleton)
+- `moderationMode`: a_posteriori / a_priori
+  - **A posteriori**: Auto-approuve, notifie admin
+  - **A priori**: Requiert validation avant publication
+
+### PushSubscription
+- Abonnements Web Push (notifications iOS/Safari)
+- `endpoint`, `keys`, `receivesAdminNotifications`
+
+### ChangeLog
+- Journal d'audit: Dogs, Owners, Media
+- `entityType`, `operation` (create/update/delete), `changes` (JSON)
+- `frontendUrl`, `backendUrl` (liens auto-générés)
+- `status`: pending/accepted/reverted
 
 ## Installation
 
@@ -54,39 +60,21 @@ Un trombinoscope (annuaire photo) de chiens construit avec une architecture JAMs
 
 ```bash
 cd backend
-
-# Installer les dépendances
 npm install
-
-# Copier le fichier d'environnement
 cp .env.example .env
-
-# Modifier .env avec vos valeurs
-nano .env
-
-# Lancer le serveur de développement
+nano .env  # Modifier SESSION_SECRET et autres valeurs
 npm run dev
 ```
 
 Le backend sera accessible sur http://localhost:3000
 
-**Important**: Modifiez `SESSION_SECRET` dans le fichier `.env` avant de déployer en production.
-
 ### Frontend
 
 ```bash
 cd frontend
-
-# Installer les dépendances
 npm install
-
-# Copier le fichier d'environnement
 cp .env.example .env
-
-# Modifier .env avec l'URL de votre API
-nano .env
-
-# Lancer le serveur de développement
+nano .env  # Modifier API_URL
 npm run dev
 ```
 
@@ -107,8 +95,7 @@ Configurez un webhook pour régénérer le frontend automatiquement:
 
 Si vous auto-hébergez le frontend:
 ```bash
-# Créez un script de build manuel
-./build-frontend.sh
+cd frontend && npm run build
 ```
 
 ## Déploiement
@@ -262,82 +249,18 @@ server {
 
 ```
 dogbook/
-├── backend/              # Backend KeystoneJS
-│   ├── keystone.ts      # Configuration Keystone
-│   ├── schema.ts        # Modèles de données
-│   ├── auth.ts          # Middleware d'authentification
-│   ├── hooks.ts         # Hooks pour build webhook
-│   ├── package.json
-│   └── .env.example
-├── frontend/            # Frontend 11ty
-│   ├── src/
-│   │   ├── _layouts/    # Templates de base
-│   │   ├── css/         # Styles CSS (BEM)
-│   │   ├── js/          # JavaScript vanilla
-│   │   ├── images/      # Images statiques
-│   │   ├── index.njk    # Page d'accueil
-│   │   ├── chiens.njk   # Pages de détail des chiens
-│   │   └── maitres.njk  # Pages des maîtres
-│   ├── .eleventy.js     # Configuration 11ty
-│   ├── package.json
-│   └── .env.example
-└── build-frontend.sh    # Script de build manuel
+├── backend/             # KeystoneJS: schema.ts, hooks.ts, auth.ts
+├── frontend/src/        # 11ty: templates .njk, css/ (BEM), js/ (vanilla)
+└── deploy/              # Scripts de déploiement Hetzner
 ```
 
 ### Méthodologie CSS
 
-Le projet utilise la méthodologie BEM (Block Element Modifier):
-
-```css
-/* Block */
-.dog-card { }
-
-/* Element */
-.dog-card__image { }
-.dog-card__name { }
-
-/* Modifier */
-.dog-card--featured { }
-```
-
-Variables CSS dans `frontend/src/css/main.css`:
-- Couleurs sémantiques
-- Espacements cohérents
-- Typographie
-- Breakpoints responsive
+BEM (Block Element Modifier): `.dog-card`, `.dog-card__image`, `.dog-card--featured`
 
 ## API GraphQL
 
-Le backend expose une API GraphQL sur `/api/graphql`.
-
-Exemple de requête:
-
-```graphql
-query {
-  dogs {
-    id
-    nom
-    sexe
-    age
-    race
-    robe
-    photoFeatured {
-      url
-    }
-    maitre {
-      nom
-      email
-    }
-    photos {
-      file {
-        url
-      }
-      type
-      videoUrl
-    }
-  }
-}
-```
+Backend expose une API GraphQL sur `/api/graphql`. Consultez le schéma dans l'interface GraphQL Playground.
 
 ## Sécurité
 
@@ -348,47 +271,31 @@ query {
 
 ## Maintenance
 
-### Sauvegardes
+Backups automatiques via systemd timer (voir `deploy/dogbook-backup.service`).
 
-Sauvegardez régulièrement:
-- `backend/keystone.db` - Base de données
-- `backend/public/images/` - Images uploadées
+Mises à jour: `cd backend && npm update` / `cd frontend && npm update`
 
-```bash
-# Script de backup
-tar -czf backup-$(date +%Y%m%d).tar.gz backend/keystone.db backend/public/images/
-```
+## Fonctionnalités clés
 
-### Mises à jour
+### Upload mobile
+- Compression client-side (50-70% réduction)
+- Accès caméra et galerie
+- Barre de progression temps réel
 
-```bash
-# Backend
-cd backend
-npm update
+### Modération
+- A posteriori (auto-approve) ou a priori (validation requise)
+- Web push notifications (iOS/Safari compatible)
+- Journal de changements avec audit trail
 
-# Frontend
-cd frontend
-npm update
-```
-
-## Fonctionnalités
-
-- ✅ Liste de tous les chiens avec photos
-- ✅ Pages détaillées pour chaque chien
-- ✅ Galerie photos avec lightbox
-- ✅ Support vidéos (liens YouTube, Vimeo, etc.)
-- ✅ Gestion des propriétaires
-- ✅ Recherche et filtres (à venir)
-- ✅ Responsive design
-- ✅ Génération statique pour performances optimales
-- ✅ Régénération automatique du site
+### Architecture
+- Photo principale: hook auto-exclusif (une seule par chien)
+- GraphQL multipart upload avec CSRF protection
+- Régénération automatique du site static via webhook
 
 ## Support
 
-Pour toute question ou problème:
-1. Vérifiez les logs: `pm2 logs dogbook-backend`
-2. Consultez la documentation KeystoneJS: https://keystonejs.com
-3. Consultez la documentation 11ty: https://www.11ty.dev
+Logs: `sudo journalctl -u dogbook -f`
+Docs: [KeystoneJS](https://keystonejs.com) | [11ty](https://www.11ty.dev)
 
 ## Licence
 
