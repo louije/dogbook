@@ -38,6 +38,10 @@ cd $TARGET/backend
 echo "→ Installing dependencies..."
 npm install --production --ignore-scripts
 
+# Generate Keystone schema.prisma
+echo "→ Generating Keystone schema..."
+npm run postinstall
+
 # Fix Prisma binary targets for production server
 echo "→ Updating Prisma binary targets..."
 sed -i 's/provider = "prisma-client-js"/provider = "prisma-client-js"\n  binaryTargets = ["native", "debian-openssl-3.0.x"]/' schema.prisma
