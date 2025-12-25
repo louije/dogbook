@@ -5,16 +5,23 @@ import { FieldProps } from '@keystone-6/core/types';
 import { controller } from '@keystone-6/core/fields/types/text/views';
 import { useState } from 'react';
 
-// Get frontend URL from environment or config
+// Infer frontend URL from admin location
+// If admin is on subdomain (e.g., niche.example.com), frontend is on root domain (example.com)
 const getFrontendUrl = () => {
   if (typeof window !== 'undefined') {
-    // In browser, try to infer from current location
-    const currentHost = window.location.hostname;
-    if (currentHost === 'niche.louije.com' || currentHost.includes('dogbook')) {
-      return 'https://www.louije.com';
+    const host = window.location.hostname;
+    const protocol = window.location.protocol;
+    // If on a subdomain, strip it to get the main domain
+    const parts = host.split('.');
+    if (parts.length > 2) {
+      // e.g., niche.example.com -> example.com
+      const mainDomain = parts.slice(1).join('.');
+      return `${protocol}//${mainDomain}`;
     }
+    // Already on main domain or localhost
+    return `${protocol}//${host}${window.location.port ? ':' + window.location.port : ''}`;
   }
-  return process.env.FRONTEND_URL || 'http://localhost:8080';
+  return 'http://localhost:8080';
 };
 
 export const Field = ({ field, value }: FieldProps<typeof controller>) => {
