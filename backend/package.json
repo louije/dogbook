@@ -8,6 +8,7 @@
     "start": "keystone start",
     "build": "keystone build",
     "postinstall": "keystone postinstall",
+    "typecheck": "tsc --noEmit",
     "optimize-db": "node optimize-sqlite.js",
     "migrate:featured-photos": "tsx migrate-featured-photos.ts"
   },

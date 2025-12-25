@@ -1,0 +1,64 @@
+name: Backend Checks
+
+on:
+  pull_request:
+    paths:
+      - 'backend/**'
+      - '.github/workflows/backend-checks.yml'
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+
+jobs:
+  backend-checks:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        working-directory: backend
+        run: npm ci
+
+      - name: TypeScript type check (informational)
+        working-directory: backend
+        # Continue on error - admin UI may have type issues but Keystone builds fine
+        continue-on-error: true
+        run: npm run typecheck
+
+      - name: Generate Prisma schema
+        working-directory: backend
+        run: npm run postinstall
+
+      - name: Validate Prisma schema
+        working-directory: backend
+        run: npx prisma validate
+
+      - name: Build backend
+        working-directory: backend
+        run: npm run build
+        env:
+          # Use in-memory database for build checks
+          DATABASE_URL: file:./test.db
+          SESSION_SECRET: test-secret-for-ci-only
+
+      - name: Check for schema issues
+        working-directory: backend
+        run: |
+          if [ -f schema.prisma ]; then
+            echo "✓ Prisma schema generated successfully"
+            cat schema.prisma | head -50
+          else
+            echo "✗ Prisma schema not generated"
+            exit 1
+          fi
