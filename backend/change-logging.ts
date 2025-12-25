@@ -3,6 +3,8 @@
  * Detects, formats, and logs changes to entities
  */
 
+import { getChangedBySource, getChangedByLabel } from './auth';
+
 interface FieldChange {
   field: string;
   fieldLabel: string;
@@ -328,11 +330,19 @@ export async function getChangeStatus(context: any): Promise<'pending' | 'accept
  */
 export async function logChange(
   context: any,
-  data: Omit<ChangeLogData, 'status'> & { status?: 'pending' | 'accepted'; dogId?: string }
+  data: Omit<ChangeLogData, 'status' | 'changedBy'> & { status?: 'pending' | 'accepted'; dogId?: string }
 ): Promise<void> {
   try {
     const status = data.status || await getChangeStatus(context);
     const urls = generateEntityUrls(data.entityType, data.entityId, data.dogId);
+    const changedBy = getChangedBySource(context);
+    const changedByLabel = getChangedByLabel(context);
+
+    // Enhance summary with attribution if from magic link
+    let changesSummary = data.changesSummary;
+    if (changedBy === 'magic' && changedByLabel) {
+      changesSummary = `[${changedByLabel}] ${changesSummary}`;
+    }
 
     await context.query.ChangeLog.createOne({
       data: {
@@ -341,8 +351,9 @@ export async function logChange(
         entityName: data.entityName,
         operation: data.operation,
         changes: data.changes,
-        changesSummary: data.changesSummary,
-        changedBy: data.changedBy,
+        changesSummary,
+        changedBy,
+        changedByLabel,
         status,
         frontendUrl: urls.frontendUrl,
         backendUrl: urls.backendUrl,
