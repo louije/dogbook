@@ -448,14 +448,14 @@ export const lists = {
         validation: { isRequired: false },
         label: 'Lien Frontend',
         ui: {
-          description: 'URL vers la page frontend de l\'entité',
+          views: './admin/components/UrlButtonView',
         },
       }),
       backendUrl: text({
         validation: { isRequired: false },
         label: 'Lien Backend',
         ui: {
-          description: 'URL vers la page backend de l\'entité',
+          views: './admin/components/UrlButtonView',
         },
       }),
     },

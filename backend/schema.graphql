@@ -555,6 +555,8 @@ type ChangeLog {
   changesSummary: String
   changedBy: ChangeLogChangedByType
   status: ChangeLogStatusType
+  frontendUrl: String
+  backendUrl: String
 }
 
 enum ChangeLogEntityTypeType {
@@ -598,6 +600,8 @@ input ChangeLogWhereInput {
   changesSummary: StringFilter
   changedBy: ChangeLogChangedByTypeNullableFilter
   status: ChangeLogStatusTypeNullableFilter
+  frontendUrl: StringFilter
+  backendUrl: StringFilter
 }
 
 input DateTimeFilter {
@@ -649,6 +653,8 @@ input ChangeLogOrderByInput {
   changesSummary: OrderDirection
   changedBy: OrderDirection
   status: OrderDirection
+  frontendUrl: OrderDirection
+  backendUrl: OrderDirection
 }
 
 input ChangeLogUpdateInput {
@@ -661,6 +667,8 @@ input ChangeLogUpdateInput {
   changesSummary: String
   changedBy: ChangeLogChangedByType
   status: ChangeLogStatusType
+  frontendUrl: String
+  backendUrl: String
 }
 
 input ChangeLogUpdateArgs {
@@ -678,6 +686,8 @@ input ChangeLogCreateInput {
   changesSummary: String
   changedBy: ChangeLogChangedByType
   status: ChangeLogStatusType
+  frontendUrl: String
+  backendUrl: String
 }
 
 """
