@@ -1,0 +1,58 @@
+{
+  "site": {
+    "title": "Trombinoscope Canin",
+    "description": "L'annuaire des chiens du quartier"
+  },
+  "magic": {
+    "activated": "Mode édition activé ✨",
+    "deactivated": "Mode édition désactivé",
+    "indicator": "✨ Mode édition",
+    "deactivate_confirm": "Désactiver le mode édition ?"
+  },
+  "dog": {
+    "add": "Ajouter un chien",
+    "edit": "Modifier",
+    "delete": "Supprimer",
+    "name": "Nom",
+    "sex": "Sexe",
+    "birthday": "Anniversaire",
+    "breed": "Race",
+    "coat": "Robe",
+    "owner": "Humain",
+    "photos": "Photos",
+    "sex_male": "Mâle",
+    "sex_female": "Femelle",
+    "status": "Statut"
+  },
+  "owner": {
+    "edit": "Modifier l'humain",
+    "create": "Créer nouveau",
+    "name": "Nom",
+    "email": "Email",
+    "phone": "Téléphone",
+    "search_placeholder": "Rechercher ou créer un humain...",
+    "create_new": "➕ Créer nouveau : {name}",
+    "dogs_count": "{count} chien(s)"
+  },
+  "form": {
+    "save": "Enregistrer",
+    "cancel": "Annuler",
+    "saving": "Enregistrement...",
+    "required": "Champ requis",
+    "close": "Fermer"
+  },
+  "messages": {
+    "dog_created_aposteriori": "Chien créé ! Visible dans 2-3 minutes (temps de reconstruction du site).",
+    "dog_created_apriori": "Chien créé ! Visible après validation par un administrateur.",
+    "dog_updated": "Changements enregistrés ! Visibles dans 2-3 minutes.",
+    "owner_updated": "Humain mis à jour !",
+    "error_generic": "Une erreur est survenue. Veuillez réessayer.",
+    "error_network": "Erreur de connexion. Vérifiez votre connexion internet.",
+    "error_unauthorized": "Accès refusé. Lien magique invalide ou expiré."
+  },
+  "dialog": {
+    "edit_dog_title": "Modifier {name}",
+    "add_dog_title": "Ajouter un chien",
+    "edit_owner_title": "Modifier {name}"
+  }
+}
