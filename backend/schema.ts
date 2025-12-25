@@ -10,11 +10,10 @@ import {
   password,
   timestamp,
   json,
+  integer,
 } from '@keystone-6/core/fields';
 import { buildTriggerHooks, mediaHooks, dogHooks, ownerHooks } from './hooks';
-
-// Helper function to check if user is authenticated
-const isAuthenticated = ({ session }: any) => !!session;
+import { isAuthenticated, hasValidEditToken } from './auth';
 
 export const lists = {
   User: list({
@@ -60,8 +59,8 @@ export const lists = {
     access: {
       operation: {
         query: () => true, // Anyone can view
-        create: isAuthenticated, // Only authenticated users can create
-        update: () => true, // Anyone can update (controlled at field level)
+        create: hasValidEditToken, // Magic token or admin
+        update: hasValidEditToken, // Magic token or admin
         delete: isAuthenticated, // Only authenticated users can delete
       },
     },
@@ -80,9 +79,6 @@ export const lists = {
       name: text({
         validation: { isRequired: true },
         label: 'Nom',
-        access: {
-          update: isAuthenticated, // Only authenticated users can change name
-        },
       }),
       sex: select({
         type: 'enum',
@@ -110,9 +106,6 @@ export const lists = {
         many: false,
         label: 'Humain',
         validation: { isRequired: true },
-        access: {
-          update: isAuthenticated, // Only authenticated users can change owner
-        },
       }),
       photos: relationship({
         ref: 'Media.dog',
@@ -122,6 +115,21 @@ export const lists = {
           description: 'Utilisez le bouton ⭐ pour définir la photo principale',
         },
       }),
+      status: select({
+        type: 'enum',
+        options: [
+          { label: '⏳ En attente', value: 'pending' },
+          { label: '✅ Approuvé', value: 'approved' },
+        ],
+        defaultValue: 'pending',
+        label: 'Statut',
+        access: {
+          update: isAuthenticated, // Only admins can change status
+        },
+        ui: {
+          displayMode: 'segmented-control',
+        },
+      }),
     },
   }),
 
@@ -129,8 +137,8 @@ export const lists = {
     access: {
       operation: {
         query: () => true, // Anyone can view
-        create: isAuthenticated, // Only authenticated users can create
-        update: isAuthenticated, // Only authenticated users can update
+        create: hasValidEditToken, // Magic token or admin
+        update: hasValidEditToken, // Magic token or admin
         delete: isAuthenticated, // Only authenticated users can delete
       },
     },
@@ -426,10 +434,18 @@ export const lists = {
         options: [
           { label: '👤 Public', value: 'public' },
           { label: '🔐 Admin', value: 'admin' },
+          { label: '✨ Lien magique', value: 'magic' },
           { label: '⚙️ Système', value: 'system' },
         ],
         defaultValue: 'public',
         label: 'Modifié par',
+      }),
+      changedByLabel: text({
+        validation: { isRequired: false },
+        label: 'Source',
+        ui: {
+          description: 'Nom de l\'admin ou du lien magique',
+        },
       }),
       status: select({
         type: 'enum',
@@ -456,6 +472,88 @@ export const lists = {
         label: 'Lien Backend',
         ui: {
           views: './admin/components/UrlButtonView',
+        },
+      }),
+    },
+  }),
+
+  EditToken: list({
+    access: {
+      operation: {
+        query: isAuthenticated,
+        create: isAuthenticated,
+        update: isAuthenticated,
+        delete: isAuthenticated,
+      },
+    },
+    ui: {
+      label: 'Lien magique',
+      plural: 'Liens magiques',
+      isHidden: ({ session }) => !session,
+      listView: {
+        initialColumns: ['label', 'token', 'isActive', 'lastUsedAt', 'expiresAt'],
+        initialSort: { field: 'createdAt', direction: 'DESC' },
+      },
+    },
+    fields: {
+      label: text({
+        validation: { isRequired: true },
+        label: 'Nom',
+        ui: {
+          description: 'Nom pour identifier ce lien (ex: "Famille Dupont", "Voisins du parc")',
+        },
+      }),
+      token: text({
+        validation: { isRequired: true },
+        isIndexed: 'unique',
+        label: 'Token',
+        defaultValue: () => {
+          // Generate cryptographically secure token
+          const crypto = require('crypto');
+          return crypto.randomBytes(24).toString('base64url');
+        },
+        ui: {
+          createView: { fieldMode: 'hidden' },
+          itemView: { fieldMode: 'read' },
+        },
+      }),
+      isActive: checkbox({
+        defaultValue: true,
+        label: 'Actif',
+        ui: {
+          description: 'Désactiver pour révoquer l\'accès sans supprimer le lien',
+        },
+      }),
+      expiresAt: timestamp({
+        label: 'Date d\'expiration',
+        db: { isNullable: true },
+        ui: {
+          description: 'Laisser vide pour aucune expiration',
+        },
+      }),
+      createdAt: timestamp({
+        defaultValue: { kind: 'now' },
+        label: 'Créé le',
+        ui: {
+          createView: { fieldMode: 'hidden' },
+          itemView: { fieldMode: 'read' },
+        },
+      }),
+      lastUsedAt: timestamp({
+        label: 'Dernière utilisation',
+        db: { isNullable: true },
+        ui: {
+          createView: { fieldMode: 'hidden' },
+          itemView: { fieldMode: 'read' },
+          description: 'Mis à jour automatiquement à chaque utilisation',
+        },
+      }),
+      usageCount: integer({
+        defaultValue: 0,
+        label: 'Nombre d\'utilisations',
+        ui: {
+          createView: { fieldMode: 'hidden' },
+          itemView: { fieldMode: 'read' },
         },
       }),
     },

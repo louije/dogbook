@@ -4,6 +4,7 @@ import { createAuth } from '@keystone-6/auth';
 import { lists } from './schema';
 import express from 'express';
 import path from 'path';
+import cookieParser from 'cookie-parser';
 
 const sessionConfig = {
   maxAge: 60 * 60 * 24 * 30, // 30 days
@@ -51,6 +52,9 @@ export default withAuth(config({
       credentials: true,
     },
     extendExpressApp: (app) => {
+      // Parse cookies before any routes
+      app.use(cookieParser());
+
       // Serve the admin service worker
       app.get('/admin-sw.js', (req, res) => {
         res.setHeader('Content-Type', 'application/javascript');
@@ -158,9 +162,8 @@ self.addEventListener('notificationclick', (event) => {
     },
   },
   ui: {
-    // Allow anyone to access the admin UI
-    // They still need to log in to perform authenticated operations
-    isAccessAllowed: () => true,
+    // Lock down admin UI to authenticated users only
+    isAccessAllowed: ({ session }) => !!session,
   },
   session,
 }));

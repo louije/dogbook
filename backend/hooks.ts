@@ -60,7 +60,6 @@ export const ownerHooks = {
   },
 
   afterOperation: async ({ operation, item, context, inputData }: any) => {
-    const changedBy = context.session ? 'admin' : 'public';
 
     // Handle create
     if (operation === 'create') {
@@ -73,7 +72,6 @@ export const ownerHooks = {
         operation: 'create',
         changes: [],
         changesSummary: `Nouveau humain créé: ${entityName}`,
-        changedBy,
       });
 
       await sendChangeNotification(context, {
@@ -100,7 +98,6 @@ export const ownerHooks = {
           operation: 'update',
           changes,
           changesSummary,
-          changedBy,
         });
 
         await sendChangeNotification(context, {
@@ -124,7 +121,6 @@ export const ownerHooks = {
         operation: 'delete',
         changes: [],
         changesSummary: `Humain supprimé: ${entityName}`,
-        changedBy,
       });
 
       await sendChangeNotification(context, {
@@ -219,7 +215,6 @@ export const mediaHooks = {
   },
 
   afterOperation: async ({ operation, item, context, inputData }: any) => {
-    const changedBy = context.session ? 'admin' : 'public';
 
     // Fetch dog information for all operations (for linking)
     let dogId: string | undefined;
@@ -250,7 +245,6 @@ export const mediaHooks = {
         operation: 'create',
         changes: [],
         changesSummary: `Nouvelle photo uploadée: ${entityName}`,
-        changedBy,
         dogId,
       });
 
@@ -274,7 +268,6 @@ export const mediaHooks = {
           operation: 'update',
           changes,
           changesSummary,
-          changedBy,
           dogId,
         });
 
@@ -302,7 +295,6 @@ export const mediaHooks = {
         operation: 'delete',
         changes: [],
         changesSummary: `Photo supprimée: ${entityName}`,
-        changedBy,
         dogId,
       });
 
@@ -337,6 +329,20 @@ export const mediaHooks = {
  * Dog-specific hooks for handling attribute change notifications and change logging
  */
 export const dogHooks = {
+  resolveInput: async ({ operation, resolvedData, context }: any) => {
+    // Set status on create based on moderation mode
+    if (operation === 'create') {
+      const settings = await context.query.Settings.findOne({
+        query: 'moderationMode',
+      });
+
+      const moderationMode = settings?.moderationMode || 'a_posteriori';
+      resolvedData.status = moderationMode === 'a_posteriori' ? 'approved' : 'pending';
+    }
+
+    return resolvedData;
+  },
+
   beforeOperation: async ({ operation, item, context, inputData }: any) => {
     // Store old item data for comparison (for updates and deletes)
     if ((operation === 'update' || operation === 'delete') && item) {
@@ -352,7 +358,6 @@ export const dogHooks = {
   },
 
   afterOperation: async ({ operation, item, context, inputData, originalItem }: any) => {
-    const changedBy = context.session ? 'admin' : 'public';
 
     // Handle create
     if (operation === 'create') {
@@ -365,7 +370,6 @@ export const dogHooks = {
         operation: 'create',
         changes: [],
         changesSummary: `Nouveau chien créé: ${entityName}`,
-        changedBy,
       });
 
       // Send notification
@@ -388,7 +392,6 @@ export const dogHooks = {
           operation: 'update',
           changes,
           changesSummary,
-          changedBy,
         });
 
         // Send notification with change details
@@ -413,7 +416,6 @@ export const dogHooks = {
         operation: 'delete',
         changes: [],
         changesSummary: `Chien supprimé: ${entityName}`,
-        changedBy,
       });
 
       await sendChangeNotification(context, {
