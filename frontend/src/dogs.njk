@@ -44,7 +44,30 @@ eleventyComputed:
         {% if dog.coat %}
         <span class="dog-tag">{{ dog.coat }}</span>
         {% endif %}
-        <a href="{{ dog.id | editUrl }}" target="_blank" rel="noopener" class="dog-tag dog-tag--edit" title="Modifier cette fiche">✏️</a>
+      </div>
+
+      <!-- Edit buttons (hidden by default, shown when magic auth is active) -->
+      <div class="dog-detail__actions">
+        <button
+          type="button"
+          class="edit-button"
+          onclick='openEditDogModal({{ dog | dump | safe }})'
+          hidden
+          title="Modifier ce chien"
+        >
+          ✏️ Modifier
+        </button>
+        {% if dog.owner %}
+        <button
+          type="button"
+          class="edit-owner-button"
+          onclick='openEditOwnerModal({{ dog.owner | dump | safe }})'
+          hidden
+          title="Modifier l'humain"
+        >
+          👤 Modifier l'humain
+        </button>
+        {% endif %}
       </div>
     </div>
 

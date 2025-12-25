@@ -6,9 +6,9 @@
 import { searchOwners } from './api.js';
 
 export class OwnerAutocomplete {
-  constructor(container, content, initialOwner = null) {
+  constructor(container, text, initialOwner = null) {
     this.container = container;
-    this.content = content;
+    this.text = text;
     this.selectedOwner = initialOwner;
     this.results = [];
     this.render();
@@ -19,7 +19,7 @@ export class OwnerAutocomplete {
       <input
         type="text"
         class="owner-search"
-        placeholder="${this.content.owner.search_placeholder}"
+        placeholder="${this.text.owner.search_placeholder}"
         value="${this.selectedOwner?.name || ''}"
         autocomplete="off"
       >
@@ -77,7 +77,7 @@ export class OwnerAutocomplete {
       item.type = 'button';
       item.className = 'owner-result';
 
-      const dogsCount = this.content.owner.dogs_count.replace('{count}', owner.dogs.length);
+      const dogsCount = this.text.owner.dogs_count.replace('{count}', owner.dogs.length);
       item.innerHTML = `
         <strong>${owner.name}</strong>
         <small>${dogsCount}</small>
@@ -90,7 +90,7 @@ export class OwnerAutocomplete {
     const createNew = document.createElement('button');
     createNew.type = 'button';
     createNew.className = 'owner-result owner-result--create';
-    createNew.textContent = this.content.owner.create_new.replace('{name}', searchTerm);
+    createNew.textContent = this.text.owner.create_new.replace('{name}', searchTerm);
     createNew.addEventListener('click', () => this.selectNewOwner(searchTerm, resultsDiv));
     resultsDiv.appendChild(createNew);
 
