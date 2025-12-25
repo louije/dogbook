@@ -28,9 +28,9 @@ jobs:
 
       - name: Install dependencies
         working-directory: backend
-        run: npm ci
+        run: npm ci --ignore-scripts
 
-      - name: Build backend
+      - name: Build backend (generates schemas)
         working-directory: backend
         run: npm run build
         env:
