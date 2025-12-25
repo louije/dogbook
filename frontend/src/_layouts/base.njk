@@ -31,9 +31,49 @@
   <script>
     // Pass API URL to client-side scripts
     window.API_URL = '{{ metadata.apiUrl or "http://localhost:3000" }}';
+
+    // Pass text/UI configuration to client-side scripts
+    window.APP_TEXT = {{ text | dump | safe }};
   </script>
   <script src="/js/main.js"></script>
   <script src="/js/upload.js"></script>
   <script src="/js/featured-photo.js"></script>
+
+  <!-- Magic auth and edit functionality -->
+  <script type="module">
+    import { initMagicAuth } from '/js/magic-auth.js';
+    import { EditDogModal } from '/js/edit-dog.js';
+    import { EditOwnerModal } from '/js/edit-owner.js';
+
+    // Initialize magic auth on page load
+    initMagicAuth(window.APP_TEXT);
+
+    // Make modals globally available for button onclick handlers
+    window.dogModal = null;
+    window.ownerModal = null;
+
+    // Initialize modals when buttons appear (after magic auth enables them)
+    document.addEventListener('DOMContentLoaded', () => {
+      window.dogModal = new EditDogModal(window.APP_TEXT);
+      window.ownerModal = new EditOwnerModal(window.APP_TEXT);
+    });
+
+    // Global functions for edit buttons
+    window.openAddDogModal = () => {
+      if (window.dogModal) window.dogModal.open();
+    };
+
+    window.openEditDogModal = (dogData) => {
+      if (window.dogModal) {
+        window.dogModal.open(dogData);
+      }
+    };
+
+    window.openEditOwnerModal = (ownerData) => {
+      if (window.ownerModal) {
+        window.ownerModal.open(ownerData);
+      }
+    };
+  </script>
 </body>
 </html>

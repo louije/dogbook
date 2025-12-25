@@ -8,18 +8,31 @@ import { OwnerAutocomplete } from './owner-autocomplete.js';
 import { showNotification } from './magic-auth.js';
 
 export class EditDogModal {
-  constructor(content, dog = null) {
-    this.content = content;
-    this.dog = dog; // null for create, object for edit
-    this.dialog = this.createDialog();
+  constructor(text) {
+    this.text = text;
+    this.dog = null;
+    this.dialog = null;
     this.ownerAutocomplete = null;
+  }
+
+  open(dog = null) {
+    this.dog = dog;
+
+    // Remove old dialog if it exists
+    if (this.dialog) {
+      this.dialog.remove();
+    }
+
+    // Create fresh dialog with current dog data
+    this.dialog = this.createDialog();
+    this.show();
   }
 
   createDialog() {
     const isEdit = !!this.dog;
     const title = isEdit
-      ? this.content.dialog.edit_dog_title.replace('{name}', this.dog.name)
-      : this.content.dialog.add_dog_title;
+      ? this.text.dialog.edit_dog_title.replace('{name}', this.dog.name)
+      : this.text.dialog.add_dog_title;
 
     const dialog = document.createElement('dialog');
     dialog.className = 'edit-dialog';
@@ -27,55 +40,55 @@ export class EditDogModal {
       <form method="dialog" class="edit-form">
         <header class="edit-form__header">
           <h2>${title}</h2>
-          <button type="button" class="close-button" aria-label="${this.content.form.close}">×</button>
+          <button type="button" class="close-button" aria-label="${this.text.form.close}">×</button>
         </header>
 
         <div class="edit-form__body">
           <label>
-            <span>${this.content.dog.name} *</span>
+            <span>${this.text.dog.name} *</span>
             <input type="text" name="name" required value="${this.dog?.name || ''}">
           </label>
 
           <label>
-            <span>${this.content.dog.sex}</span>
+            <span>${this.text.dog.sex}</span>
             <select name="sex">
               <option value="">-</option>
               <option value="male" ${this.dog?.sex === 'male' ? 'selected' : ''}>
-                ${this.content.dog.sex_male}
+                ${this.text.dog.sex_male}
               </option>
               <option value="female" ${this.dog?.sex === 'female' ? 'selected' : ''}>
-                ${this.content.dog.sex_female}
+                ${this.text.dog.sex_female}
               </option>
             </select>
           </label>
 
           <label>
-            <span>${this.content.dog.birthday}</span>
+            <span>${this.text.dog.birthday}</span>
             <input type="date" name="birthday" value="${this.dog?.birthday || ''}">
           </label>
 
           <label>
-            <span>${this.content.dog.breed}</span>
+            <span>${this.text.dog.breed}</span>
             <input type="text" name="breed" value="${this.dog?.breed || ''}">
           </label>
 
           <label>
-            <span>${this.content.dog.coat}</span>
+            <span>${this.text.dog.coat}</span>
             <input type="text" name="coat" value="${this.dog?.coat || ''}">
           </label>
 
           <label>
-            <span>${this.content.dog.owner} *</span>
+            <span>${this.text.dog.owner} *</span>
             <div id="owner-autocomplete" style="position: relative;"></div>
           </label>
         </div>
 
         <footer class="edit-form__footer">
           <button type="button" class="button button--secondary cancel-button">
-            ${this.content.form.cancel}
+            ${this.text.form.cancel}
           </button>
           <button type="submit" class="button button--primary">
-            ${this.content.form.save}
+            ${this.text.form.save}
           </button>
         </footer>
       </form>
@@ -85,7 +98,7 @@ export class EditDogModal {
     const autocompleteContainer = dialog.querySelector('#owner-autocomplete');
     this.ownerAutocomplete = new OwnerAutocomplete(
       autocompleteContainer,
-      this.content,
+      this.text,
       this.dog?.owner
     );
 
@@ -116,14 +129,14 @@ export class EditDogModal {
     const formData = new FormData(event.target);
     const submitButton = event.target.querySelector('button[type="submit"]');
     submitButton.disabled = true;
-    submitButton.textContent = this.content.form.saving;
+    submitButton.textContent = this.text.form.saving;
 
     try {
       // Get owner from autocomplete
       const ownerData = this.ownerAutocomplete.getValue();
 
       if (!ownerData) {
-        throw new Error(this.content.form.required + ': ' + this.content.dog.owner);
+        throw new Error(this.text.form.required + ': ' + this.text.dog.owner);
       }
 
       // Prepare dog data
@@ -155,7 +168,7 @@ export class EditDogModal {
       if (this.dog) {
         // Update existing dog
         await updateDog(this.dog.id, dogData);
-        showNotification(this.content.messages.dog_updated, 'success');
+        showNotification(this.text.messages.dog_updated, 'success');
       } else {
         // Create new dog
         await createDog(dogData);
@@ -163,8 +176,8 @@ export class EditDogModal {
         // Show appropriate message based on moderation
         const moderationMode = await getModerationMode();
         const message = moderationMode === 'a_posteriori'
-          ? this.content.messages.dog_created_aposteriori
-          : this.content.messages.dog_created_apriori;
+          ? this.text.messages.dog_created_aposteriori
+          : this.text.messages.dog_created_apriori;
         showNotification(message, 'success');
       }
 
@@ -179,13 +192,13 @@ export class EditDogModal {
       console.error('Error saving dog:', error);
 
       const errorMessage = error.message.includes('Unauthorized') || error.message.includes('Access denied')
-        ? this.content.messages.error_unauthorized
-        : this.content.messages.error_generic;
+        ? this.text.messages.error_unauthorized
+        : this.text.messages.error_generic;
 
       showNotification(errorMessage, 'error');
 
       submitButton.disabled = false;
-      submitButton.textContent = this.content.form.save;
+      submitButton.textContent = this.text.form.save;
     }
   }
 

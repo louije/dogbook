@@ -10,7 +10,7 @@ const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
  * Initialize magic auth on page load
  * Checks for ?magic= param or existing cookie
  */
-export function initMagicAuth(content) {
+export function initMagicAuth(text) {
   const urlParams = new URLSearchParams(window.location.search);
   const magicToken = urlParams.get('magic');
 
@@ -23,13 +23,13 @@ export function initMagicAuth(content) {
     window.history.replaceState({}, '', cleanUrl);
 
     // Show notification
-    showNotification(content.magic.activated, 'success');
+    showNotification(text.magic.activated, 'success');
 
     // Enable edit mode immediately
-    enableEditMode(content);
+    enableEditMode(text);
   } else if (hasMagicCookie()) {
     // Cookie already set from previous visit
-    enableEditMode(content);
+    enableEditMode(text);
   }
 }
 
@@ -67,7 +67,7 @@ export function clearMagicCookie() {
 /**
  * Enable edit mode UI
  */
-function enableEditMode(content) {
+function enableEditMode(text) {
   // Show all edit buttons
   document.querySelectorAll('.edit-button, .add-button, .edit-owner-button').forEach(btn => {
     btn.style.display = '';
@@ -78,26 +78,26 @@ function enableEditMode(content) {
   document.body.classList.add('magic-mode');
 
   // Show mode indicator in header
-  showMagicIndicator(content);
+  showMagicIndicator(text);
 }
 
 /**
  * Show magic mode indicator with deactivate button
  */
-function showMagicIndicator(content) {
+function showMagicIndicator(text) {
   // Don't add if already exists
   if (document.querySelector('.magic-indicator')) return;
 
   const indicator = document.createElement('div');
   indicator.className = 'magic-indicator';
   indicator.innerHTML = `
-    <span class="magic-indicator__text">${content.magic.indicator}</span>
+    <span class="magic-indicator__text">${text.magic.indicator}</span>
     <button
       type="button"
       class="magic-indicator__close"
       onclick="window.confirmDeactivateMagic()"
-      aria-label="${content.form.close}"
-      title="${content.magic.deactivate_confirm}"
+      aria-label="${text.form.close}"
+      title="${text.magic.deactivate_confirm}"
     >×</button>
   `;
   document.body.prepend(indicator);
@@ -108,8 +108,8 @@ function showMagicIndicator(content) {
  * Global function for onclick handler
  */
 window.confirmDeactivateMagic = function() {
-  const content = window.APP_CONTENT || { magic: { deactivate_confirm: 'Désactiver le mode édition ?' } };
-  if (confirm(content.magic.deactivate_confirm)) {
+  const text = window.APP_TEXT || { magic: { deactivate_confirm: 'Désactiver le mode édition ?' } };
+  if (confirm(text.magic.deactivate_confirm)) {
     clearMagicCookie();
   }
 };

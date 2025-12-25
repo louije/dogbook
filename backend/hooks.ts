@@ -5,6 +5,7 @@ import {
   getEntityName,
   logChange,
 } from './change-logging';
+import crypto from 'crypto';
 
 /**
  * Trigger frontend build webhook
@@ -322,6 +323,19 @@ export const mediaHooks = {
     if (operation === 'update' && item.isFeatured === true) {
       await triggerFrontendBuild();
     }
+  },
+};
+
+/**
+ * EditToken-specific hooks for token generation
+ */
+export const editTokenHooks = {
+  resolveInput: async ({ operation, resolvedData }: any) => {
+    // Generate secure token on create if not provided
+    if (operation === 'create' && !resolvedData.token) {
+      resolvedData.token = crypto.randomBytes(24).toString('base64url');
+    }
+    return resolvedData;
   },
 };
 
