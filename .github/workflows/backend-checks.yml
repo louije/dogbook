@@ -40,6 +40,8 @@ jobs:
 
       - name: Verify schema generation
         working-directory: backend
+        env:
+          DATABASE_URL: file:./test.db
         run: |
           if [ -f schema.prisma ]; then
             echo "✓ Prisma schema generated successfully"
