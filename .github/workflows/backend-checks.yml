@@ -26,43 +26,34 @@ jobs:
           cache: 'npm'
           cache-dependency-path: backend/package-lock.json
 
-      - name: Install dependencies (skip postinstall)
+      - name: Install dependencies
         working-directory: backend
-        run: npm ci --ignore-scripts
+        run: npm ci
 
-      - name: Generate Prisma schema
+      - name: Build backend
         working-directory: backend
-        run: npm run postinstall
+        run: npm run build
         env:
-          # Use test database for schema generation
+          # Use test database for build
           DATABASE_URL: file:./test.db
           SESSION_SECRET: test-secret-for-ci-checks-only-min-32-chars
+
+      - name: Verify schema generation
+        working-directory: backend
+        run: |
+          if [ -f schema.prisma ]; then
+            echo "✓ Prisma schema generated successfully"
+            npx prisma validate
+            echo ""
+            echo "Schema preview (first 50 lines):"
+            cat schema.prisma | head -50
+          else
+            echo "✗ Prisma schema not generated"
+            exit 1
+          fi
 
       - name: TypeScript type check (informational)
         working-directory: backend
         # Continue on error - admin UI may have type issues but Keystone builds fine
         continue-on-error: true
         run: npm run typecheck
-
-      - name: Validate Prisma schema
-        working-directory: backend
-        run: npx prisma validate
-
-      - name: Build backend
-        working-directory: backend
-        run: npm run build
-        env:
-          # Use in-memory database for build checks
-          DATABASE_URL: file:./test.db
-          SESSION_SECRET: test-secret-for-ci-checks-only-min-32-chars
-
-      - name: Check for schema issues
-        working-directory: backend
-        run: |
-          if [ -f schema.prisma ]; then
-            echo "✓ Prisma schema generated successfully"
-            cat schema.prisma | head -50
-          else
-            echo "✗ Prisma schema not generated"
-            exit 1
-          fi
