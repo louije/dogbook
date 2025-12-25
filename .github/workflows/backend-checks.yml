@@ -36,7 +36,7 @@ jobs:
         env:
           # Use test database for schema generation
           DATABASE_URL: file:./test.db
-          SESSION_SECRET: test-secret-for-ci-only
+          SESSION_SECRET: test-secret-for-ci-checks-only-min-32-chars
 
       - name: TypeScript type check (informational)
         working-directory: backend
@@ -54,7 +54,7 @@ jobs:
         env:
           # Use in-memory database for build checks
           DATABASE_URL: file:./test.db
-          SESSION_SECRET: test-secret-for-ci-only
+          SESSION_SECRET: test-secret-for-ci-checks-only-min-32-chars
 
       - name: Check for schema issues
         working-directory: backend
