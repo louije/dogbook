@@ -1,6 +1,6 @@
 #!/bin/bash
 # Standalone deploy script for dogbook
-# Can be called directly via SSH or from post-receive hook
+# Can be called directly via SSH (GitHub Actions) or from post-receive hook
 
 set -e
 
@@ -16,17 +16,20 @@ export NVM_DIR="$HOME/.nvm"
 TARGET="/srv/dogbook/current"
 GIT_DIR="/srv/dogbook/repo.git"
 BRANCH="main"
+GITHUB_REPO="https://github.com/louije/dogbook.git"
 
 echo "======================================"
 echo "Deploying dogbook backend to production"
 echo "======================================"
 
-# Fetch latest and checkout
-echo "→ Fetching latest code..."
+# Fetch from GitHub (for GitHub Actions triggered deploys)
+echo "→ Fetching from GitHub..."
+git --git-dir=$GIT_DIR fetch $GITHUB_REPO $BRANCH:$BRANCH --force 2>/dev/null || true
+
+# Checkout latest code
+echo "→ Checking out latest code..."
 cd $TARGET
-git --git-dir=$GIT_DIR --work-tree=$TARGET fetch origin $BRANCH
 git --git-dir=$GIT_DIR --work-tree=$TARGET checkout -f $BRANCH
-git --git-dir=$GIT_DIR --work-tree=$TARGET reset --hard origin/$BRANCH
 
 # Navigate to backend directory
 cd $TARGET/backend
