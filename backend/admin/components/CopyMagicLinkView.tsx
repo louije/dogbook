@@ -20,12 +20,15 @@ const getFrontendUrl = () => {
 export const Field = ({ field, value }: FieldProps<typeof controller>) => {
   const [copied, setCopied] = useState(false);
 
-  if (!value) {
+  // Extract actual string value from Keystone's field value object
+  const tokenValue = typeof value === 'string' ? value : value?.inner?.value ?? value?.initial ?? '';
+
+  if (!tokenValue) {
     return <div css={{ color: '#666' }}>Token will be generated automatically</div>;
   }
 
   const frontendUrl = getFrontendUrl();
-  const magicLink = `${frontendUrl}/?magic=${value}`;
+  const magicLink = `${frontendUrl}/?magic=${tokenValue}`;
 
   const handleCopy = async () => {
     try {
@@ -54,7 +57,7 @@ export const Field = ({ field, value }: FieldProps<typeof controller>) => {
           color: '#374151',
           border: '1px solid #e5e7eb'
         }}>
-          {value}
+          {tokenValue}
         </code>
         <button
           type="button"
