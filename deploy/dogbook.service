@@ -4,11 +4,11 @@ After=network.target
 
 [Service]
 Type=simple
-User=caddy
+User=dogbook
 WorkingDirectory=/srv/dogbook/current/backend
-ExecStart=/home/deploy-user/.nvm/versions/node/v22.18.0/bin/node /srv/dogbook/current/backend/node_modules/.bin/keystone start
+ExecStart=/home/dogbook/.nvm/versions/node/v22.21.1/bin/node /srv/dogbook/current/backend/node_modules/.bin/keystone start
 Environment=NODE_ENV=production
-Environment=PATH=/home/deploy-user/.nvm/versions/node/v22.18.0/bin:/usr/local/bin:/usr/bin:/bin
+Environment=PATH=/home/dogbook/.nvm/versions/node/v22.21.1/bin:/usr/local/bin:/usr/bin:/bin
 Restart=always
 RestartSec=10
 

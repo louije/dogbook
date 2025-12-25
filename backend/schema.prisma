@@ -87,4 +87,6 @@ model ChangeLog {
   changesSummary String   @default("")
   changedBy      String?  @default("public")
   status         String?  @default("pending")
+  frontendUrl    String   @default("")
+  backendUrl     String   @default("")
 }

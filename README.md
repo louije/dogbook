@@ -7,13 +7,15 @@ Un trombinoscope (annuaire photo) de chiens construit avec une architecture JAMs
 ### Backend
 - **KeystoneJS 6** - CMS headless avec interface d'administration
 - **SQLite** - Base de données légère
-- Hébergement sur serveur Hetzner
+- Hébergement sur serveur VPS
+- Accès anonyme via URL secrète
 
 ### Frontend
 - **11ty (Eleventy)** - Générateur de sites statiques
 - **Vanilla JavaScript** - Sans framework
 - **CSS sémantique avec BEM** - Pas de Tailwind
-- Régénération automatique via webhook
+- Déploiement sur VPS ou Netlify
+- Régénération automatique à chaque modification du backend
 
 ## Modèle de données
 
@@ -98,24 +100,24 @@ cd frontend && npm run build
 
 ## Déploiement
 
-### Backend sur Hetzner (niche.maisonsdoggo.fr)
+### Backend sur serveur
 
 Le déploiement utilise un workflow git push similaire à Capistrano.
 
 #### Configuration initiale du serveur
 
-Sur le serveur Hetzner (une seule fois):
+Sur le serveur (une seule fois):
 
 ```bash
 # Créer la structure de répertoires
 sudo mkdir -p /srv/dogbook/{repo.git,backups,data/images}
-sudo chown -R caddy:caddy /srv/dogbook
+sudo chown -R dogbook:dogbook /srv/dogbook
 
 # Initialiser le dépôt git bare
-sudo -u caddy git init --bare /srv/dogbook/repo.git
+sudo -u dogbook git init --bare /srv/dogbook/repo.git
 
 # Copier le hook post-receive
-sudo -u caddy cp deploy/post-receive /srv/dogbook/repo.git/hooks/
+sudo -u dogbook cp deploy/post-receive /srv/dogbook/repo.git/hooks/
 sudo chmod +x /srv/dogbook/repo.git/hooks/post-receive
 
 # Installer le service systemd
@@ -129,14 +131,14 @@ sudo systemctl enable dogbook-backup.timer
 sudo systemctl start dogbook-backup.timer
 
 # Configurer l'environnement de production
-sudo -u caddy nano /srv/dogbook/data/.env
+sudo -u dogbook nano /srv/dogbook/data/.env
 # Copiez le contenu de backend/.env.production.example et remplissez les valeurs
 ```
 
 Ajoutez à `/etc/caddy/Caddyfile`:
 
 ```
-niche.maisonsdoggo.fr {
+your-domain.com {
     reverse_proxy 127.0.0.1:3002
     log {
         output file /srv/dogbook/access.log {
@@ -158,16 +160,16 @@ Sur votre machine locale:
 
 ```bash
 # Ajoutez le remote de déploiement
-git remote add deploy ljt.cc:/srv/dogbook/repo.git
+git remote add deploy your-server:/srv/dogbook/repo.git
 
 # Premier déploiement
 git push deploy main
 
 # Sur le serveur, créez le symlink .env
-ssh ljt.cc "sudo -u caddy ln -s /srv/dogbook/data/.env /srv/dogbook/current/backend/.env"
+ssh your-server "sudo -u dogbook ln -s /srv/dogbook/data/.env /srv/dogbook/current/backend/.env"
 
 # Démarrez le service
-ssh ljt.cc "sudo systemctl start dogbook"
+ssh your-server "sudo systemctl start dogbook"
 ```
 
 #### Déploiements futurs
@@ -187,13 +189,13 @@ Le hook post-receive s'occupe automatiquement de:
 
 ```bash
 # Vérifier le statut du service
-ssh ljt.cc "sudo systemctl status dogbook"
+ssh your-server "sudo systemctl status dogbook"
 
 # Voir les logs
-ssh ljt.cc "sudo journalctl -u dogbook -f"
+ssh your-server "sudo journalctl -u dogbook -f"
 
 # Vérifier les backups
-ssh ljt.cc "ls -lh /srv/dogbook/backups/"
+ssh your-server "ls -lh /srv/dogbook/backups/"
 ```
 
 ### Frontend sur Netlify
@@ -208,7 +210,7 @@ ssh ljt.cc "ls -lh /srv/dogbook/backups/"
    - `API_URL`: URL de votre backend (ex: `https://api.yourdomain.com`)
 5. Créez un Build Hook et ajoutez-le dans `backend/.env`
 
-### Frontend sur Hetzner
+### Frontend sur VPS
 
 ```bash
 # Build le frontend
