@@ -17,8 +17,6 @@ export const hasValidEditToken = async ({ context }: any) => {
 
   // Check for magic token in cookie
   const token = context.req?.cookies?.magicToken;
-  console.log('[Magic Auth] Cookies:', context.req?.cookies);
-  console.log('[Magic Auth] Token from cookie:', token);
   if (!token) return false;
 
   // Validate token using prisma directly (bypasses access control)
@@ -28,7 +26,6 @@ export const hasValidEditToken = async ({ context }: any) => {
     where: { token },
     select: { id: true, label: true, isActive: true, expiresAt: true, usageCount: true },
   });
-  console.log('[Magic Auth] Token lookup result:', editToken);
 
   if (!editToken) return false;
   if (!editToken.isActive) return false;
@@ -75,4 +72,27 @@ export const getChangedByLabel = (context: any): string | undefined => {
   if (context.session) return context.session.name;
   if (context.magicToken) return context.magicToken.label;
   return undefined;
+};
+
+/**
+ * Validate a magic token (for frontend validation endpoint)
+ */
+export const validateMagicToken = async (token: string, context: any): Promise<boolean> => {
+  if (!token) return false;
+
+  const editToken = await context.prisma.editToken.findUnique({
+    where: { token },
+    select: { isActive: true, expiresAt: true },
+  });
+
+  if (!editToken) return false;
+  if (!editToken.isActive) return false;
+
+  if (editToken.expiresAt) {
+    const now = new Date();
+    const expires = new Date(editToken.expiresAt);
+    if (now > expires) return false;
+  }
+
+  return true;
 };

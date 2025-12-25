@@ -5,6 +5,7 @@ import { lists } from './schema';
 import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
+import { validateMagicToken } from './auth';
 
 const sessionConfig = {
   maxAge: 60 * 60 * 24 * 30, // 30 days
@@ -51,9 +52,21 @@ export default withAuth(config({
       origin: true,
       credentials: true,
     },
-    extendExpressApp: (app) => {
+    extendExpressApp: (app, context) => {
       // Parse cookies before any routes
       app.use(cookieParser());
+
+      // Validate magic token endpoint
+      app.get('/api/validate-magic-token', async (req, res) => {
+        const token = req.cookies?.magicToken;
+        if (!token) {
+          return res.json({ valid: false });
+        }
+
+        const keystoneContext = await context.withRequest(req, res);
+        const isValid = await validateMagicToken(token, keystoneContext);
+        res.json({ valid: isValid });
+      });
 
       // Serve the admin service worker
       app.get('/admin-sw.js', (req, res) => {

@@ -8,9 +8,9 @@ const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
 /**
  * Initialize magic auth on page load
- * Checks for ?magic= param or existing cookie
+ * Checks for ?magic= param or existing cookie, validates with server
  */
-export function initMagicAuth(text) {
+export async function initMagicAuth(text) {
   const urlParams = new URLSearchParams(window.location.search);
   const magicToken = urlParams.get('magic');
 
@@ -22,15 +22,66 @@ export function initMagicAuth(text) {
     const cleanUrl = window.location.pathname + window.location.hash;
     window.history.replaceState({}, '', cleanUrl);
 
-    // Show notification
-    showNotification(text.magic.activated, 'success');
-
-    // Enable edit mode immediately
-    enableEditMode(text);
+    // Validate the new token
+    const isValid = await validateTokenWithServer();
+    if (isValid) {
+      showNotification(text.magic.activated, 'success');
+      enableEditMode(text);
+    } else {
+      // Token was invalid, clear it
+      clearMagicCookieSilent();
+      showNotification(text.magic.invalid || 'Lien magique invalide ou expiré.', 'error');
+    }
   } else if (hasMagicCookie()) {
-    // Cookie already set from previous visit
-    enableEditMode(text);
+    // Cookie exists from previous visit - validate it
+    const isValid = await validateTokenWithServer();
+    if (isValid) {
+      enableEditMode(text);
+    } else {
+      // Token expired or revoked, clear it silently
+      clearMagicCookieSilent();
+    }
   }
+}
+
+/**
+ * Validate token with server
+ */
+async function validateTokenWithServer() {
+  try {
+    const apiUrl = window.location.hostname === 'localhost'
+      ? 'http://localhost:3000'
+      : window.location.origin.replace('www.', 'niche.');
+
+    const response = await fetch(`${apiUrl}/api/validate-magic-token`, {
+      credentials: 'include',
+    });
+
+    if (!response.ok) return false;
+
+    const data = await response.json();
+    return data.valid === true;
+  } catch (error) {
+    console.error('Failed to validate magic token:', error);
+    return false;
+  }
+}
+
+/**
+ * Clear cookie without reload (for silent cleanup)
+ */
+function clearMagicCookieSilent() {
+  const hostParts = window.location.hostname.split('.');
+  const rootDomain = hostParts.length > 2
+    ? '.' + hostParts.slice(-2).join('.')
+    : hostParts.length === 2
+      ? '.' + hostParts.join('.')
+      : '';
+
+  let cookieValue = `${COOKIE_NAME}=; path=/; max-age=0`;
+  if (rootDomain) cookieValue += `; domain=${rootDomain}`;
+
+  document.cookie = cookieValue;
 }
 
 /**
