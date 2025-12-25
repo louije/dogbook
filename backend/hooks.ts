@@ -333,7 +333,9 @@ export const editTokenHooks = {
   resolveInput: async ({ operation, resolvedData }: any) => {
     // Generate secure token on create if not provided
     if (operation === 'create' && !resolvedData.token) {
-      resolvedData.token = crypto.randomBytes(24).toString('base64url');
+      // Generate friendly token: lowercase letters and numbers only (no dashes/underscores)
+      const bytes = crypto.randomBytes(18);
+      resolvedData.token = bytes.toString('hex'); // Uses only 0-9 and a-f
     }
     return resolvedData;
   },
