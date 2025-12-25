@@ -14,7 +14,8 @@ jobs:
         uses: appleboy/ssh-action@v1
         with:
           host: ${{ secrets.DEPLOY_HOST }}
+          port: 22
           username: dogbook
           key: ${{ secrets.DEPLOY_SSH_KEY }}
-          debug: true
+          command_timeout: 10m
           script: /srv/dogbook/deploy.sh
