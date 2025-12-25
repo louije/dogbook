@@ -510,6 +510,7 @@ export const lists = {
         ui: {
           createView: { fieldMode: 'hidden' },
           itemView: { fieldMode: 'read' },
+          views: './admin/components/CopyMagicLinkView',
         },
       }),
       isActive: checkbox({
