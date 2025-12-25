@@ -17,6 +17,8 @@ export const hasValidEditToken = async ({ context }: any) => {
 
   // Check for magic token in cookie
   const token = context.req?.cookies?.magicToken;
+  console.log('[Magic Auth] Cookies:', context.req?.cookies);
+  console.log('[Magic Auth] Token from cookie:', token);
   if (!token) return false;
 
   // Validate token
@@ -24,6 +26,7 @@ export const hasValidEditToken = async ({ context }: any) => {
     where: { token },
     query: 'id label isActive expiresAt usageCount',
   });
+  console.log('[Magic Auth] Token lookup result:', editToken);
 
   if (!editToken) return false;
   if (!editToken.isActive) return false;
