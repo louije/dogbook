@@ -413,7 +413,7 @@ UPDATE "Dog" SET "status" = 'approved';
 
 ### 1. Copy/Text Configuration
 
-**File:** `frontend/src/_data/copy.json`
+**File:** `frontend/src/_data/content.json`
 
 ```json
 {
@@ -475,18 +475,18 @@ UPDATE "Dog" SET "status" = 'approved';
 
 ```njk
 <!-- dogs.njk -->
-<button class="edit-button">{{ copy.dog.edit }}</button>
-<h1>{{ copy.dialog.edit_dog_title | replace("{name}", dog.name) }}</h1>
+<button class="edit-button">{{ content.dog.edit }}</button>
+<h1>{{ content.dialog.edit_dog_title | replace("{name}", dog.name) }}</h1>
 ```
 
 **Access in JavaScript:**
 
 ```javascript
 // Load copy at build time or runtime
-const copy = await fetch('/_data/copy.json').then(r => r.json());
+const content = await fetch('/_data/content.json').then(r => r.json());
 
 // Or inject at build time via 11ty data
-const copy = window.APP_COPY; // Injected in base template
+const content = window.APP_CONTENT; // Injected in base template
 ```
 
 ### 2. Magic Link Detection
@@ -503,7 +503,7 @@ const COOKIE_NAME = 'magicToken';
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
 
 // Initialize on page load
-export function initMagicAuth(copy) {
+export function initMagicAuth(content) {
   const urlParams = new URLSearchParams(window.location.search);
   const magicToken = urlParams.get('magic');
 
@@ -516,7 +516,7 @@ export function initMagicAuth(copy) {
     window.history.replaceState({}, '', cleanUrl);
 
     // Show notification
-    showNotification(copy.magic.activated, 'success');
+    showNotification(content.magic.activated, 'success');
 
     // Enable edit mode immediately
     enableEditMode();
@@ -561,9 +561,9 @@ function enableEditMode() {
 function showMagicIndicator() {
   const indicator = document.createElement('div');
   indicator.className = 'magic-indicator';
-  indicator.textContent = window.APP_COPY?.magic?.indicator || '✨ Mode édition';
+  indicator.textContent = window.APP_CONTENT?.magic?.indicator || '✨ Mode édition';
   indicator.innerHTML = `
-    <span>${window.APP_COPY?.magic?.indicator || '✨ Mode édition'}</span>
+    <span>${window.APP_CONTENT?.magic?.indicator || '✨ Mode édition'}</span>
     <button onclick="confirmDeactivateMagic()" title="Désactiver">×</button>
   `;
   document.body.prepend(indicator);
@@ -745,7 +745,7 @@ import { updateDog, createDog, getModerationMode } from './api.js';
 import { OwnerAutocomplete } from './owner-autocomplete.js';
 
 export class EditDogModal {
-  constructor(copy, dog = null) {
+  constructor(content, dog = null) {
     this.copy = copy;
     this.dog = dog; // null for create, object for edit
     this.dialog = this.createDialog();
@@ -755,8 +755,8 @@ export class EditDogModal {
   createDialog() {
     const isEdit = !!this.dog;
     const title = isEdit
-      ? this.copy.dialog.edit_dog_title.replace('{name}', this.dog.name)
-      : this.copy.dialog.add_dog_title;
+      ? this.content.dialog.edit_dog_title.replace('{name}', this.dog.name)
+      : this.content.dialog.add_dog_title;
 
     const dialog = document.createElement('dialog');
     dialog.className = 'edit-dialog';
@@ -764,55 +764,55 @@ export class EditDogModal {
       <form method="dialog" class="edit-form">
         <header class="edit-form__header">
           <h2>${title}</h2>
-          <button type="button" class="close-button" aria-label="${this.copy.form.cancel}">×</button>
+          <button type="button" class="close-button" aria-label="${this.content.form.cancel}">×</button>
         </header>
 
         <div class="edit-form__body">
           <label>
-            <span>${this.copy.dog.name} *</span>
+            <span>${this.content.dog.name} *</span>
             <input type="text" name="name" required value="${this.dog?.name || ''}">
           </label>
 
           <label>
-            <span>${this.copy.dog.sex}</span>
+            <span>${this.content.dog.sex}</span>
             <select name="sex">
               <option value="">-</option>
               <option value="male" ${this.dog?.sex === 'male' ? 'selected' : ''}>
-                ${this.copy.dog.sex_male}
+                ${this.content.dog.sex_male}
               </option>
               <option value="female" ${this.dog?.sex === 'female' ? 'selected' : ''}>
-                ${this.copy.dog.sex_female}
+                ${this.content.dog.sex_female}
               </option>
             </select>
           </label>
 
           <label>
-            <span>${this.copy.dog.birthday}</span>
+            <span>${this.content.dog.birthday}</span>
             <input type="date" name="birthday" value="${this.dog?.birthday || ''}">
           </label>
 
           <label>
-            <span>${this.copy.dog.breed}</span>
+            <span>${this.content.dog.breed}</span>
             <input type="text" name="breed" value="${this.dog?.breed || ''}">
           </label>
 
           <label>
-            <span>${this.copy.dog.coat}</span>
+            <span>${this.content.dog.coat}</span>
             <input type="text" name="coat" value="${this.dog?.coat || ''}">
           </label>
 
           <label>
-            <span>${this.copy.dog.owner} *</span>
+            <span>${this.content.dog.owner} *</span>
             <div id="owner-autocomplete"></div>
           </label>
         </div>
 
         <footer class="edit-form__footer">
           <button type="button" class="button button--secondary cancel-button">
-            ${this.copy.form.cancel}
+            ${this.content.form.cancel}
           </button>
           <button type="submit" class="button button--primary">
-            ${this.copy.form.save}
+            ${this.content.form.save}
           </button>
         </footer>
       </form>
@@ -840,7 +840,7 @@ export class EditDogModal {
     const formData = new FormData(event.target);
     const submitButton = event.target.querySelector('button[type="submit"]');
     submitButton.disabled = true;
-    submitButton.textContent = this.copy.form.saving;
+    submitButton.textContent = this.content.form.saving;
 
     try {
       // Get owner from autocomplete (ID or new owner data)
@@ -875,7 +875,7 @@ export class EditDogModal {
       if (this.dog) {
         // Update existing dog
         await updateDog(this.dog.id, dogData);
-        showSuccess(this.copy.messages.dog_updated);
+        showSuccess(this.content.messages.dog_updated);
       } else {
         // Create new dog
         const result = await createDog(dogData);
@@ -883,8 +883,8 @@ export class EditDogModal {
         // Show appropriate message based on moderation
         const moderationMode = await getModerationMode();
         const message = moderationMode === 'a_posteriori'
-          ? this.copy.messages.dog_created_aposteriori
-          : this.copy.messages.dog_created_apriori;
+          ? this.content.messages.dog_created_aposteriori
+          : this.content.messages.dog_created_apriori;
         showSuccess(message);
       }
 
@@ -895,9 +895,9 @@ export class EditDogModal {
 
     } catch (error) {
       console.error('Error saving dog:', error);
-      showError(this.copy.messages.error_generic);
+      showError(this.content.messages.error_generic);
       submitButton.disabled = false;
-      submitButton.textContent = this.copy.form.save;
+      submitButton.textContent = this.content.form.save;
     }
   }
 
@@ -925,7 +925,7 @@ function showError(message) {
 import { searchOwners, createOwner } from './api.js';
 
 export class OwnerAutocomplete {
-  constructor(container, copy, initialOwner = null) {
+  constructor(container, content, initialOwner = null) {
     this.container = container;
     this.copy = copy;
     this.selectedOwner = initialOwner;
@@ -938,7 +938,7 @@ export class OwnerAutocomplete {
       <input
         type="text"
         class="owner-search"
-        placeholder="${this.copy.owner.search_placeholder}"
+        placeholder="${this.content.owner.search_placeholder}"
         value="${this.selectedOwner?.name || ''}"
         autocomplete="off"
       >
@@ -996,7 +996,7 @@ export class OwnerAutocomplete {
     const createNew = document.createElement('button');
     createNew.type = 'button';
     createNew.className = 'owner-result owner-result--create';
-    createNew.textContent = this.copy.owner.create_new.replace('{name}', searchTerm);
+    createNew.textContent = this.content.owner.create_new.replace('{name}', searchTerm);
     createNew.addEventListener('click', () => this.selectNewOwner(searchTerm, resultsDiv));
     resultsDiv.appendChild(createNew);
 
@@ -1048,14 +1048,14 @@ permalink: "/chiens/{{ dog.id }}/"
 
     {# Edit button - hidden by default, shown when magic cookie present #}
     <button class="edit-button" hidden data-dog-id="{{ dog.id }}">
-      {{ copy.dog.edit }}
+      {{ content.dog.edit }}
     </button>
   </header>
 
   {# ... rest of dog detail page #}
 
   <aside class="dog-owner">
-    <h3>{{ copy.dog.owner }}</h3>
+    <h3>{{ content.dog.owner }}</h3>
     <p>
       {{ dog.owner.name }}
       <button class="edit-owner-button" hidden data-owner-id="{{ dog.owner.id }}">
@@ -1069,17 +1069,17 @@ permalink: "/chiens/{{ dog.id }}/"
   import { initMagicAuth, hasMagicCookie } from '/js/magic-auth.js';
   import { EditDogModal } from '/js/edit-dog.js';
 
-  const copy = {{ copy | dump | safe }};
+  const content = {{ copy | dump | safe }};
 
   // Initialize magic auth
-  initMagicAuth(copy);
+  initMagicAuth(content);
 
   // Setup edit button
   if (hasMagicCookie()) {
     const editButton = document.querySelector('.edit-button');
     editButton.addEventListener('click', () => {
       const dogData = {{ dog | dump | safe }};
-      const modal = new EditDogModal(copy, dogData);
+      const modal = new EditDogModal(content, dogData);
       modal.show();
     });
   }
@@ -1101,11 +1101,11 @@ permalink: "/"
 
 {% block content %}
 <header class="page-header">
-  <h1>{{ copy.site.title }}</h1>
+  <h1>{{ content.site.title }}</h1>
 
   {# Add dog button - hidden by default #}
   <button class="add-button" hidden id="add-dog-button">
-    {{ copy.dog.add }}
+    {{ content.dog.add }}
   </button>
 </header>
 
@@ -1115,13 +1115,13 @@ permalink: "/"
   import { initMagicAuth, hasMagicCookie } from '/js/magic-auth.js';
   import { EditDogModal } from '/js/edit-dog.js';
 
-  const copy = {{ copy | dump | safe }};
+  const content = {{ copy | dump | safe }};
 
-  initMagicAuth(copy);
+  initMagicAuth(content);
 
   if (hasMagicCookie()) {
     document.getElementById('add-dog-button').addEventListener('click', () => {
-      const modal = new EditDogModal(copy); // null = create mode
+      const modal = new EditDogModal(content); // null = create mode
       modal.show();
     });
   }
@@ -1270,9 +1270,9 @@ permalink: "/"
 - [ ] Test that magic edits appear with label in changelog
 
 ### Phase 3: Frontend Copy System
-- [ ] Create `copy.json` with all text strings
+- [ ] Create `content.json` with all text strings
 - [ ] Configure 11ty to load as global data
-- [ ] Update all templates to use `{{ copy.* }}`
+- [ ] Update all templates to use `{{ content.* }}`
 - [ ] Test that all text renders correctly
 
 ### Phase 4: Frontend Magic Auth
