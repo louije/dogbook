@@ -80,3 +80,5 @@ export const Cell = ({ field, item }: FieldProps<typeof controller>) => {
 export const CardValue = ({ field, item }: FieldProps<typeof controller>) => {
   return <Cell field={field} item={item} />;
 };
+
+export { controller };
