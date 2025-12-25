@@ -124,13 +124,13 @@ Sur le serveur (une seule fois):
 ```bash
 # Créer la structure de répertoires
 sudo mkdir -p /srv/dogbook/{repo.git,backups,data/images}
-sudo chown -R caddy:caddy /srv/dogbook
+sudo chown -R dogbook:dogbook /srv/dogbook
 
 # Initialiser le dépôt git bare
-sudo -u caddy git init --bare /srv/dogbook/repo.git
+sudo -u dogbook git init --bare /srv/dogbook/repo.git
 
 # Copier le hook post-receive
-sudo -u caddy cp deploy/post-receive /srv/dogbook/repo.git/hooks/
+sudo -u dogbook cp deploy/post-receive /srv/dogbook/repo.git/hooks/
 sudo chmod +x /srv/dogbook/repo.git/hooks/post-receive
 
 # Installer le service systemd
@@ -144,7 +144,7 @@ sudo systemctl enable dogbook-backup.timer
 sudo systemctl start dogbook-backup.timer
 
 # Configurer l'environnement de production
-sudo -u caddy nano /srv/dogbook/data/.env
+sudo -u dogbook nano /srv/dogbook/data/.env
 # Copiez le contenu de backend/.env.production.example et remplissez les valeurs
 ```
 
@@ -179,7 +179,7 @@ git remote add deploy your-server:/srv/dogbook/repo.git
 git push deploy main
 
 # Sur le serveur, créez le symlink .env
-ssh your-server "sudo -u caddy ln -s /srv/dogbook/data/.env /srv/dogbook/current/backend/.env"
+ssh your-server "sudo -u dogbook ln -s /srv/dogbook/data/.env /srv/dogbook/current/backend/.env"
 
 # Démarrez le service
 ssh your-server "sudo systemctl start dogbook"

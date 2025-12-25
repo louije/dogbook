@@ -3,6 +3,6 @@ Description=Backup Dogbook Database
 
 [Service]
 Type=oneshot
-User=caddy
+User=dogbook
 ExecStart=/bin/bash -c '/usr/bin/sqlite3 /srv/dogbook/data/keystone.db ".backup /srv/dogbook/backups/keystone-$(date +%%Y%%m%%d).db"'
 ExecStartPost=/usr/bin/find /srv/dogbook/backups -name "keystone-*.db" -mtime +30 -delete
