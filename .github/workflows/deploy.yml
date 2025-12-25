@@ -10,12 +10,13 @@ jobs:
     timeout-minutes: 10
 
     steps:
+      - name: Setup SSH key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.DEPLOY_HOST }} >> ~/.ssh/known_hosts
+
       - name: Deploy to production
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.DEPLOY_HOST }}
-          port: 22
-          username: dogbook
-          key: ${{ secrets.DEPLOY_SSH_KEY }}
-          command_timeout: 10m
-          script: /srv/dogbook/deploy.sh
+        run: |
+          ssh -i ~/.ssh/deploy_key -o StrictHostKeyChecking=no dogbook@${{ secrets.DEPLOY_HOST }} "/srv/dogbook/deploy.sh"
