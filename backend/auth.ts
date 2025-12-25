@@ -21,10 +21,12 @@ export const hasValidEditToken = async ({ context }: any) => {
   console.log('[Magic Auth] Token from cookie:', token);
   if (!token) return false;
 
-  // Validate token
-  const editToken = await context.query.EditToken.findOne({
+  // Validate token using prisma directly (bypasses access control)
+  // This is necessary because EditToken requires authentication to query,
+  // but we need to validate the token before the user is authenticated
+  const editToken = await context.prisma.editToken.findUnique({
     where: { token },
-    query: 'id label isActive expiresAt usageCount',
+    select: { id: true, label: true, isActive: true, expiresAt: true, usageCount: true },
   });
   console.log('[Magic Auth] Token lookup result:', editToken);
 
@@ -40,10 +42,10 @@ export const hasValidEditToken = async ({ context }: any) => {
 
   // Update last used timestamp and increment usage count
   // Do this in background, don't block the request
-  context.query.EditToken.updateOne({
+  context.prisma.editToken.update({
     where: { id: editToken.id },
     data: {
-      lastUsedAt: new Date().toISOString(),
+      lastUsedAt: new Date(),
       usageCount: editToken.usageCount + 1,
     },
   }).catch((err: any) => console.error('Failed to update token usage:', err));
