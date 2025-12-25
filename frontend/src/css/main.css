@@ -857,3 +857,6 @@ input:focus-visible {
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Magic Mode Styles */
+@import './magic-mode.css';
