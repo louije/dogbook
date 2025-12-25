@@ -26,19 +26,23 @@ jobs:
           cache: 'npm'
           cache-dependency-path: backend/package-lock.json
 
-      - name: Install dependencies
+      - name: Install dependencies (skip postinstall)
         working-directory: backend
-        run: npm ci
+        run: npm ci --ignore-scripts
+
+      - name: Generate Prisma schema
+        working-directory: backend
+        run: npm run postinstall
+        env:
+          # Use test database for schema generation
+          DATABASE_URL: file:./test.db
+          SESSION_SECRET: test-secret-for-ci-only
 
       - name: TypeScript type check (informational)
         working-directory: backend
         # Continue on error - admin UI may have type issues but Keystone builds fine
         continue-on-error: true
         run: npm run typecheck
-
-      - name: Generate Prisma schema
-        working-directory: backend
-        run: npm run postinstall
 
       - name: Validate Prisma schema
         working-directory: backend
