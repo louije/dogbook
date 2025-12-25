@@ -113,7 +113,7 @@ Si vous auto-hébergez le frontend:
 
 ## Déploiement
 
-### Backend sur Hetzner (niche.example.com)
+### Backend sur serveur
 
 Le déploiement utilise un workflow git push similaire à Capistrano.
 
@@ -151,7 +151,7 @@ sudo -u caddy nano /srv/dogbook/data/.env
 Ajoutez à `/etc/caddy/Caddyfile`:
 
 ```
-niche.example.com {
+your-domain.com {
     reverse_proxy 127.0.0.1:3002
     log {
         output file /srv/dogbook/access.log {
@@ -173,16 +173,16 @@ Sur votre machine locale:
 
 ```bash
 # Ajoutez le remote de déploiement
-git remote add deploy your-server.example:/srv/dogbook/repo.git
+git remote add deploy your-server:/srv/dogbook/repo.git
 
 # Premier déploiement
 git push deploy main
 
 # Sur le serveur, créez le symlink .env
-ssh your-server.example "sudo -u caddy ln -s /srv/dogbook/data/.env /srv/dogbook/current/backend/.env"
+ssh your-server "sudo -u caddy ln -s /srv/dogbook/data/.env /srv/dogbook/current/backend/.env"
 
 # Démarrez le service
-ssh your-server.example "sudo systemctl start dogbook"
+ssh your-server "sudo systemctl start dogbook"
 ```
 
 #### Déploiements futurs
@@ -202,13 +202,13 @@ Le hook post-receive s'occupe automatiquement de:
 
 ```bash
 # Vérifier le statut du service
-ssh your-server.example "sudo systemctl status dogbook"
+ssh your-server "sudo systemctl status dogbook"
 
 # Voir les logs
-ssh your-server.example "sudo journalctl -u dogbook -f"
+ssh your-server "sudo journalctl -u dogbook -f"
 
 # Vérifier les backups
-ssh your-server.example "ls -lh /srv/dogbook/backups/"
+ssh your-server "ls -lh /srv/dogbook/backups/"
 ```
 
 ### Frontend sur Netlify

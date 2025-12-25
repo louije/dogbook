@@ -9,7 +9,7 @@ Replace the current `git push deploy` workflow with automatic deploys triggered 
 - Push to `deploy` remote triggers `post-receive` hook
 - Hook reads git refs from stdin (`while read oldrev newrev ref`)
 - Deploy runs as `deploy-user`, service runs as `deploy-user`
-- Server: `your-server.example` (91.99.196.61)
+- Server: configured in secrets
 
 ## Target State
 
@@ -62,8 +62,8 @@ The new `deploy.sh`:
 
 | Secret | Description |
 |--------|-------------|
-| `DEPLOY_SSH_KEY` | Private key for `deploy-user@your-server.example` |
-| `DEPLOY_HOST` | `your-server.example` or IP address |
+| `DEPLOY_SSH_KEY` | Private key for deploy user |
+| `DEPLOY_HOST` | Server hostname or IP address |
 | `DEPLOY_USER` | `deploy-user` |
 
 **SSH key setup:**
@@ -172,7 +172,7 @@ timeout: 10m
 ## Testing plan
 
 1. Create deploy key, add to server
-2. Test SSH manually: `ssh -i deploy_key deploy-user@your-server.example /srv/dogbook/deploy.sh`
+2. Test SSH manually: `ssh -i deploy_key $DEPLOY_USER@$DEPLOY_HOST /srv/dogbook/deploy.sh`
 3. Add secrets to GitHub
 4. Create workflow file on a branch
 5. Merge branch, verify deploy runs
