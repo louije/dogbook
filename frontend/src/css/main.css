@@ -192,6 +192,13 @@ input:focus-visible {
   font-size: var(--font-size-2xl);
 }
 
+.hero__tagline {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
 .hero__description {
   font-size: var(--font-size-lg);
   opacity: 0.9;
@@ -206,33 +213,46 @@ input:focus-visible {
 /* Theme Toggle Buttons */
 .theme-buttons {
   display: flex;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(0, 0, 0, 0.5);
+  border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 1rem;
-  padding: 0.125rem;
 }
 
 .theme-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 1.75rem;
-  height: 1.25rem;
+  padding: 0.125rem 0.5rem;
   background: transparent;
   border: none;
-  border-radius: 0.875rem;
+  border-right: 1px solid rgba(255, 255, 255, 0.3);
   cursor: pointer;
-  font-size: 0.75rem;
+  font-size: 0.625rem;
   line-height: 1;
   transition: var(--transition);
-  color: white;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.theme-button:last-child {
+  border-right: none;
+}
+
+.theme-button:first-child {
+  border-radius: 1rem 0 0 1rem;
+}
+
+.theme-button:last-child {
+  border-radius: 0 1rem 1rem 0;
 }
 
 .theme-button:hover {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
 }
 
 .theme-button.active {
-  background: rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.25);
+  color: white;
 }
 
 .hero__search-toggle {
@@ -297,7 +317,13 @@ input:focus-visible {
   }
 
   .hero__header {
+    display: flex;
     justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .hero__actions {
+    flex-shrink: 0;
   }
 
   .hero__search-toggle {
