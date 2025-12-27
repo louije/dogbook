@@ -11,8 +11,8 @@ var PureSnow = (function() {
   var snowContainer = null;
 
   function getSnowflakeCount() {
-    // Fewer snowflakes on small screens
-    return window.innerWidth < 768 ? 50 : 150;
+    // Fewer snowflakes on small screens for performance
+    return window.innerWidth < 768 ? 25 : 150;
   }
 
   function randomInt(value) {
@@ -28,7 +28,7 @@ var PureSnow = (function() {
   function createSnowContainer() {
     var container = document.createElement('div');
     container.id = 'snow';
-    container.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden;';
+    container.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; overflow: hidden; will-change: transform; transform: translateZ(0);';
     document.body.appendChild(container);
     return container;
   }
@@ -53,7 +53,7 @@ var PureSnow = (function() {
     var bodyHeightPx = Math.max(document.body.offsetHeight, window.innerHeight);
     var pageHeightVH = (100 * bodyHeightPx / window.innerHeight);
 
-    var baseCss = '.snowflake { position: absolute; width: 8px; height: 8px; background: white; border-radius: 50%; filter: drop-shadow(0 0 8px white); pointer-events: none; }';
+    var baseCss = '.snowflake { position: absolute; width: 8px; height: 8px; background: white; border-radius: 50%; filter: drop-shadow(0 0 8px white); pointer-events: none; will-change: transform; }';
 
     var rule = baseCss;
 
