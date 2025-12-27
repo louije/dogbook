@@ -178,8 +178,8 @@ export const lists = {
     access: {
       operation: {
         query: () => true, // Anyone can view
-        create: () => true, // Anyone can upload
-        update: () => true, // Anyone can update (field-level control below)
+        create: hasValidEditToken, // Magic token or admin
+        update: hasValidEditToken, // Magic token or admin
         delete: isAuthenticated,
       },
     },
