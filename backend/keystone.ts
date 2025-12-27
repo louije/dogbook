@@ -101,7 +101,8 @@ export default withAuth(config({
 
       app.use('/api/graphql', uploadLimiter);
       app.use('/api/graphql', apiLimiter);
-      app.use('/api/validate-magic-token', apiLimiter);
+      // Token validation endpoint is not rate limited - it's a lightweight
+      // check that shouldn't count against user limits
 
       // Validate magic token endpoint
       app.get('/api/validate-magic-token', async (req, res) => {
