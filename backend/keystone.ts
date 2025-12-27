@@ -9,7 +9,15 @@ import { validateMagicToken } from './auth';
 
 const sessionConfig = {
   maxAge: 60 * 60 * 24 * 30, // 30 days
-  secret: process.env.SESSION_SECRET || 'change-me-in-production-min-32-chars',
+  secret: (() => {
+    if (!process.env.SESSION_SECRET) {
+      throw new Error('SESSION_SECRET environment variable is required');
+    }
+    if (process.env.SESSION_SECRET.length < 32) {
+      throw new Error('SESSION_SECRET must be at least 32 characters');
+    }
+    return process.env.SESSION_SECRET;
+  })(),
 };
 
 const { withAuth } = createAuth({
