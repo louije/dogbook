@@ -206,23 +206,22 @@ input:focus-visible {
 /* Theme Toggle Buttons */
 .theme-buttons {
   display: flex;
-  gap: 0.25rem;
   background: rgba(255, 255, 255, 0.15);
-  border-radius: var(--border-radius);
-  padding: 0.25rem;
+  border-radius: 1rem;
+  padding: 0.125rem;
 }
 
 .theme-button {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 2rem;
-  height: 2rem;
+  width: 1.75rem;
+  height: 1.25rem;
   background: transparent;
   border: none;
-  border-radius: calc(var(--border-radius) - 0.125rem);
+  border-radius: 0.875rem;
   cursor: pointer;
-  font-size: 1rem;
+  font-size: 0.75rem;
   line-height: 1;
   transition: var(--transition);
   color: white;
@@ -233,7 +232,7 @@ input:focus-visible {
 }
 
 .theme-button.active {
-  background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.35);
 }
 
 .hero__search-toggle {
