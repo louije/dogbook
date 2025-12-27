@@ -27,8 +27,9 @@
   --transition: all 0.3s ease;
 }
 
+/* Dark mode via system preference (default behavior) */
 @media (prefers-color-scheme: dark) {
-  :root {
+  :root:not(.light-mode) {
     --color-primary: #4a4f8a;
     --color-primary-light: #7b83d4;
     --color-text: #e0e0e0;
@@ -37,6 +38,18 @@
     --color-background-light: #2a2a2a;
     --color-border: #2a2a2a;
   }
+}
+
+/* Dark mode via class (user preference override) */
+:root.dark-mode,
+:root.snow-mode {
+  --color-primary: #4a4f8a;
+  --color-primary-light: #7b83d4;
+  --color-text: #e0e0e0;
+  --color-text-light: #b0b0b0;
+  --color-background: #1a1a1a;
+  --color-background-light: #2a2a2a;
+  --color-border: #2a2a2a;
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -187,6 +200,41 @@ input:focus-visible {
   display: flex;
   gap: var(--spacing-xs);
   align-items: center;
+}
+
+/* Theme Toggle Buttons */
+.theme-buttons {
+  display: flex;
+  gap: 0.25rem;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: var(--border-radius);
+  padding: 0.25rem;
+}
+
+.theme-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  background: transparent;
+  border: none;
+  border-radius: calc(var(--border-radius) - 0.125rem);
+  cursor: pointer;
+  font-size: 1rem;
+  line-height: 1;
+  transition: var(--transition);
+  opacity: 0.7;
+}
+
+.theme-button:hover {
+  background: rgba(255, 255, 255, 0.2);
+  opacity: 1;
+}
+
+.theme-button.active {
+  background: rgba(255, 255, 255, 0.3);
+  opacity: 1;
 }
 
 .hero__search-toggle {

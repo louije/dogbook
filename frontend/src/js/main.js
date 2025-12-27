@@ -14,6 +14,7 @@
     setupLazyLoading();
     setupSortingAndFiltering();
     setupSearchToggle();
+    setupThemeToggle();
   }
 
   /**
@@ -39,6 +40,68 @@
         }
       }
     });
+  }
+
+  /**
+   * Setup theme toggle (light/dark/snow modes)
+   */
+  function setupThemeToggle() {
+    var themeButtons = document.querySelectorAll('.theme-button');
+    if (!themeButtons.length) return;
+
+    var root = document.documentElement;
+    var snowInstance = null;
+
+    // Load saved theme or detect from system
+    var savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      applyTheme(savedTheme);
+    } else {
+      // Mark the appropriate button based on system preference
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      updateActiveButton(prefersDark ? 'dark' : 'light');
+    }
+
+    // Add click handlers
+    themeButtons.forEach(function(button) {
+      button.addEventListener('click', function() {
+        var theme = this.dataset.theme;
+        applyTheme(theme);
+        localStorage.setItem('theme', theme);
+      });
+    });
+
+    function applyTheme(theme) {
+      // Remove all theme classes
+      root.classList.remove('light-mode', 'dark-mode', 'snow-mode');
+
+      // Stop snow if active
+      if (snowInstance) {
+        snowInstance.stop();
+        snowInstance = null;
+      }
+
+      // Apply the selected theme
+      if (theme === 'light') {
+        root.classList.add('light-mode');
+      } else if (theme === 'dark') {
+        root.classList.add('dark-mode');
+      } else if (theme === 'snow') {
+        root.classList.add('snow-mode');
+        // Start snow effect
+        if (typeof PureSnow !== 'undefined') {
+          snowInstance = PureSnow.start();
+        }
+      }
+
+      updateActiveButton(theme);
+    }
+
+    function updateActiveButton(theme) {
+      themeButtons.forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.theme === theme);
+      });
+    }
   }
 
   /**
