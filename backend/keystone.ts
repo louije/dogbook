@@ -5,6 +5,7 @@ import { lists } from './schema';
 import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
+import rateLimit from 'express-rate-limit';
 import { validateMagicToken } from './auth';
 
 const sessionConfig = {
@@ -63,6 +64,29 @@ export default withAuth(config({
     extendExpressApp: (app, context) => {
       // Parse cookies before any routes
       app.use(cookieParser());
+
+      // Rate limiting
+      const apiLimiter = rateLimit({
+        windowMs: 15 * 60 * 1000, // 15 minutes
+        max: 100, // 100 requests per 15 min window
+        standardHeaders: true,
+        legacyHeaders: false,
+        message: { error: 'Too many requests, please try again later.' },
+      });
+
+      const uploadLimiter = rateLimit({
+        windowMs: 60 * 60 * 1000, // 1 hour
+        max: 60, // 60 uploads per hour
+        standardHeaders: true,
+        legacyHeaders: false,
+        message: { error: 'Upload limit reached. Please try again later.' },
+        // Only count requests that include file uploads
+        skip: (req) => !req.headers['content-type']?.includes('multipart/form-data'),
+      });
+
+      app.use('/api/graphql', uploadLimiter);
+      app.use('/api/graphql', apiLimiter);
+      app.use('/api/validate-magic-token', apiLimiter);
 
       // Validate magic token endpoint
       app.get('/api/validate-magic-token', async (req, res) => {
