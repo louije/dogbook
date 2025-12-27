@@ -138,6 +138,10 @@ export const ownerHooks = {
 /**
  * Media-specific hooks for handling upload notifications, auto-approval, and change logging
  */
+// File validation constants
+const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+
 export const mediaHooks = {
   beforeOperation: async ({ operation, item, context }: any) => {
     // Store old item data for comparison
@@ -147,6 +151,28 @@ export const mediaHooks = {
         query: 'id name status isFeatured dog { id name }',
       });
       context._oldMediaItem = fullItem;
+    }
+  },
+
+  validateInput: async ({ resolvedData, operation, addValidationError }: any) => {
+    // Only validate on create or when file is being updated
+    if (operation !== 'create' && !resolvedData.file) {
+      return;
+    }
+
+    const file = resolvedData.file;
+    if (!file) {
+      return;
+    }
+
+    // Validate file size
+    if (file.filesize && file.filesize > MAX_FILE_SIZE) {
+      addValidationError(`File too large. Maximum size is ${MAX_FILE_SIZE / 1024 / 1024}MB`);
+    }
+
+    // Validate file extension
+    if (file.extension && !ALLOWED_EXTENSIONS.includes(file.extension.toLowerCase())) {
+      addValidationError(`Invalid file type. Allowed types: ${ALLOWED_EXTENSIONS.join(', ')}`);
     }
   },
 
