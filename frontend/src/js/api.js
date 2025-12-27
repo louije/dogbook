@@ -86,7 +86,6 @@ export async function searchOwners(searchTerm) {
       ) {
         id
         name
-        email
         dogs { id }
       }
     }
@@ -120,8 +119,6 @@ export async function updateOwner(id, data) {
       updateOwner(where: { id: $id }, data: $data) {
         id
         name
-        email
-        phone
       }
     }
   `;

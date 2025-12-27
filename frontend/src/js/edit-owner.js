@@ -49,6 +49,7 @@ export class EditOwnerModal {
             <input type="text" name="name" required value="${this.owner.name || ''}">
           </label>
 
+          <!-- Email/phone fields hidden - PII restricted to admin UI
           <label>
             <span>${this.text.owner.email}</span>
             <input type="email" name="email" value="${this.owner.email || ''}">
@@ -58,6 +59,7 @@ export class EditOwnerModal {
             <span>${this.text.owner.phone}</span>
             <input type="tel" name="phone" value="${this.owner.phone || ''}">
           </label>
+          -->
         </div>
 
         <footer class="edit-form__footer">
@@ -103,8 +105,7 @@ export class EditOwnerModal {
     try {
       const ownerData = {
         name: formData.get('name'),
-        email: formData.get('email') || '',
-        phone: formData.get('phone') || '',
+        // email/phone restricted to admin UI
       };
 
       await updateOwner(this.owner.id, ownerData);

@@ -119,8 +119,6 @@ module.exports = function(eleventyConfig) {
                 owner {
                   id
                   name
-                  email
-                  phone
                 }
                 photos(where: { status: { equals: approved } }) {
                   id
@@ -162,8 +160,6 @@ module.exports = function(eleventyConfig) {
               owners {
                 id
                 name
-                email
-                phone
                 dogs {
                   id
                   name
