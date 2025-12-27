@@ -158,7 +158,6 @@ cd frontend && npm update
 
 - Always set a strong `SESSION_SECRET` in production
 - Configure HTTPS via Caddy/Let's Encrypt
-- Review `AUDIT.md` for security recommendations
 
 ## License
 
