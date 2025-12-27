@@ -164,18 +164,13 @@ function showMagicIndicator(text) {
   // Don't add if already exists
   if (document.querySelector('.magic-indicator')) return;
 
-  const indicator = document.createElement('div');
+  const indicator = document.createElement('button');
   indicator.className = 'magic-indicator';
-  indicator.innerHTML = `
-    <span class="magic-indicator__text">${text.magic.indicator}</span>
-    <button
-      type="button"
-      class="magic-indicator__close"
-      onclick="window.confirmDeactivateMagic()"
-      aria-label="${text.form.close}"
-      title="${text.magic.deactivate_confirm}"
-    >×</button>
-  `;
+  indicator.type = 'button';
+  indicator.onclick = window.confirmDeactivateMagic;
+  indicator.setAttribute('aria-label', text.magic.indicator);
+  indicator.setAttribute('title', text.magic.deactivate_confirm);
+  indicator.textContent = '✏️';
   document.body.prepend(indicator);
 }
 
