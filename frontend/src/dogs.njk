@@ -54,7 +54,7 @@ eleventyComputed:
         {% endif %}
       </div>
 
-      <!-- Edit buttons (hidden by default, shown when magic auth is active) -->
+      <!-- Edit button (hidden by default, shown when magic auth is active) -->
       <div class="dog-detail__actions">
         <button
           type="button"
@@ -65,17 +65,6 @@ eleventyComputed:
         >
           ✏️ Modifier
         </button>
-        {% if dog.owner %}
-        <button
-          type="button"
-          class="edit-owner-button"
-          onclick='openEditOwnerModal({{ dog.owner | dump | safe }})'
-          hidden
-          title="Modifier l'humain"
-        >
-          👤 Modifier l'humain
-        </button>
-        {% endif %}
       </div>
     </div>
 
