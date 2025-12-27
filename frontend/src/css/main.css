@@ -222,7 +222,7 @@ input:focus-visible {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0 0.375rem;
+  padding: 0.25rem 0.375rem;
   background: transparent;
   border: none;
   border-right: 1px solid rgba(255, 255, 255, 0.3);
@@ -330,6 +330,15 @@ input:focus-visible {
 
   .hero__actions {
     flex-shrink: 0;
+  }
+
+  .theme-button {
+    padding: 0.125rem 0.25rem;
+  }
+
+  .theme-button svg {
+    width: 0.625rem;
+    height: 0.625rem;
   }
 
   .hero__search-toggle {
