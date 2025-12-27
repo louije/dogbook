@@ -34,18 +34,16 @@ export class OwnerAutocomplete {
     input.addEventListener('input', (e) => {
       clearTimeout(timeout);
       const term = e.target.value.trim();
+
+      // Clear selection when user types something different
+      if (this.selectedOwner && term !== this.selectedOwner.name) {
+        this.selectedOwner = null;
+      }
+
       if (term.length >= 2) {
         timeout = setTimeout(() => this.search(term, resultsDiv), 300);
       } else {
         resultsDiv.hidden = true;
-      }
-    });
-
-    // Clear selection on edit
-    input.addEventListener('focus', () => {
-      if (this.selectedOwner && !this.selectedOwner.isNew) {
-        // Allow re-searching
-        this.selectedOwner = null;
       }
     });
 
