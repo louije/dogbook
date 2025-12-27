@@ -51,14 +51,10 @@
     var isHomePage = !!document.getElementById('dogs-grid');
     var themeButtons = document.querySelectorAll('.theme-button');
 
-    // Load saved theme or detect from system
+    // Load saved theme (no active state if using system default)
     var savedTheme = localStorage.getItem('theme');
     if (savedTheme) {
-      applyTheme(savedTheme, false);
-    } else {
-      // Mark the appropriate button based on system preference
-      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      updateActiveButton(prefersDark ? 'dark' : 'light');
+      applyTheme(savedTheme);
     }
 
     // Add click handlers if buttons exist
@@ -76,12 +72,14 @@
               snowInstance.stop();
               snowInstance = null;
             }
-            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-            updateActiveButton(prefersDark ? 'dark' : 'light');
+            updateActiveButton(null);
           } else {
-            applyTheme(theme, true);
+            applyTheme(theme);
             localStorage.setItem('theme', theme);
           }
+
+          // Remove focus to clear any visual state
+          this.blur();
         });
       });
     }
@@ -114,7 +112,7 @@
 
     function updateActiveButton(theme) {
       themeButtons.forEach(function(btn) {
-        btn.classList.toggle('active', btn.dataset.theme === theme);
+        btn.classList.toggle('active', theme && btn.dataset.theme === theme);
       });
     }
   }

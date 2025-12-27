@@ -7,9 +7,13 @@
 var PureSnow = (function() {
   'use strict';
 
-  var snowflakesCount = 150;
   var styleElement = null;
   var snowContainer = null;
+
+  function getSnowflakeCount() {
+    // Fewer snowflakes on small screens for performance
+    return window.innerWidth < 768 ? 25 : 150;
+  }
 
   function randomInt(value) {
     return Math.floor(Math.random() * value) + 1;
@@ -24,7 +28,7 @@ var PureSnow = (function() {
   function createSnowContainer() {
     var container = document.createElement('div');
     container.id = 'snow';
-    container.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 9999; overflow: hidden;';
+    container.style.cssText = 'position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 50; overflow: hidden; will-change: transform; transform: translateZ(0);';
     document.body.appendChild(container);
     return container;
   }
@@ -49,7 +53,7 @@ var PureSnow = (function() {
     var bodyHeightPx = Math.max(document.body.offsetHeight, window.innerHeight);
     var pageHeightVH = (100 * bodyHeightPx / window.innerHeight);
 
-    var baseCss = '.snowflake { position: absolute; width: 8px; height: 8px; background: white; border-radius: 50%; filter: drop-shadow(0 0 8px white); pointer-events: none; }';
+    var baseCss = '.snowflake { position: absolute; width: 8px; height: 8px; background: white; border-radius: 50%; filter: drop-shadow(0 0 8px white); will-change: transform; }';
 
     var rule = baseCss;
 
@@ -77,15 +81,17 @@ var PureSnow = (function() {
       // Remove any existing snow
       this.stop();
 
+      var count = getSnowflakeCount();
+
       // Create container
       snowContainer = createSnowContainer();
 
       // Generate and add CSS
-      var css = generateSnowCSS(snowflakesCount);
+      var css = generateSnowCSS(count);
       styleElement = addCss(css);
 
       // Spawn snowflakes
-      spawnSnow(snowContainer, snowflakesCount);
+      spawnSnow(snowContainer, count);
 
       return this;
     },
