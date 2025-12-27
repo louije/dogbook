@@ -158,20 +158,14 @@ function enableEditMode(text) {
 }
 
 /**
- * Show magic mode indicator with deactivate button
+ * Show magic mode indicators (unhide existing ones in DOM)
  */
 function showMagicIndicator(text) {
-  // Don't add if already exists
-  if (document.querySelector('.magic-indicator')) return;
-
-  const indicator = document.createElement('button');
-  indicator.className = 'magic-indicator';
-  indicator.type = 'button';
-  indicator.onclick = window.confirmDeactivateMagic;
-  indicator.setAttribute('aria-label', text.magic.indicator);
-  indicator.setAttribute('title', text.magic.deactivate_confirm);
-  indicator.textContent = '✏️';
-  document.body.prepend(indicator);
+  document.querySelectorAll('.magic-indicator').forEach(indicator => {
+    indicator.removeAttribute('hidden');
+    indicator.setAttribute('aria-label', text.magic.indicator);
+    indicator.setAttribute('title', text.magic.deactivate_confirm);
+  });
 }
 
 /**

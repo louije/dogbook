@@ -12,7 +12,15 @@ eleventyComputed:
 
 <article class="dog-detail">
   <div class="dog-detail__container">
-    <a href="/" class="dog-detail__back">← Retour</a>
+    <div class="dog-detail__top-bar">
+      <a href="/" class="dog-detail__back">← Retour</a>
+      <button
+        type="button"
+        class="magic-indicator"
+        onclick="window.confirmDeactivateMagic && window.confirmDeactivateMagic()"
+        hidden
+      >✏️</button>
+    </div>
 
     <div class="dog-detail__header">
       <h1 class="dog-detail__name">{{ dog.name }}</h1>
