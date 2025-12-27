@@ -68,6 +68,23 @@ if [ ! -L "$TARGET/data" ]; then
     ln -s /srv/dogbook/data $TARGET/data
 fi
 
+# Ensure SESSION_SECRET is set in .env
+ENV_FILE="/srv/dogbook/data/.env"
+if [ -f "$ENV_FILE" ]; then
+    if ! grep -q "^SESSION_SECRET=" "$ENV_FILE" || grep -q "^SESSION_SECRET=$" "$ENV_FILE" || grep -q "^SESSION_SECRET=CHANGE-ME" "$ENV_FILE"; then
+        echo "→ Generating SESSION_SECRET..."
+        NEW_SECRET=$(openssl rand -hex 32)
+        if grep -q "^SESSION_SECRET=" "$ENV_FILE"; then
+            sed -i "s/^SESSION_SECRET=.*/SESSION_SECRET=$NEW_SECRET/" "$ENV_FILE"
+        else
+            echo "SESSION_SECRET=$NEW_SECRET" >> "$ENV_FILE"
+        fi
+        echo "✓ SESSION_SECRET generated"
+    fi
+else
+    echo "⚠ Warning: $ENV_FILE not found. Create it from backend/.env.production.example"
+fi
+
 # Restart systemd service
 echo "→ Restarting dogbook service..."
 if sudo systemctl restart dogbook 2>&1; then
