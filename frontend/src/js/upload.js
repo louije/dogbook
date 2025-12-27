@@ -353,6 +353,7 @@
       });
 
       xhr.open('POST', `${API_URL}/api/graphql`);
+      xhr.withCredentials = true; // Send cookies cross-origin
       // Add header to bypass CSRF protection for legitimate uploads
       xhr.setRequestHeader('apollo-require-preflight', 'true');
       xhr.send(formData);
