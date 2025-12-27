@@ -49,9 +49,7 @@ export async function initMagicAuth(text) {
  */
 async function validateTokenWithServer() {
   try {
-    const apiUrl = window.location.hostname === 'localhost'
-      ? 'http://localhost:3000'
-      : window.location.origin.replace('www.', 'niche.');
+    const apiUrl = window.API_URL || 'http://localhost:3000';
 
     const response = await fetch(`${apiUrl}/api/validate-magic-token`, {
       credentials: 'include',
