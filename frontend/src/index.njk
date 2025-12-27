@@ -11,9 +11,26 @@ title: Accueil
         <p class="hero__tagline">
           <span class="hero__description">Ils sont tous beaux.</span>
           <span class="theme-buttons">
-            <button type="button" class="theme-button" data-theme="light" aria-label="Light mode" title="Light mode">☀︎</button>
-            <button type="button" class="theme-button" data-theme="dark" aria-label="Dark mode" title="Dark mode">☽︎</button>
-            <button type="button" class="theme-button" data-theme="snow" aria-label="Snow mode" title="Snow mode">❄︎</button>
+            <button type="button" class="theme-button" data-theme="light" aria-label="Light mode" title="Light mode">
+              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="8" cy="10" rx="6" ry="5" fill="white"/>
+                <circle cx="5" cy="6" r="3" fill="white"/>
+                <circle cx="4" cy="5" r="1" fill="black"/>
+              </svg>
+            </button>
+            <button type="button" class="theme-button" data-theme="dark" aria-label="Dark mode" title="Dark mode">
+              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <ellipse cx="8" cy="10" rx="6" ry="5" fill="black" stroke="white" stroke-width="0.5"/>
+                <circle cx="5" cy="6" r="3" fill="black" stroke="white" stroke-width="0.5"/>
+                <circle cx="4" cy="5" r="1" fill="white"/>
+              </svg>
+            </button>
+            <button type="button" class="theme-button" data-theme="snow" aria-label="Snow mode" title="Snow mode">
+              <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M8 1v14M1 8h14M3 3l10 10M13 3L3 13" stroke="white" stroke-width="1.5" stroke-linecap="round"/>
+                <circle cx="8" cy="8" r="2" fill="white"/>
+              </svg>
+            </button>
           </span>
         </p>
       </div>

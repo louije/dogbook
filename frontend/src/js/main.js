@@ -77,6 +77,9 @@
             applyTheme(theme);
             localStorage.setItem('theme', theme);
           }
+
+          // Remove focus to clear any visual state
+          this.blur();
         });
       });
     }
