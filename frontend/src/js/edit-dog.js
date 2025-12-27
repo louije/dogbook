@@ -142,7 +142,7 @@ export class EditDogModal {
       // Prepare dog data
       const dogData = {
         name: formData.get('name'),
-        sex: formData.get('sex') || null,
+        sex: formData.get('sex') || undefined,
         birthday: formData.get('birthday') || null,
         breed: formData.get('breed') || '',
         coat: formData.get('coat') || '',
