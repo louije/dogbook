@@ -162,9 +162,15 @@ export const lists = {
       email: text({
         validation: { isRequired: false },
         label: 'Email',
+        access: {
+          read: isAuthenticated, // PII - admin only
+        },
       }),
       phone: text({
         label: 'Téléphone',
+        access: {
+          read: isAuthenticated, // PII - admin only
+        },
       }),
       dogs: relationship({
         ref: 'Dog.owner',
