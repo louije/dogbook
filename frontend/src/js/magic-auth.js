@@ -146,8 +146,8 @@ export function clearMagicCookie() {
  * Enable edit mode UI
  */
 function enableEditMode(text) {
-  // Show all edit buttons
-  document.querySelectorAll('.edit-button, .add-button, .edit-owner-button').forEach(btn => {
+  // Show all edit buttons and upload form
+  document.querySelectorAll('.edit-button, .add-button, .edit-owner-button, .upload-form').forEach(btn => {
     btn.style.display = '';
     btn.removeAttribute('hidden');
   });
