@@ -336,6 +336,12 @@ input:focus-visible {
 
   .theme-button {
     padding: 0.125rem 0.25rem;
+    min-width: 32px;
+    min-height: 16px;
+  }
+
+  .theme-button:hover {
+    background: transparent;
   }
 
   .theme-button svg {
