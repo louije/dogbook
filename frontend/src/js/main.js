@@ -14,6 +14,7 @@
     setupLazyLoading();
     setupSortingAndFiltering();
     setupSearchToggle();
+    setupThemeToggle();
   }
 
   /**
@@ -39,6 +40,83 @@
         }
       }
     });
+  }
+
+  /**
+   * Setup theme toggle (light/dark/snow modes)
+   */
+  function setupThemeToggle() {
+    var root = document.documentElement;
+    var snowInstance = null;
+    var isHomePage = !!document.getElementById('dogs-grid');
+    var themeButtons = document.querySelectorAll('.theme-button');
+
+    // Load saved theme or detect from system
+    var savedTheme = localStorage.getItem('theme');
+    if (savedTheme) {
+      applyTheme(savedTheme, false);
+    } else {
+      // Mark the appropriate button based on system preference
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      updateActiveButton(prefersDark ? 'dark' : 'light');
+    }
+
+    // Add click handlers if buttons exist
+    if (themeButtons.length) {
+      themeButtons.forEach(function(button) {
+        button.addEventListener('click', function() {
+          var theme = this.dataset.theme;
+          var currentTheme = localStorage.getItem('theme');
+
+          // If clicking the active button, clear preference and return to system default
+          if (theme === currentTheme) {
+            localStorage.removeItem('theme');
+            root.classList.remove('light-mode', 'dark-mode', 'snow-mode');
+            if (snowInstance) {
+              snowInstance.stop();
+              snowInstance = null;
+            }
+            var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+            updateActiveButton(prefersDark ? 'dark' : 'light');
+          } else {
+            applyTheme(theme, true);
+            localStorage.setItem('theme', theme);
+          }
+        });
+      });
+    }
+
+    function applyTheme(theme, saveToStorage) {
+      // Remove all theme classes
+      root.classList.remove('light-mode', 'dark-mode', 'snow-mode');
+
+      // Stop snow if active
+      if (snowInstance) {
+        snowInstance.stop();
+        snowInstance = null;
+      }
+
+      // Apply the selected theme
+      if (theme === 'light') {
+        root.classList.add('light-mode');
+      } else if (theme === 'dark') {
+        root.classList.add('dark-mode');
+      } else if (theme === 'snow') {
+        // Snow mode: use dark mode styling, only show snow on home page
+        root.classList.add('snow-mode');
+        if (isHomePage && typeof PureSnow !== 'undefined') {
+          snowInstance = PureSnow.start();
+        }
+      }
+
+      updateActiveButton(theme);
+    }
+
+    function updateActiveButton(theme) {
+      themeButtons.forEach(function(btn) {
+        btn.classList.toggle('active', btn.dataset.theme === theme);
+      });
+    }
   }
 
   /**
