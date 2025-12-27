@@ -15,17 +15,13 @@ export async function triggerFrontendBuild() {
   const webhookUrl = process.env.FRONTEND_BUILD_HOOK_URL;
 
   if (!webhookUrl) {
-    console.log('No FRONTEND_BUILD_HOOK_URL configured, skipping frontend build trigger');
     return;
   }
 
   try {
-    console.log('Triggering frontend build...');
     const response = await fetch(webhookUrl, { method: 'POST' });
 
-    if (response.ok) {
-      console.log('Frontend build triggered successfully');
-    } else {
+    if (!response.ok) {
       console.error('Failed to trigger frontend build:', response.status);
     }
   } catch (error) {
@@ -167,7 +163,6 @@ export const mediaHooks = {
       });
 
       const moderationMode = settings?.moderationMode || 'a_posteriori';
-      console.log(`[Media Hook] Moderation mode: ${moderationMode}, setting status to: ${moderationMode === 'a_posteriori' ? 'approved' : 'pending'}`);
 
       // Auto-approve in a_posteriori mode
       if (moderationMode === 'a_posteriori') {
@@ -205,10 +200,6 @@ export const mediaHooks = {
             })
           )
         );
-
-        if (otherFeaturedPhotos.length > 0) {
-          console.log(`Unfeatured ${otherFeaturedPhotos.length} other photo(s) for dog ${currentMedia.dog.id}`);
-        }
       }
     }
 

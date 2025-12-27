@@ -13,9 +13,6 @@ function initializeVapid() {
   const vapidSubject = process.env.VAPID_SUBJECT || 'mailto:admin@dogbook.com';
 
   if (vapidPublicKey && vapidPrivateKey) {
-    console.log('[Notifications] Initializing web-push with VAPID keys');
-    console.log('[Notifications] Public key:', vapidPublicKey.substring(0, 20) + '...');
-    console.log('[Notifications] Subject:', vapidSubject);
     webpush.setVapidDetails(
       vapidSubject,
       vapidPublicKey,
@@ -47,7 +44,6 @@ async function sendPushNotificationToSubscriptions(
   initializeVapid();
 
   if (subscriptions.length === 0) {
-    console.log('No push subscriptions found, skipping notification');
     return;
   }
 
@@ -63,8 +59,6 @@ async function sendPushNotificationToSubscriptions(
         subscription,
         JSON.stringify(payload)
       );
-
-      console.log(`Push notification sent to ${sub.endpoint}`);
     } catch (error: any) {
       console.error(`Failed to send push to ${sub.endpoint}:`, error);
 
@@ -73,7 +67,6 @@ async function sendPushNotificationToSubscriptions(
         await context.query.PushSubscription.deleteOne({
           where: { id: sub.id },
         });
-        console.log(`Deleted invalid subscription: ${sub.id}`);
       }
     }
   });
@@ -90,18 +83,13 @@ export async function sendUploadNotification(
   context: any
 ): Promise<void> {
   try {
-    // Debug: Get ALL subscriptions first
-    const allSubscriptions = await context.query.PushSubscription.findMany({
-      query: 'id endpoint keys receivesAdminNotifications',
-    });
-    console.log('[Upload Notification] ALL subscriptions:', allSubscriptions.length, allSubscriptions.map((s: any) => ({ id: s.id, receivesAdminNotifications: s.receivesAdminNotifications })));
-
     // Get admin subscriptions only
-    const adminSubscriptions = allSubscriptions.filter((s: any) => s.receivesAdminNotifications === true);
-    console.log('[Upload Notification] Filtered admin subscriptions:', adminSubscriptions.length);
+    const adminSubscriptions = await context.query.PushSubscription.findMany({
+      where: { receivesAdminNotifications: { equals: true } },
+      query: 'id endpoint keys',
+    });
 
     if (adminSubscriptions.length === 0) {
-      console.log('No admin subscriptions, skipping notification');
       return;
     }
 
@@ -163,7 +151,6 @@ export async function sendDogUpdateNotification(
   try {
     // Only notify if updated by non-admin
     if (context.session?.data?.isAdmin) {
-      console.log('Dog updated by admin, skipping notification');
       return;
     }
 
@@ -174,7 +161,6 @@ export async function sendDogUpdateNotification(
     });
 
     if (adminSubscriptions.length === 0) {
-      console.log('No admin subscriptions, skipping notification');
       return;
     }
 
@@ -205,7 +191,6 @@ export async function sendNewDogNotification(
   try {
     // Only notify if created by non-admin (currently only admins can create)
     if (context.session?.data?.isAdmin) {
-      console.log('Dog created by admin, skipping notification');
       return;
     }
 
@@ -216,7 +201,6 @@ export async function sendNewDogNotification(
     });
 
     if (adminSubscriptions.length === 0) {
-      console.log('No admin subscriptions, skipping notification');
       return;
     }
 
@@ -258,7 +242,6 @@ export async function sendChangeNotification(
   try {
     // Only notify for non-admin changes
     if (context.session) {
-      console.log('Change made by admin, skipping notification');
       return;
     }
 
@@ -269,7 +252,6 @@ export async function sendChangeNotification(
     });
 
     if (adminSubscriptions.length === 0) {
-      console.log('No admin subscriptions, skipping notification');
       return;
     }
 
