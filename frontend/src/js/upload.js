@@ -270,11 +270,6 @@
         clearPreview();
         submitButton.textContent = 'Envoyer';
         progressContainer.hidden = true;
-
-        // Suggest page reload
-        if (confirm('Photo envoyée avec succès ! Recharger la page pour voir les changements ?')) {
-          window.location.reload();
-        }
       }, 2000);
 
     } catch (error) {
