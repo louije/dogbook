@@ -98,6 +98,7 @@
         'Content-Type': 'application/json',
         'apollo-require-preflight': 'true',
       },
+      credentials: 'include',
       body: JSON.stringify({
         query: `
           mutation SetFeaturedPhoto($mediaId: ID!) {
