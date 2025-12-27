@@ -308,7 +308,7 @@ export const lists = {
         query: () => true, // Allow backend to query for notifications
         create: () => true, // Anyone can subscribe
         update: isAuthenticated,
-        delete: () => true, // Anyone can unsubscribe
+        delete: isAuthenticated, // Only admins; stale subs auto-clean via 410
       },
     },
     ui: {
