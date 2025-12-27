@@ -139,8 +139,8 @@ export const ownerHooks = {
  * Media-specific hooks for handling upload notifications, auto-approval, and change logging
  */
 // File validation constants
-const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
-const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+const MAX_FILE_SIZE = 24 * 1024 * 1024; // 24MB
+const ALLOWED_EXTENSIONS = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'avif', 'jxl', 'heic', 'heif'];
 
 export const mediaHooks = {
   beforeOperation: async ({ operation, item, context }: any) => {
