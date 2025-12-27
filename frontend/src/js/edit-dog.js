@@ -3,7 +3,7 @@
  * Handles both creating and editing dogs
  */
 
-import { updateDog, createDog, getModerationMode } from './api.js';
+import { updateDog, createDog, getModerationMode, updateOwner } from './api.js';
 import { OwnerAutocomplete } from './owner-autocomplete.js';
 import { showNotification } from './magic-auth.js';
 
@@ -79,7 +79,10 @@ export class EditDogModal {
 
           <label>
             <span>${this.text.dog.owner} *</span>
-            <div id="owner-autocomplete" style="position: relative;"></div>
+            ${isEdit
+              ? `<input type="text" name="ownerName" required value="${this.dog?.owner?.name || ''}">`
+              : '<div id="owner-autocomplete" style="position: relative;"></div>'
+            }
           </label>
         </div>
 
@@ -94,13 +97,17 @@ export class EditDogModal {
       </form>
     `;
 
-    // Setup owner autocomplete
-    const autocompleteContainer = dialog.querySelector('#owner-autocomplete');
-    this.ownerAutocomplete = new OwnerAutocomplete(
-      autocompleteContainer,
-      this.text,
-      this.dog?.owner
-    );
+    // Setup owner autocomplete (only for new dogs)
+    if (!isEdit) {
+      const autocompleteContainer = dialog.querySelector('#owner-autocomplete');
+      this.ownerAutocomplete = new OwnerAutocomplete(
+        autocompleteContainer,
+        this.text,
+        null
+      );
+    } else {
+      this.ownerAutocomplete = null;
+    }
 
     // Event listeners
     const form = dialog.querySelector('form');
@@ -132,13 +139,6 @@ export class EditDogModal {
     submitButton.textContent = this.text.form.saving;
 
     try {
-      // Get owner from autocomplete
-      const ownerData = this.ownerAutocomplete.getValue();
-
-      if (!ownerData) {
-        throw new Error(this.text.form.required + ': ' + this.text.dog.owner);
-      }
-
       // Prepare dog data
       const dogData = {
         name: formData.get('name'),
@@ -148,26 +148,33 @@ export class EditDogModal {
         coat: formData.get('coat') || '',
       };
 
-      // Handle owner
-      if (ownerData.isNew) {
-        // Create new owner inline (email/phone managed in admin UI)
-        dogData.owner = {
-          create: {
-            name: ownerData.name,
-          },
-        };
-      } else {
-        // Connect to existing owner
-        dogData.owner = {
-          connect: { id: ownerData.id },
-        };
-      }
-
       if (this.dog) {
-        // Update existing dog
+        // Editing existing dog - update owner name directly
+        const newOwnerName = formData.get('ownerName')?.trim();
+        if (!newOwnerName) {
+          throw new Error(this.text.form.required + ': ' + this.text.dog.owner);
+        }
+
+        // Update owner if name changed
+        if (this.dog.owner && newOwnerName !== this.dog.owner.name) {
+          await updateOwner(this.dog.owner.id, { name: newOwnerName });
+        }
+
         await updateDog(this.dog.id, dogData);
         showNotification(this.text.messages.dog_updated, 'success');
       } else {
+        // Creating new dog - use autocomplete for owner
+        const ownerData = this.ownerAutocomplete.getValue();
+
+        if (!ownerData) {
+          throw new Error(this.text.form.required + ': ' + this.text.dog.owner);
+        }
+
+        if (ownerData.isNew) {
+          dogData.owner = { create: { name: ownerData.name } };
+        } else {
+          dogData.owner = { connect: { id: ownerData.id } };
+        }
         // Create new dog
         await createDog(dogData);
 
