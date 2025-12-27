@@ -3,10 +3,7 @@
  * Handles all backend communication with credentials (cookies)
  */
 
-// Get API URL from environment or default
-const API_URL = window.location.hostname === 'localhost'
-  ? 'http://localhost:3000'
-  : window.location.origin.replace('www.', 'niche.');
+const API_URL = window.API_URL || 'http://localhost:3000';
 
 /**
  * Make GraphQL request with credentials (cookies)
@@ -89,7 +86,6 @@ export async function searchOwners(searchTerm) {
       ) {
         id
         name
-        email
         dogs { id }
       }
     }
@@ -123,8 +119,6 @@ export async function updateOwner(id, data) {
       updateOwner(where: { id: $id }, data: $data) {
         id
         name
-        email
-        phone
       }
     }
   `;

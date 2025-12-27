@@ -109,8 +109,8 @@ eleventyComputed:
           </div>
         {% endif %}
 
-        <!-- Photo Upload Section -->
-        <form id="upload-form" class="photo-upload photo-upload--js-required" data-dog-id="{{ dog.id }}" hidden>
+        <!-- Photo Upload Section (requires magic auth) -->
+        <form id="upload-form" class="photo-upload upload-form" data-dog-id="{{ dog.id }}" hidden>
           <label for="photo-input" class="photo-upload__label">
             <span class="photo-upload__icon">📷</span>
             <span class="photo-upload__text">Ajouter une photo</span>

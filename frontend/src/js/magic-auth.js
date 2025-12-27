@@ -49,9 +49,7 @@ export async function initMagicAuth(text) {
  */
 async function validateTokenWithServer() {
   try {
-    const apiUrl = window.location.hostname === 'localhost'
-      ? 'http://localhost:3000'
-      : window.location.origin.replace('www.', 'niche.');
+    const apiUrl = window.API_URL || 'http://localhost:3000';
 
     const response = await fetch(`${apiUrl}/api/validate-magic-token`, {
       credentials: 'include',
@@ -146,8 +144,8 @@ export function clearMagicCookie() {
  * Enable edit mode UI
  */
 function enableEditMode(text) {
-  // Show all edit buttons
-  document.querySelectorAll('.edit-button, .add-button, .edit-owner-button').forEach(btn => {
+  // Show all edit buttons and upload form
+  document.querySelectorAll('.edit-button, .add-button, .edit-owner-button, .upload-form').forEach(btn => {
     btn.style.display = '';
     btn.removeAttribute('hidden');
   });

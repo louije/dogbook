@@ -150,12 +150,10 @@ export class EditDogModal {
 
       // Handle owner
       if (ownerData.isNew) {
-        // Create new owner inline
+        // Create new owner inline (email/phone managed in admin UI)
         dogData.owner = {
           create: {
             name: ownerData.name,
-            email: '',
-            phone: '',
           },
         };
       } else {

@@ -162,9 +162,15 @@ export const lists = {
       email: text({
         validation: { isRequired: false },
         label: 'Email',
+        access: {
+          read: isAuthenticated, // PII - admin only
+        },
       }),
       phone: text({
         label: 'Téléphone',
+        access: {
+          read: isAuthenticated, // PII - admin only
+        },
       }),
       dogs: relationship({
         ref: 'Dog.owner',
@@ -178,8 +184,8 @@ export const lists = {
     access: {
       operation: {
         query: () => true, // Anyone can view
-        create: () => true, // Anyone can upload
-        update: () => true, // Anyone can update (field-level control below)
+        create: hasValidEditToken, // Magic token or admin
+        update: hasValidEditToken, // Magic token or admin
         delete: isAuthenticated,
       },
     },
@@ -308,7 +314,7 @@ export const lists = {
         query: () => true, // Allow backend to query for notifications
         create: () => true, // Anyone can subscribe
         update: isAuthenticated,
-        delete: () => true, // Anyone can unsubscribe
+        delete: isAuthenticated, // Only admins; stale subs auto-clean via 410
       },
     },
     ui: {

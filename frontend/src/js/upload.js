@@ -51,8 +51,8 @@
     const uploadForm = document.getElementById('upload-form');
     if (!uploadForm) return;
 
-    // Show upload form (hidden by default for no-JS users)
-    uploadForm.hidden = false;
+    // Form visibility is controlled by magic-auth.js
+    // Only set up handlers here
 
     // Fetch moderation mode first
     await fetchModerationMode();
