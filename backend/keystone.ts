@@ -65,6 +65,16 @@ export default withAuth(config({
       // Parse cookies before any routes
       app.use(cookieParser());
 
+      // Skip rate limiting for authenticated admins
+      const isAdmin = async (req: any, res: any) => {
+        try {
+          const keystoneContext = await context.withRequest(req, res);
+          return !!keystoneContext.session;
+        } catch {
+          return false;
+        }
+      };
+
       // Rate limiting
       const apiLimiter = rateLimit({
         windowMs: 15 * 60 * 1000, // 15 minutes
@@ -72,6 +82,7 @@ export default withAuth(config({
         standardHeaders: true,
         legacyHeaders: false,
         message: { error: 'Too many requests, please try again later.' },
+        skip: isAdmin,
       });
 
       const uploadLimiter = rateLimit({
@@ -80,8 +91,12 @@ export default withAuth(config({
         standardHeaders: true,
         legacyHeaders: false,
         message: { error: 'Upload limit reached. Please try again later.' },
-        // Only count requests that include file uploads
-        skip: (req) => !req.headers['content-type']?.includes('multipart/form-data'),
+        skip: async (req, res) => {
+          // Skip if not a file upload
+          if (!req.headers['content-type']?.includes('multipart/form-data')) return true;
+          // Skip if admin
+          return isAdmin(req, res);
+        },
       });
 
       app.use('/api/graphql', uploadLimiter);
