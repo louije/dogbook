@@ -153,6 +153,7 @@ input:focus-visible {
   top: 0;
   z-index: 100;
   box-shadow: 2px 0px 10px rgba(00, 00, 00, 0.4);
+  overflow: hidden;
 }
 
 .hero__container {
@@ -224,17 +225,15 @@ input:focus-visible {
   font-size: 1rem;
   line-height: 1;
   transition: var(--transition);
-  opacity: 0.7;
+  color: white;
 }
 
 .theme-button:hover {
   background: rgba(255, 255, 255, 0.2);
-  opacity: 1;
 }
 
 .theme-button.active {
   background: rgba(255, 255, 255, 0.3);
-  opacity: 1;
 }
 
 .hero__search-toggle {
