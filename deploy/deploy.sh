@@ -34,6 +34,15 @@ git --git-dir=$GIT_DIR --work-tree=$TARGET checkout -f $BRANCH
 # Navigate to backend directory
 cd $TARGET/backend
 
+# Load environment variables for build
+ENV_FILE="/srv/dogbook/data/.env"
+if [ -f "$ENV_FILE" ]; then
+    echo "→ Loading environment variables..."
+    set -a
+    source "$ENV_FILE"
+    set +a
+fi
+
 # Install dependencies (skip postinstall to avoid schema check)
 echo "→ Installing dependencies..."
 npm install --production --ignore-scripts
