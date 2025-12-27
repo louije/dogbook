@@ -7,9 +7,13 @@
 var PureSnow = (function() {
   'use strict';
 
-  var snowflakesCount = 150;
   var styleElement = null;
   var snowContainer = null;
+
+  function getSnowflakeCount() {
+    // Fewer snowflakes on small screens
+    return window.innerWidth < 768 ? 50 : 150;
+  }
 
   function randomInt(value) {
     return Math.floor(Math.random() * value) + 1;
@@ -77,15 +81,17 @@ var PureSnow = (function() {
       // Remove any existing snow
       this.stop();
 
+      var count = getSnowflakeCount();
+
       // Create container
       snowContainer = createSnowContainer();
 
       // Generate and add CSS
-      var css = generateSnowCSS(snowflakesCount);
+      var css = generateSnowCSS(count);
       styleElement = addCss(css);
 
       // Spawn snowflakes
-      spawnSnow(snowContainer, snowflakesCount);
+      spawnSnow(snowContainer, count);
 
       return this;
     },
