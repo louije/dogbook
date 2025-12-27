@@ -344,6 +344,10 @@ input:focus-visible {
     background: transparent;
   }
 
+  .theme-button.active {
+    background: rgba(255, 255, 255, 0.25);
+  }
+
   .theme-button svg {
     width: 0.625rem;
     height: 0.625rem;
