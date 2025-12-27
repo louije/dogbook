@@ -1,302 +1,165 @@
-# Trombinoscope Canin
+# Dogbook - Trombinoscope Canin
 
-Un trombinoscope (annuaire photo) de chiens construit avec une architecture JAMstack.
+A dog directory application with a static frontend and headless CMS backend.
 
 ## Architecture
 
-### Backend
-- **KeystoneJS 6** - CMS headless avec interface d'administration
-- **SQLite** - Base de données légère
-- Hébergement sur serveur VPS
-- Accès anonyme via URL secrète
+```
+dogbook/
+├── backend/     # KeystoneJS 6 + SQLite (headless CMS)
+├── frontend/    # 11ty static site generator
+└── deploy/      # VPS deployment scripts
+```
 
-### Frontend
-- **11ty (Eleventy)** - Générateur de sites statiques
-- **Vanilla JavaScript** - Sans framework
-- **CSS sémantique avec BEM** - Pas de Tailwind
-- Déploiement sur VPS ou Netlify
-- Régénération automatique à chaque modification du backend
+**Backend:** KeystoneJS 6 with SQLite, provides GraphQL API and admin UI.
+**Frontend:** Static site built with 11ty, fetches data at build time.
 
-## Modèle de données
+## Quick Start
 
-### Dog (Chien)
-- `name`, `sex`, `birthday`, `breed`, `coat`
-- `owner` → Owner (requis, admin-only update)
-- `photos` → Media[] (relation many)
+### Prerequisites
+- Node.js 18+
+- npm
 
-### Owner (Humain)
-- `name`, `email`, `phone`
-- `dogs` → Dog[]
-
-### Media
-- `file` (image), `type` (photo/video), `videoUrl`
-- `dog` → Dog
-- `isFeatured` (checkbox) - Une seule par chien (hook auto-exclusif)
-- `status`: pending/approved/rejected (modération)
-- `uploadedAt` (timestamp)
-
-### Settings (singleton)
-- `moderationMode`: a_posteriori / a_priori
-  - **A posteriori**: Auto-approuve, notifie admin
-  - **A priori**: Requiert validation avant publication
-
-### PushSubscription
-- Abonnements Web Push (notifications iOS/Safari)
-- `endpoint`, `keys`, `receivesAdminNotifications`
-
-### ChangeLog
-- Journal d'audit: Dogs, Owners, Media
-- `entityType`, `operation` (create/update/delete), `changes` (JSON)
-- `frontendUrl`, `backendUrl` (liens auto-générés)
-- `status`: pending/accepted/reverted
-
-## Installation
-
-### Prérequis
-- Node.js 18+ et npm
-- Git
-
-### Backend
+### Development
 
 ```bash
+# Terminal 1: Start backend
 cd backend
-npm install
 cp .env.example .env
-nano .env  # Modifier SESSION_SECRET et autres valeurs
+npm install
 npm run dev
-```
+# Admin UI: http://localhost:3000
 
-Le backend sera accessible sur http://localhost:3000
-
-### Frontend
-
-```bash
+# Terminal 2: Start frontend
 cd frontend
-npm install
 cp .env.example .env
-nano .env  # Modifier API_URL
+npm install
 npm run dev
+# Site: http://localhost:8080
 ```
 
-Le frontend sera accessible sur http://localhost:8080
+On first run, KeystoneJS prompts you to create an admin user.
 
 ## Configuration
 
-### Déclenchement automatique des builds
+### Backend Environment (`backend/.env`)
 
-Configurez un webhook pour régénérer le frontend automatiquement:
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `SESSION_SECRET` | Yes | Random 32+ character string for session encryption |
+| `DATABASE_URL` | No | SQLite path (default: `file:./keystone.db`) |
+| `FRONTEND_BUILD_HOOK_URL` | No | Netlify/webhook URL to trigger frontend rebuild |
+| `VAPID_PUBLIC_KEY` | No | Web Push public key (for notifications) |
+| `VAPID_PRIVATE_KEY` | No | Web Push private key |
+| `VAPID_SUBJECT` | No | Web Push contact email |
 
-1. Si vous utilisez Netlify, créez un Build Hook dans les paramètres du site
-2. Ajoutez l'URL du webhook dans `backend/.env`:
-   ```
-   FRONTEND_BUILD_HOOK_URL=https://api.netlify.com/build_hooks/xxxxx
-   ```
-3. Le frontend sera régénéré automatiquement à chaque modification de contenu
-
-Si vous auto-hébergez le frontend:
+Generate VAPID keys:
 ```bash
-cd frontend && npm run build
+npx web-push generate-vapid-keys
 ```
 
-## Déploiement
+### Frontend Environment (`frontend/.env`)
 
-### Backend sur serveur
+| Variable | Required | Description |
+|----------|----------|-------------|
+| `API_URL` | Yes | Backend URL (e.g., `http://localhost:3000`) |
 
-Le déploiement utilise un workflow git push similaire à Capistrano.
+## Data Model
 
-#### Configuration initiale du serveur
+- **Dog** - name, sex, birthday, breed, coat, owner, photos, status
+- **Owner** - name, email, phone, dogs
+- **Media** - file, type (photo/video), dog, isFeatured, status
+- **Settings** - moderationMode (a_posteriori/a_priori)
 
-Sur le serveur (une seule fois):
+### Moderation Modes
+- **A posteriori:** Auto-approve uploads, notify admin afterward
+- **A priori:** Require admin approval before publishing
 
+## Features
+
+- **Magic Links:** Shareable edit URLs without password (via EditToken)
+- **Push Notifications:** Web push alerts for admins on new uploads/changes
+- **Image Compression:** Client-side compression before upload
+- **Audit Log:** Full change history with attribution
+
+## Production Deployment
+
+### Backend (VPS)
+
+1. Set up server structure:
 ```bash
-# Créer la structure de répertoires
 sudo mkdir -p /srv/dogbook/{repo.git,backups,data/images}
+sudo useradd -r -s /bin/bash dogbook
 sudo chown -R dogbook:dogbook /srv/dogbook
+```
 
-# Initialiser le dépôt git bare
+2. Initialize git deployment:
+```bash
 sudo -u dogbook git init --bare /srv/dogbook/repo.git
-
-# Copier le hook post-receive
-sudo -u dogbook cp deploy/post-receive /srv/dogbook/repo.git/hooks/
+sudo cp deploy/post-receive /srv/dogbook/repo.git/hooks/
 sudo chmod +x /srv/dogbook/repo.git/hooks/post-receive
+sudo cp deploy/deploy.sh /srv/dogbook/
+sudo chmod +x /srv/dogbook/deploy.sh
+```
 
-# Installer le service systemd
+3. Configure production environment:
+```bash
+sudo -u dogbook cp backend/.env.production.example /srv/dogbook/data/.env
+sudo -u dogbook nano /srv/dogbook/data/.env  # Fill in values
+```
+
+4. Install systemd service:
+```bash
 sudo cp deploy/dogbook.service /etc/systemd/system/
 sudo systemctl daemon-reload
 sudo systemctl enable dogbook
-
-# Installer le système de backup
-sudo cp deploy/dogbook-backup.{service,timer} /etc/systemd/system/
-sudo systemctl enable dogbook-backup.timer
-sudo systemctl start dogbook-backup.timer
-
-# Configurer l'environnement de production
-sudo -u dogbook nano /srv/dogbook/data/.env
-# Copiez le contenu de backend/.env.production.example et remplissez les valeurs
 ```
 
-Ajoutez à `/etc/caddy/Caddyfile`:
-
+5. Configure Caddy (reverse proxy):
 ```
 your-domain.com {
     reverse_proxy 127.0.0.1:3002
-    log {
-        output file /srv/dogbook/access.log {
-            roll_size 20mb
-            roll_keep 10
-        }
-    }
 }
 ```
 
-Rechargez Caddy:
+6. Deploy:
 ```bash
-sudo systemctl reload caddy
-```
-
-#### Déploiement initial
-
-Sur votre machine locale:
-
-```bash
-# Ajoutez le remote de déploiement
-git remote add deploy your-server:/srv/dogbook/repo.git
-
-# Premier déploiement
-git push deploy main
-
-# Sur le serveur, créez le symlink .env
-ssh your-server "sudo -u dogbook ln -s /srv/dogbook/data/.env /srv/dogbook/current/backend/.env"
-
-# Démarrez le service
-ssh your-server "sudo systemctl start dogbook"
-```
-
-#### Déploiements futurs
-
-Simplement:
-```bash
+# On local machine
+git remote add deploy user@server:/srv/dogbook/repo.git
 git push deploy main
 ```
 
-Le hook post-receive s'occupe automatiquement de:
-- Checkout du code
-- Installation des dépendances
-- Build du backend
-- Redémarrage du service
+### Frontend (Netlify)
 
-#### Vérification du déploiement
-
-```bash
-# Vérifier le statut du service
-ssh your-server "sudo systemctl status dogbook"
-
-# Voir les logs
-ssh your-server "sudo journalctl -u dogbook -f"
-
-# Vérifier les backups
-ssh your-server "ls -lh /srv/dogbook/backups/"
-```
-
-### Frontend sur Netlify
-
-1. Créez un nouveau site sur Netlify
-2. Connectez votre repository GitHub
-3. Configurez le build:
-   - **Base directory**: `frontend`
-   - **Build command**: `npm run build`
-   - **Publish directory**: `frontend/_site`
-4. Ajoutez les variables d'environnement:
-   - `API_URL`: URL de votre backend (ex: `https://api.yourdomain.com`)
-5. Créez un Build Hook et ajoutez-le dans `backend/.env`
-
-### Frontend sur VPS
-
-```bash
-# Build le frontend
-cd frontend
-npm install
-npm run build
-
-# Déployez dans nginx
-sudo cp -r _site/* /var/www/dogbook/
-```
-
-Configuration nginx:
-
-```nginx
-server {
-    listen 80;
-    server_name dogbook.yourdomain.com;
-    root /var/www/dogbook;
-    index index.html;
-
-    location / {
-        try_files $uri $uri/ =404;
-    }
-
-    # Cache des assets
-    location ~* \.(jpg|jpeg|png|gif|ico|css|js)$ {
-        expires 1y;
-        add_header Cache-Control "public, immutable";
-    }
-}
-```
-
-## Développement
-
-### Structure du projet
-
-```
-dogbook/
-├── backend/             # KeystoneJS: schema.ts, hooks.ts, auth.ts
-├── frontend/src/        # 11ty: templates .njk, css/ (BEM), js/ (vanilla)
-└── deploy/              # Scripts de déploiement Hetzner
-```
-
-### Méthodologie CSS
-
-BEM (Block Element Modifier): `.dog-card`, `.dog-card__image`, `.dog-card--featured`
-
-## API GraphQL
-
-Backend expose une API GraphQL sur `/api/graphql`. Consultez le schéma dans l'interface GraphQL Playground.
-
-## Sécurité
-
-- Changez `SESSION_SECRET` en production (utilisez une chaîne aléatoire longue)
-- Configurez HTTPS avec Let's Encrypt
-- Limitez les uploads de fichiers (configuré dans Caddy)
-- L'interface d'administration nécessite une authentification par email/mot de passe
+1. Connect repository to Netlify
+2. Configure build:
+   - Base directory: `frontend`
+   - Build command: `npm run build`
+   - Publish directory: `frontend/_site`
+3. Set environment variable: `API_URL=https://your-backend-domain.com`
+4. Create Build Hook and add URL to backend `.env` as `FRONTEND_BUILD_HOOK_URL`
 
 ## Maintenance
 
-Backups automatiques via systemd timer (voir `deploy/dogbook-backup.service`).
+**View logs:**
+```bash
+sudo journalctl -u dogbook -f
+```
 
-Mises à jour: `cd backend && npm update` / `cd frontend && npm update`
+**Backups:** Automated via systemd timer (see `deploy/dogbook-backup.service`)
 
-## Fonctionnalités clés
+**Updates:**
+```bash
+cd backend && npm update
+cd frontend && npm update
+```
 
-### Upload mobile
-- Compression client-side (50-70% réduction)
-- Accès caméra et galerie
-- Barre de progression temps réel
+## Security Notes
 
-### Modération
-- A posteriori (auto-approve) ou a priori (validation requise)
-- Web push notifications (iOS/Safari compatible)
-- Journal de changements avec audit trail
+- Always set a strong `SESSION_SECRET` in production
+- Configure HTTPS via Caddy/Let's Encrypt
+- Review `AUDIT.md` for security recommendations
 
-### Architecture
-- Photo principale: hook auto-exclusif (une seule par chien)
-- GraphQL multipart upload avec CSRF protection
-- Régénération automatique du site static via webhook
-
-## Support
-
-Logs: `sudo journalctl -u dogbook -f`
-Docs: [KeystoneJS](https://keystonejs.com) | [11ty](https://www.11ty.dev)
-
-## Licence
+## License
 
 MIT
