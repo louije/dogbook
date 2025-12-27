@@ -5,8 +5,29 @@ import { lists } from './schema';
 import express from 'express';
 import path from 'path';
 import cookieParser from 'cookie-parser';
-import rateLimit from 'express-rate-limit';
+import rateLimit, { type Options } from 'express-rate-limit';
 import { validateMagicToken } from './auth';
+
+// Rate limit logging helper
+const logRateLimit = (type: string, req: any, info: { limit: number; current: number; remaining: number }) => {
+  const ip = req.ip || req.headers['x-forwarded-for'] || 'unknown';
+  const path = req.path;
+  const method = req.method;
+  const userAgent = req.headers['user-agent'] || 'unknown';
+
+  console.log(JSON.stringify({
+    event: 'rate_limit',
+    type,
+    ip,
+    path,
+    method,
+    userAgent,
+    limit: info.limit,
+    current: info.current,
+    remaining: info.remaining,
+    timestamp: new Date().toISOString(),
+  }));
+};
 
 const sessionConfig = {
   maxAge: 60 * 60 * 24 * 30, // 30 days
@@ -83,6 +104,14 @@ export default withAuth(config({
         legacyHeaders: false,
         message: { error: 'Too many requests, please try again later.' },
         skip: isAdmin,
+        handler: (req, res, next, options) => {
+          logRateLimit('api_blocked', req, {
+            limit: options.limit as number,
+            current: (req as any).rateLimit?.current || 0,
+            remaining: 0,
+          });
+          res.status(options.statusCode).json(options.message);
+        },
       });
 
       const uploadLimiter = rateLimit({
@@ -97,10 +126,32 @@ export default withAuth(config({
           // Skip if admin
           return isAdmin(req, res);
         },
+        handler: (req, res, next, options) => {
+          logRateLimit('upload_blocked', req, {
+            limit: options.limit as number,
+            current: (req as any).rateLimit?.current || 0,
+            remaining: 0,
+          });
+          res.status(options.statusCode).json(options.message);
+        },
       });
 
       app.use('/api/graphql', uploadLimiter);
       app.use('/api/graphql', apiLimiter);
+
+      // Log when requests approach rate limits (at 80% usage)
+      app.use('/api/graphql', (req, res, next) => {
+        const rateInfo = (req as any).rateLimit;
+        if (rateInfo && rateInfo.remaining <= Math.floor(rateInfo.limit * 0.2)) {
+          logRateLimit('api_warning', req, {
+            limit: rateInfo.limit,
+            current: rateInfo.current,
+            remaining: rateInfo.remaining,
+          });
+        }
+        next();
+      });
+
       // Token validation endpoint is not rate limited - it's a lightweight
       // check that shouldn't count against user limits
 
