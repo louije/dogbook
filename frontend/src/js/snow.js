@@ -53,7 +53,7 @@ var PureSnow = (function() {
     var bodyHeightPx = Math.max(document.body.offsetHeight, window.innerHeight);
     var pageHeightVH = (100 * bodyHeightPx / window.innerHeight);
 
-    var baseCss = '.snowflake { position: absolute; width: 8px; height: 8px; background: white; border-radius: 50%; filter: drop-shadow(0 0 8px white); pointer-events: none; will-change: transform; }';
+    var baseCss = '.snowflake { position: absolute; width: 8px; height: 8px; background: white; border-radius: 50%; filter: drop-shadow(0 0 8px white); will-change: transform; }';
 
     var rule = baseCss;
 
