@@ -8,6 +8,7 @@
 #   ./r2-restore.sh images              # Restore all images
 #   ./r2-restore.sh all                 # Restore both database (latest) and images
 #   ./r2-restore.sh list                # List available backups
+#   ./r2-restore.sh --dest /tmp/test latest  # Restore to custom directory
 
 set -euo pipefail
 
@@ -19,8 +20,26 @@ if [ -f "$ENV_FILE" ]; then
     set +a
 fi
 
+# Parse --dest option
+CUSTOM_DEST=""
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --dest|-d)
+            CUSTOM_DEST="$2"
+            shift 2
+            ;;
+        *)
+            break
+            ;;
+    esac
+done
+
 # Configuration
-DATA_DIR="/srv/dogbook/data"
+if [ -n "$CUSTOM_DEST" ]; then
+    DATA_DIR="$CUSTOM_DEST"
+else
+    DATA_DIR="/srv/dogbook/data"
+fi
 DB_FILE="$DATA_DIR/keystone.db"
 IMAGES_DIR="$DATA_DIR/images"
 TMP_DIR="/tmp/dogbook-restore"
@@ -181,18 +200,20 @@ restore_database() {
         cp "$DB_FILE" "$current_backup"
     fi
 
-    # Stop service, restore, start service
+    # Stop service, restore, start service (only for production path)
     local was_running=false
-    if stop_service; then
-        was_running=true
+    if [ -z "$CUSTOM_DEST" ]; then
+        if stop_service; then
+            was_running=true
+        fi
     fi
 
-    log "Restoring database..."
+    log "Restoring database to $DB_FILE..."
     mkdir -p "$(dirname "$DB_FILE")"
     cp "$restored_db" "$DB_FILE"
 
-    # Set correct ownership (assuming dogbook user)
-    if id "dogbook" &>/dev/null; then
+    # Set correct ownership (assuming dogbook user, only for production)
+    if [ -z "$CUSTOM_DEST" ] && id "dogbook" &>/dev/null; then
         chown dogbook:dogbook "$DB_FILE"
     fi
 
@@ -209,7 +230,7 @@ restore_database() {
 
 # Restore images
 restore_images() {
-    log "Restoring images from R2..."
+    log "Restoring images from R2 to $IMAGES_DIR..."
 
     if ! confirm "This will sync all images from R2. Continue?"; then
         log "Aborted."
@@ -224,8 +245,8 @@ restore_images() {
         --transfers 4 \
         --progress
 
-    # Set correct ownership
-    if id "dogbook" &>/dev/null; then
+    # Set correct ownership (only for production)
+    if [ -z "$CUSTOM_DEST" ] && id "dogbook" &>/dev/null; then
         chown -R dogbook:dogbook "$IMAGES_DIR"
     fi
 
@@ -236,7 +257,10 @@ restore_images() {
 usage() {
     echo "Dogbook R2 Restore Script"
     echo ""
-    echo "Usage: $0 <command> [options]"
+    echo "Usage: $0 [--dest <dir>] <command> [options]"
+    echo ""
+    echo "Options:"
+    echo "  --dest, -d <dir>      Restore to custom directory (default: /srv/dogbook/data)"
     echo ""
     echo "Commands:"
     echo "  list                  List available backups"
@@ -251,9 +275,10 @@ usage() {
     echo "  $0 db 2024-01-15      # Restore from January 15, 2024"
     echo "  $0 images             # Restore all images"
     echo "  $0 all                # Full restore (database + images)"
+    echo "  $0 --dest /tmp/test latest  # Restore to /tmp/test for testing"
     echo ""
     echo "Notes:"
-    echo "  - The service will be stopped during database restore"
+    echo "  - The service will be stopped during database restore (unless --dest is used)"
     echo "  - Current database is backed up before restoration"
     echo "  - Images are synced (existing files not deleted unless missing from backup)"
 }
