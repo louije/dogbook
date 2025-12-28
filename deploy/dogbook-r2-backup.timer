@@ -1,0 +1,13 @@
+[Unit]
+Description=Daily Dogbook R2 Backup Timer
+
+[Timer]
+# Run at 3:00 AM daily (off-peak hours)
+OnCalendar=*-*-* 03:00:00
+# Run immediately if last run was missed (e.g., server was down)
+Persistent=true
+# Add random delay up to 15 minutes to avoid thundering herd
+RandomizedDelaySec=900
+
+[Install]
+WantedBy=timers.target

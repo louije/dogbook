@@ -1,0 +1,18 @@
+[Unit]
+Description=Backup Dogbook Database and Images to R2
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=dogbook
+ExecStart=/srv/dogbook/deploy/r2-backup.sh backup
+StandardOutput=journal
+StandardError=journal
+
+# Allow up to 30 minutes for the backup (in case of large image sync)
+TimeoutStartSec=1800
+
+# Retry on failure
+Restart=on-failure
+RestartSec=60
