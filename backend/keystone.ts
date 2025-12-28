@@ -83,6 +83,9 @@ export default withAuth(config({
       credentials: true,
     },
     extendExpressApp: (app, context) => {
+      // Trust first proxy (Caddy) to get real client IP from X-Forwarded-For
+      app.set('trust proxy', 1);
+
       // Parse cookies before any routes
       app.use(cookieParser());
 
@@ -99,7 +102,7 @@ export default withAuth(config({
       // Rate limiting
       const apiLimiter = rateLimit({
         windowMs: 15 * 60 * 1000, // 15 minutes
-        max: 500, // 500 requests per 15 min window
+        max: 100, // 100 requests per 15 min window
         standardHeaders: true,
         legacyHeaders: false,
         message: { error: 'Too many requests, please try again later.' },
@@ -116,7 +119,7 @@ export default withAuth(config({
 
       const uploadLimiter = rateLimit({
         windowMs: 60 * 60 * 1000, // 1 hour
-        max: 200, // 200 uploads per hour
+        max: 30, // 30 uploads per hour
         standardHeaders: true,
         legacyHeaders: false,
         message: { error: 'Upload limit reached. Please try again later.' },
