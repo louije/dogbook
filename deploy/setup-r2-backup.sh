@@ -36,33 +36,32 @@ install_rclone() {
 # Configure rclone for R2
 configure_rclone() {
     local rclone_config="/home/$DOGBOOK_USER/.config/rclone/rclone.conf"
+    local env_file="/srv/dogbook/data/.env"
 
     if [ -f "$rclone_config" ] && grep -q "^\[r2\]$" "$rclone_config"; then
         log "rclone R2 remote already configured"
-        return 0
-    fi
+    else
+        echo ""
+        echo "=== Cloudflare R2 Configuration ==="
+        echo ""
+        echo "You'll need the following from your Cloudflare R2 dashboard:"
+        echo "  1. Account ID (visible in the R2 dashboard URL)"
+        echo "  2. Access Key ID (from R2 > Manage API tokens)"
+        echo "  3. Secret Access Key (from R2 > Manage API tokens)"
+        echo ""
+        echo "The endpoint should be: https://<account-id>.r2.cloudflarestorage.com"
+        echo ""
 
-    echo ""
-    echo "=== Cloudflare R2 Configuration ==="
-    echo ""
-    echo "You'll need the following from your Cloudflare R2 dashboard:"
-    echo "  1. Account ID (visible in the R2 dashboard URL)"
-    echo "  2. Access Key ID (from R2 > Manage API tokens)"
-    echo "  3. Secret Access Key (from R2 > Manage API tokens)"
-    echo ""
-    echo "The endpoint should be: https://<account-id>.r2.cloudflarestorage.com"
-    echo ""
+        read -p "Enter your R2 Account ID: " account_id
+        read -p "Enter your R2 Access Key ID: " access_key
+        read -sp "Enter your R2 Secret Access Key: " secret_key
+        echo ""
 
-    read -p "Enter your R2 Account ID: " account_id
-    read -p "Enter your R2 Access Key ID: " access_key
-    read -sp "Enter your R2 Secret Access Key: " secret_key
-    echo ""
+        # Create config directory
+        mkdir -p "/home/$DOGBOOK_USER/.config/rclone"
 
-    # Create config directory
-    mkdir -p "/home/$DOGBOOK_USER/.config/rclone"
-
-    # Create rclone config
-    cat >> "$rclone_config" << EOF
+        # Create rclone config
+        cat >> "$rclone_config" << EOF
 
 [r2]
 type = s3
@@ -73,19 +72,30 @@ endpoint = https://${account_id}.r2.cloudflarestorage.com
 acl = private
 EOF
 
-    chown -R "$DOGBOOK_USER:$DOGBOOK_USER" "/home/$DOGBOOK_USER/.config"
-    chmod 600 "$rclone_config"
+        chown -R "$DOGBOOK_USER:$DOGBOOK_USER" "/home/$DOGBOOK_USER/.config"
+        chmod 600 "$rclone_config"
 
-    log "rclone R2 remote configured"
+        log "rclone R2 remote configured"
 
-    # Test the connection
-    log "Testing R2 connection..."
-    if sudo -u "$DOGBOOK_USER" rclone lsd r2: &>/dev/null; then
-        log "R2 connection successful!"
-        sudo -u "$DOGBOOK_USER" rclone lsd r2:
+        # Test the connection
+        log "Testing R2 connection..."
+        if sudo -u "$DOGBOOK_USER" rclone lsd r2: &>/dev/null; then
+            log "R2 connection successful!"
+            sudo -u "$DOGBOOK_USER" rclone lsd r2:
+        else
+            error "R2 connection failed. Please check your credentials."
+            exit 1
+        fi
+    fi
+
+    # Configure bucket name in .env
+    if grep -q "^R2_BUCKET=" "$env_file" 2>/dev/null; then
+        log "R2_BUCKET already configured in $env_file"
     else
-        error "R2 connection failed. Please check your credentials."
-        exit 1
+        echo ""
+        read -p "Enter your R2 bucket name: " bucket_name
+        echo "R2_BUCKET=$bucket_name" >> "$env_file"
+        log "R2_BUCKET=$bucket_name added to $env_file"
     fi
 }
 

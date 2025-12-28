@@ -11,13 +11,28 @@
 
 set -euo pipefail
 
+# Load environment variables
+ENV_FILE="/srv/dogbook/data/.env"
+if [ -f "$ENV_FILE" ]; then
+    set -a
+    source "$ENV_FILE"
+    set +a
+fi
+
 # Configuration
 DATA_DIR="/srv/dogbook/data"
 DB_FILE="$DATA_DIR/keystone.db"
 IMAGES_DIR="$DATA_DIR/images"
 TMP_DIR="/tmp/dogbook-restore"
-R2_BUCKET="maisonsdoggo"
+R2_BUCKET="${R2_BUCKET:-}"
 SERVICE_NAME="dogbook"
+
+# Validate required environment variables
+if [ -z "$R2_BUCKET" ]; then
+    echo "ERROR: R2_BUCKET environment variable is not set" >&2
+    echo "Add R2_BUCKET=your-bucket-name to $ENV_FILE" >&2
+    exit 1
+fi
 
 # Logging
 log() {
