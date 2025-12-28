@@ -83,6 +83,9 @@ export default withAuth(config({
       credentials: true,
     },
     extendExpressApp: (app, context) => {
+      // Trust first proxy (Caddy) to get real client IP from X-Forwarded-For
+      app.set('trust proxy', 1);
+
       // Parse cookies before any routes
       app.use(cookieParser());
 
