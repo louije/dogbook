@@ -60,10 +60,12 @@ async function sendPushNotificationToSubscriptions(
         JSON.stringify(payload)
       );
     } catch (error: any) {
-      console.error(`Failed to send push to ${sub.endpoint}:`, error);
+      console.error(`Failed to send push to ${sub.endpoint}:`, error.statusCode || error.message);
 
-      // If subscription is invalid (410 Gone), delete it
-      if (error.statusCode === 410) {
+      // If subscription is invalid or expired (404 Not Found, 410 Gone), delete it
+      // This happens when users unsubscribe, clear browser data, or subscriptions expire
+      if (error.statusCode === 410 || error.statusCode === 404) {
+        console.log(`Removing stale push subscription: ${sub.endpoint}`);
         await context.query.PushSubscription.deleteOne({
           where: { id: sub.id },
         });
