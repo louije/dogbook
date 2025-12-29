@@ -12,7 +12,7 @@ var PureSnow = (function() {
 
   function getSnowflakeCount() {
     // Fewer snowflakes on small screens for performance
-    return window.innerWidth < 768 ? 35 : 150;
+    return window.innerWidth < 768 ? 45 : 150;
   }
 
   function randomInt(value) {
