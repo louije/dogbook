@@ -158,6 +158,11 @@ export default withAuth(config({
       // Token validation endpoint is not rate limited - it's a lightweight
       // check that shouldn't count against user limits
 
+      // Health check endpoint
+      app.get('/api/health', (req, res) => {
+        res.json({ status: 'ok' });
+      });
+
       // Validate magic token endpoint
       app.get('/api/validate-magic-token', async (req, res) => {
         const token = req.cookies?.magicToken;
