@@ -139,6 +139,7 @@ type Dog {
   owner: Owner
   photos(where: MediaWhereInput! = {}, orderBy: [MediaOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: MediaWhereUniqueInput): [Media!]
   photosCount(where: MediaWhereInput! = {}): Int
+  status: DogStatusType
 }
 
 enum DogSexType {
@@ -147,6 +148,11 @@ enum DogSexType {
 }
 
 scalar CalendarDay @specifiedBy(url: "https://datatracker.ietf.org/doc/html/rfc3339#section-5.6")
+
+enum DogStatusType {
+  pending
+  approved
+}
 
 input DogWhereUniqueInput {
   id: ID
@@ -164,6 +170,7 @@ input DogWhereInput {
   coat: StringFilter
   owner: OwnerWhereInput
   photos: MediaManyRelationFilter
+  status: DogStatusTypeNullableFilter
 }
 
 input DogSexTypeNullableFilter {
@@ -190,6 +197,13 @@ input MediaManyRelationFilter {
   none: MediaWhereInput
 }
 
+input DogStatusTypeNullableFilter {
+  equals: DogStatusType
+  in: [DogStatusType!]
+  notIn: [DogStatusType!]
+  not: DogStatusTypeNullableFilter
+}
+
 input DogOrderByInput {
   id: OrderDirection
   name: OrderDirection
@@ -197,6 +211,7 @@ input DogOrderByInput {
   birthday: OrderDirection
   breed: OrderDirection
   coat: OrderDirection
+  status: OrderDirection
 }
 
 input DogUpdateInput {
@@ -207,6 +222,7 @@ input DogUpdateInput {
   coat: String
   owner: OwnerRelateToOneForUpdateInput
   photos: MediaRelateToManyForUpdateInput
+  status: DogStatusType
 }
 
 input OwnerRelateToOneForUpdateInput {
@@ -235,6 +251,7 @@ input DogCreateInput {
   coat: String
   owner: OwnerRelateToOneForCreateInput
   photos: MediaRelateToManyForCreateInput
+  status: DogStatusType
 }
 
 input OwnerRelateToOneForCreateInput {
@@ -554,6 +571,7 @@ type ChangeLog {
   changes: JSON
   changesSummary: String
   changedBy: ChangeLogChangedByType
+  changedByLabel: String
   status: ChangeLogStatusType
   frontendUrl: String
   backendUrl: String
@@ -574,6 +592,7 @@ enum ChangeLogOperationType {
 enum ChangeLogChangedByType {
   public
   admin
+  magic
   system
 }
 
@@ -599,6 +618,7 @@ input ChangeLogWhereInput {
   operation: ChangeLogOperationTypeNullableFilter
   changesSummary: StringFilter
   changedBy: ChangeLogChangedByTypeNullableFilter
+  changedByLabel: StringFilter
   status: ChangeLogStatusTypeNullableFilter
   frontendUrl: StringFilter
   backendUrl: StringFilter
@@ -652,6 +672,7 @@ input ChangeLogOrderByInput {
   operation: OrderDirection
   changesSummary: OrderDirection
   changedBy: OrderDirection
+  changedByLabel: OrderDirection
   status: OrderDirection
   frontendUrl: OrderDirection
   backendUrl: OrderDirection
@@ -666,6 +687,7 @@ input ChangeLogUpdateInput {
   changes: JSON
   changesSummary: String
   changedBy: ChangeLogChangedByType
+  changedByLabel: String
   status: ChangeLogStatusType
   frontendUrl: String
   backendUrl: String
@@ -685,9 +707,87 @@ input ChangeLogCreateInput {
   changes: JSON
   changesSummary: String
   changedBy: ChangeLogChangedByType
+  changedByLabel: String
   status: ChangeLogStatusType
   frontendUrl: String
   backendUrl: String
+}
+
+type EditToken {
+  id: ID!
+  label: String
+  token: String
+  isActive: Boolean
+  expiresAt: DateTime
+  createdAt: DateTime
+  lastUsedAt: DateTime
+  usageCount: Int
+}
+
+input EditTokenWhereUniqueInput {
+  id: ID
+  token: String
+}
+
+input EditTokenWhereInput {
+  AND: [EditTokenWhereInput!]
+  OR: [EditTokenWhereInput!]
+  NOT: [EditTokenWhereInput!]
+  id: IDFilter
+  label: StringFilter
+  token: StringFilter
+  isActive: BooleanFilter
+  expiresAt: DateTimeNullableFilter
+  createdAt: DateTimeNullableFilter
+  lastUsedAt: DateTimeNullableFilter
+  usageCount: IntNullableFilter
+}
+
+input IntNullableFilter {
+  equals: Int
+  in: [Int!]
+  notIn: [Int!]
+  lt: Int
+  lte: Int
+  gt: Int
+  gte: Int
+  not: IntNullableFilter
+}
+
+input EditTokenOrderByInput {
+  id: OrderDirection
+  label: OrderDirection
+  token: OrderDirection
+  isActive: OrderDirection
+  expiresAt: OrderDirection
+  createdAt: OrderDirection
+  lastUsedAt: OrderDirection
+  usageCount: OrderDirection
+}
+
+input EditTokenUpdateInput {
+  label: String
+  token: String
+  isActive: Boolean
+  expiresAt: DateTime
+  createdAt: DateTime
+  lastUsedAt: DateTime
+  usageCount: Int
+}
+
+input EditTokenUpdateArgs {
+  where: EditTokenWhereUniqueInput!
+  data: EditTokenUpdateInput!
+}
+
+input EditTokenCreateInput {
+  label: String
+  token: String
+  isActive: Boolean
+  expiresAt: DateTime
+  createdAt: DateTime
+  lastUsedAt: DateTime
+  usageCount: Int
 }
 
 """
@@ -738,6 +838,12 @@ type Mutation {
   updateChangeLogs(data: [ChangeLogUpdateArgs!]!): [ChangeLog]
   deleteChangeLog(where: ChangeLogWhereUniqueInput!): ChangeLog
   deleteChangeLogs(where: [ChangeLogWhereUniqueInput!]!): [ChangeLog]
+  createEditToken(data: EditTokenCreateInput!): EditToken
+  createEditTokens(data: [EditTokenCreateInput!]!): [EditToken]
+  updateEditToken(where: EditTokenWhereUniqueInput!, data: EditTokenUpdateInput!): EditToken
+  updateEditTokens(data: [EditTokenUpdateArgs!]!): [EditToken]
+  deleteEditToken(where: EditTokenWhereUniqueInput!): EditToken
+  deleteEditTokens(where: [EditTokenWhereUniqueInput!]!): [EditToken]
   endSession: Boolean!
   authenticateUserWithPassword(email: String!, password: String!): UserAuthenticationWithPasswordResult
   createInitialUser(data: CreateInitialUserInput!): UserAuthenticationWithPasswordSuccess!
@@ -795,6 +901,9 @@ type Query {
   changeLogs(where: ChangeLogWhereInput! = {}, orderBy: [ChangeLogOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: ChangeLogWhereUniqueInput): [ChangeLog!]
   changeLog(where: ChangeLogWhereUniqueInput!): ChangeLog
   changeLogsCount(where: ChangeLogWhereInput! = {}): Int
+  editTokens(where: EditTokenWhereInput! = {}, orderBy: [EditTokenOrderByInput!]! = [], take: Int, skip: Int! = 0, cursor: EditTokenWhereUniqueInput): [EditToken!]
+  editToken(where: EditTokenWhereUniqueInput!): EditToken
+  editTokensCount(where: EditTokenWhereInput! = {}): Int
   keystone: KeystoneMeta!
   authenticatedItem: AuthenticatedItem
   validateUserPasswordResetToken(email: String!, token: String!): ValidateUserPasswordResetTokenResult

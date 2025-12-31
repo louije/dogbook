@@ -32,6 +32,7 @@ model Dog {
   owner    Owner?  @relation("Dog_owner", fields: [ownerId], references: [id])
   ownerId  String? @map("owner")
   photos   Media[] @relation("Media_dog")
+  status   String? @default("pending")
 
   @@index([ownerId])
 }
@@ -86,7 +87,19 @@ model ChangeLog {
   changes        String?
   changesSummary String   @default("")
   changedBy      String?  @default("public")
+  changedByLabel String   @default("")
   status         String?  @default("pending")
   frontendUrl    String   @default("")
   backendUrl     String   @default("")
+}
+
+model EditToken {
+  id         String    @id @default(cuid())
+  label      String    @default("")
+  token      String    @unique @default("")
+  isActive   Boolean   @default(true)
+  expiresAt  DateTime?
+  createdAt  DateTime? @default(now())
+  lastUsedAt DateTime?
+  usageCount Int?      @default(0)
 }
